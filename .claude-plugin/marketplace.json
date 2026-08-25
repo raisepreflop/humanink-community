@@ -9,8 +9,8 @@
   "version": "1.9.4-club",
   "plugins": [
     {
-      "name": "humanink-community",
-      "source": "./plugins/humanink-community",
+      "name": "humanink",
+      "source": "./plugins/humanink",
       "version": "1.9.4-club",
       "description": "HumanInk Community — the editorial suite for Escritores Aumentados members. All collaborators except advertising-campaign management; strategy stays (Market Analyst and Community Manager), plus Brain, the Humanizer and the full publishing suite, with the AWAP draft certificate. The official, publicly verifiable certificate is the separate HumanInk Certificate product. Personal license, valid while you are an Escritores Aumentados member.",
       "author": {
