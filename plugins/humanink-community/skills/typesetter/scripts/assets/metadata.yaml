@@ -1,0 +1,13 @@
+---
+# Plantilla de metadatos para el EPUB. Copiar a <libro>/assets/metadata.yaml y editar.
+title: TÍTULO DEL LIBRO
+subtitle: Subtítulo del libro          # opcional; se renderiza centrado en la portada de título
+author: Nombre del Autor
+lang: en                               # 'en', 'es', … (NUNCA dejar que coja 'C' del locale)
+date: '2026'
+# Interior/negocio (rellenar cuando esté decidido):
+# identifier:
+#   - scheme: ISBN-13
+#     text: 978-XXXXXXXXXX
+# publisher: <nombre del sello>
+...

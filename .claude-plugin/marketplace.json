@@ -1,0 +1,33 @@
+{
+  "name": "humanink-community",
+  "owner": {
+    "name": "Rais Busom",
+    "email": "info@humanink.io",
+    "url": "https://humanink.io"
+  },
+  "description": "HumanInk Community — la edición para miembros de Escritores Aumentados. La clave de membresía llega con el alta en el Club.",
+  "version": "1.9.4-club",
+  "plugins": [
+    {
+      "name": "humanink-community",
+      "source": "./plugins/humanink-community",
+      "version": "1.9.4-club",
+      "description": "HumanInk Community — the editorial suite for Escritores Aumentados members. All collaborators except advertising-campaign management; strategy stays (Market Analyst and Community Manager), plus Brain, the Humanizer and the full publishing suite, with the AWAP draft certificate. The official, publicly verifiable certificate is the separate HumanInk Certificate product. Personal license, valid while you are an Escritores Aumentados member.",
+      "author": {
+        "name": "Rais Busom",
+        "url": "https://humanink.io"
+      },
+      "homepage": "https://humanink.io",
+      "license": "Membership — válida mientras seas miembro de Escritores Aumentados",
+      "category": "writing",
+      "keywords": [
+        "escritura",
+        "editorial",
+        "club",
+        "escritores-aumentados",
+        "español"
+      ],
+      "strict": true
+    }
+  ]
+}

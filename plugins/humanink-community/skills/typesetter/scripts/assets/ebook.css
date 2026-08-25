@@ -1,0 +1,23 @@
+/* EPUB stylesheet «de casa» para KDP — title page centrada, prosa justificada */
+body { text-align: justify; line-height: 1.45; margin: 0 1em; orphans: 2; widows: 2; }
+
+h1 { page-break-before: always; text-align: center; font-size: 1.5em;
+     margin: 1.6em 0 0.2em; line-height: 1.2; }
+h2 { text-align: center; font-style: italic; font-weight: normal;
+     font-size: 1.05em; margin: 0 0 1.2em; color: #333; }
+
+p  { text-indent: 1.3em; margin: 0; }
+/* Sin sangría justo tras encabezado o separador de escena */
+h1 + p, h2 + p, .scene + p { text-indent: 0; }
+
+.scene { text-align: center; text-indent: 0; margin: 1.2em 0; }
+.scene p { text-indent: 0; }
+
+/* Página de título (pandoc): centrar título, subtítulo, autor y fecha.
+   IMPRESCINDIBLE: sin esto, los <p> heredan justify+sangría y salen a la izquierda. */
+section.titlepage { text-align: center; }
+.titlepage .title { page-break-before: avoid; margin-top: 20%; font-size: 2em; }
+.titlepage .subtitle { text-align: center; text-indent: 0; font-style: italic;
+                       font-size: 1.15em; margin: 0.4em 0 1.5em; color: #333; }
+.titlepage .author { text-align: center; text-indent: 0; font-size: 1.2em; margin: 1em 0 0; }
+.titlepage .date { text-align: center; text-indent: 0; color: #555; }
