@@ -1,9 +1,9 @@
-# HumanInk Community — versión 1.9.4-club
+# HumanInk Community — versión 1.9.7-club
 
 Esta es la edición **Community** de HumanInk para miembros de Escritores Aumentados.
 Aquí tienes, en claro, **qué incluye** y **qué no** — para que sepas exactamente qué has instalado.
 
-> **Versión:** `1.9.4-club` · comparte numeración con las ediciones de pago, así sabes siempre
+> **Versión:** `1.9.7-club` · comparte numeración con las ediciones de pago, así sabes siempre
 > si vas al día. El sufijo `-club` identifica esta edición.
 
 ## Lo que incluye
