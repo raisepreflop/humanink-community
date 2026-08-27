@@ -22,15 +22,9 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=/dev/null
 . "$DIR/license-lib.sh" 2>/dev/null || exit 0
 
-# El prompt llega por stdin, en JSON. Sin python3 no hay nada que hacer: se calla y sale.
-PROMPT="$(python3 -c '
-import json, sys
-try:
-    d = json.load(sys.stdin)
-    print(d.get("prompt") or "")
-except Exception:
-    print("")
-' 2>/dev/null)" || exit 0
+# El prompt llega por stdin, en JSON. Se lee sin python3: en Windows no está, y depender de él
+# era justo lo que dejaba a un cliente dos días sin poder activar.
+PROMPT="$(cat | tr -d '\n' | sed -n 's/.*"prompt"[[:space:]]*:[[:space:]]*"\(.*\)"[^"]*}.*/\1/p')"
 
 [ -z "$PROMPT" ] && exit 0
 
