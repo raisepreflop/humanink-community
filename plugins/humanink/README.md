@@ -1,6 +1,6 @@
 # HumanInk Community
 
-`v1.9.8-club`
+`v1.9.9-club`
 
 **The editorial suite for Escritores Aumentados members.**
 
@@ -76,7 +76,7 @@ For certificates: AWAP runs as a **hosted HumanInk service** (nothing to install
 
 ## Installation (1 minute)
 
-1. In the Claude desktop app: **Settings → Plugins → Add → Upload plugin**, and choose **`humanink-community-full-v1.9.8-club.plugin`**.
+1. In the Claude desktop app: **Settings → Plugins → Add → Upload plugin**, and choose **`humanink-community-full-v1.9.9-club.plugin`**.
 2. Open a **new** chat and type `/humanink:help`. If the command list appears, you're done.
 
 The collaborators appear as `/humanink:…` commands.
