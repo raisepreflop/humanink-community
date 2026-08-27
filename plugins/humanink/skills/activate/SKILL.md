@@ -1,7 +1,7 @@
 ---
 name: activate
 description: "Activar HumanInk en este equipo con la clave de tu compra. Úsalo cuando el autor diga «activar», «tengo la clave», «introducir licencia», «me dice que no está activado», o cuando cualquier colaborador informe de que falta la licencia."
-allowed-tools: Bash
+allowed-tools: mcp__plugin_humanink_awap__awap_activate, Bash
 argument-hint: "<TU-CLAVE> <tu@email>"
 model: haiku
 ---
@@ -9,7 +9,7 @@ model: haiku
 <!-- AI-TRANSPARENCY-50-1 -->
 > **Primera respuesta — transparencia de IA (Reglamento europeo de IA, art. 50(1)).** Abre tu primerísima respuesta en este comando con esta línea EXACTA, en español, y continúa normalmente:
 >
-> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v1.9.7-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
+> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v1.9.8-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
 
 Activas la licencia de HumanInk en este equipo. Es de una vez: después, todos los colaboradores
 funcionan sin volver a preguntar nada.
@@ -23,7 +23,18 @@ Si el autor solo da la clave, pregúntale el email así:
 
 > ¿Con qué email compraste? La clave se queda ligada a esa dirección — una clave, una cuenta.
 
-## 2. Actívala
+## 2. Actívala — por el conector, siempre
+
+Usa **`awap_activate`** con la clave y el email. Es la vía buena y la única que funciona en todos
+los equipos: corre en nuestro servidor, así que no depende de que el ordenador del autor tenga red
+en el recinto aislado, ni `curl`, ni `python3` — cosas que en Windows sencillamente no están.
+
+Si el conector responde, ya está: ve al paso 3 con lo que te haya dicho.
+
+> Si `awap_activate` no aparece entre tus herramientas, el conector no está conectado. Díselo tal
+> cual: **Plugins → HumanInk → Connectors → awap → Connect**, y que repita el comando. Es un clic.
+
+### Solo si el conector no está
 
 **Lo normal es que ya esté hecha.** Al enviar el mensaje, el equipo del autor activa por su cuenta y
 deja el resultado en tu contexto, en una línea `HUMANINK_ACTIVACION:`. Búscala antes de nada:
@@ -63,6 +74,11 @@ Nunca le pidas la clave por segunda vez «por si acaso» ni le sugieras probar o
 correcta y falla, el problema es nuestro y hay que decírselo así.
 
 ## Regla
+
+**No digas nunca que el servidor está caído.** No lo sabes: lo único que sabes es que *tu* intento
+no llegó. Un autor al que le dices que el servicio está roto deja de intentarlo y escribe a soporte.
+Si el conector falla, la respuesta es «vuelve a intentarlo» o «conecta el conector», no un
+diagnóstico de nuestra infraestructura. Tampoco cuentes intentos ni inventes cifras.
 
 **No inventes el resultado.** Si el bloque no llegó a ejecutarse, dilo y pídele que lo repita — dar
 por activada una licencia que no lo está deja al autor con un error críptico dos comandos después.
