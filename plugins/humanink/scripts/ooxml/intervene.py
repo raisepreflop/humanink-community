@@ -93,6 +93,22 @@ def _runs_vivos(p):
     return fuera
 
 
+def _en_tabla(p):
+    """¿Este párrafo está dentro de una tabla?
+
+    Importa para el BORRADO, que es la operación destructiva: una celda vacía deja la tabla con
+    una fila fantasma y el autor no entiende qué ha pasado. Y es un caso real, no teórico: el
+    texto que extrae `docxtc` incluye las celdas, así que un diff del documento entero contra una
+    propuesta que solo trae la prosa las lee como líneas borradas.
+    """
+    n = p.getparent()
+    while n is not None:
+        if n.tag == w("tbl"):
+            return True
+        n = n.getparent()
+    return False
+
+
 def _texto_vivo(p):
     return "".join(x[1] for x in _runs_vivos(p))
 
@@ -279,6 +295,31 @@ def localizar(parrafos_xml, indice, huella, ventana=60):
     raise ErrorDeAnclaje(f"huella {huella!r} aparece {len(globales)} veces: hazla más específica")
 
 
+def huella_de(parrafos_xml, indice, minimo=30, maximo=200):
+    """El prefijo más corto de este párrafo que solo aparece en ÉL.
+
+    Quien acuña el ancla tiene que ser el mismo código que la resuelve, y por eso esto vive aquí
+    y no en el cliente: la huella se compara normalizada (`_normaliza`), y una reimplementación
+    en otro lenguaje que no colapse los espacios igual produce anclas que `localizar` rechaza —o,
+    peor, que casan donde no deben.
+
+    Devuelve None cuando el párrafo se repite entero en el documento (encabezados, separadores).
+    Decir «aquí no hay ancla honesta» es mejor que dar una que después falle por ambigua.
+    """
+    texto = _normaliza(_texto_vivo(parrafos_xml[indice]))
+    if not texto:
+        return None
+    otros = [_normaliza(_texto_vivo(p)) for j, p in enumerate(parrafos_xml) if j != indice]
+    largo = min(minimo, len(texto))
+    while largo <= min(maximo, len(texto)):
+        cand = texto[:largo]
+        if not any(cand in o for o in otros):
+            return cand
+        largo += 10
+    # Ni el párrafo entero (hasta el tope) distingue: es un duplicado.
+    return None
+
+
 # ─────────────────────── aplicación del lote ───────────────────────
 
 def _siguiente_id(raiz):
@@ -378,15 +419,45 @@ def _activar_track_changes(entrada, raiz, salida):
 
 # ─────────────────────── CLI ───────────────────────
 
-def listar(entrada, desde, hasta, ancho=90):
+def parrafos_de(entrada):
+    """Los <w:p> del cuerpo, que es sobre lo que se ancla todo."""
     raiz = D.leer_xml(entrada)
     cuerpo = raiz.find(w("body")) if raiz.find(w("body")) is not None else raiz
-    ps = list(cuerpo.iter(w("p")))
+    return list(cuerpo.iter(w("p")))
+
+
+def listar(entrada, desde, hasta, ancho=90, como_json=False):
+    ps = parrafos_de(entrada)
     hasta = min(hasta if hasta is not None else len(ps), len(ps))
-    for i in range(max(desde, 0), hasta):
-        t = _normaliza(_texto_vivo(ps[i]))
-        if t:
-            print(f"{i:>5}  {t[:ancho]}")
+    desde = max(desde, 0)
+
+    if not como_json:
+        for i in range(desde, hasta):
+            t = _normaliza(_texto_vivo(ps[i]))
+            if t:
+                print(f"{i:>5}  {t[:ancho]}")
+        return
+
+    # El JSON NO trunca. El texto de la vista de arriba se corta a 90 caracteres porque lo lee
+    # una persona; este lo lee el motor para calcular `buscar`, que se compara EN CRUDO contra
+    # el texto vivo. Un texto recortado produciría un `buscar` que no existe en el párrafo.
+    salida = []
+    for i in range(desde, hasta):
+        vivo = _texto_vivo(ps[i])
+        if not vivo.strip():
+            continue
+        salida.append({
+            "i": i,
+            "texto": vivo,
+            "palabras": len(vivo.split()),
+            "huella": huella_de(ps, i),
+        })
+    print(json.dumps({
+        "fichero": entrada,
+        "sha256": D.sha256_de(entrada),
+        "total": len(ps),
+        "parrafos": salida,
+    }, ensure_ascii=False))
 
 
 def main():
@@ -406,7 +477,7 @@ def main():
     a = ap.parse_args()
 
     if a.listar:
-        listar(a.entrada, a.desde, a.hasta)
+        listar(a.entrada, a.desde, a.hasta, como_json=a.json)
         return 0
 
     if not a.lote:

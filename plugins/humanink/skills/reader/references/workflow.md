@@ -52,7 +52,7 @@ parentheticals per thousand, and % of dialogue. Quote these numbers verbatim —
 not estimated, so they hold up if the author checks them. Add only what the script cannot see:
 author-marked beats, and your reading of what the numbers *mean* for this genre.
 
-## 3. The integrated report — §1 to §11
+## 3. The integrated report — §1 to §12
 
 ### §1 · Technical sheet + at-a-glance verdict
 Title, author, genre/subgenre, word count, chapters analyzed, declared style, target audience. A **summary table** with all key scores (development, style, structure, theme, psychology, genre, PPT, **BPS**) and the scope notice.
@@ -135,6 +135,62 @@ When the chosen option is **Editing** or **Rewrite**, lay out a concrete workflo
 4. **Rewrite & expansion:** Ghostwriter (05) → writes/rewrites/expands chapters following bible, style guide and the editor's report (tracked changes, versioning) · Coach (03) → **bible-delta** after each chapter for consistency.
 5. **Reader verification:** Reader (07) → professional read on the rewritten material · Beta (08) → target-audience beta simulation (first-person verdict) before closing.
 Close with a **flow table** (collaborator → input → output → next) and the note: this pipeline covers the **manuscript-improvement cycle**; marketing and publishing are **out of scope** of this report.
+
+### §12 · AI fingerprint (0–100)
+The report closes with the question the author will be asked sooner or later — by a publisher, by
+a platform, by a reader. **It detects; it does not rewrite.** The rewrite is `/humanink:humanizer`,
+and saying so here is what keeps this section honest: a diagnosis that also sells the cure invites
+the reader to distrust the diagnosis.
+
+It runs on the **local engine**, on the author's machine: the text is not sent anywhere to be
+scored.
+
+```bash
+_HI="${CLAUDE_PLUGIN_ROOT:-$HOME/.humanink}"; [ -d "$_HI/scripts" ] || _HI="$HOME/.humanink"
+python3 "$_HI/scripts/ai-parser/parser.py" "<el manuscrito>" --format json
+```
+
+The JSON brings `ai_level`, `metrics` (`overall_ai_score`, `burstiness`, `approx_perplexity`,
+`lexical_density`, `ttr`, `sentence_length_std`, `paragraph_similarity`, `ai_pattern_score`,
+`flesch_ease`), `pattern_hits` and `top_fragments`.
+
+**What the section says:**
+
+1. **La cifra, y de qué es la cifra.** El score 0–100 con **el encuadre que la hace útil**: *esto
+   es lo que vería un detector externo si tu manuscrito pasara por uno.* Así deja de ser un
+   veredicto sobre quien escribe y pasa a ser información sobre a qué se expone el libro — que es
+   lo único que el motor puede sostener de verdad, porque mide rasgos estadísticos, no autoría.
+
+   **Nunca «este libro está escrito por una IA».** El motor no puede saber eso, y decirlo con una
+   cifra delante es mentir con aspecto de dato.
+
+   El JSON trae `ai_level` con la banda ya calculada (`≥70` · `≥45` · `≥20` · resto). **Úsala: no
+   inventes umbrales propios.** Pero sus etiquetas internas están escritas para el panel de
+   herramientas —«muy probable texto IA sin editar»— y **no se copian tal cual en un informe que
+   alguien recibe**: ahí se traduce a lo que se puede afirmar. «Alto» se dice como *«un detector
+   externo marcaría este texto con bastante seguridad»*, no como *«esto lo escribió una máquina»`.
+
+   Este informe lo entrega a menudo un profesional a su cliente. Una etiqueta acusatoria en la
+   página doce convierte un diagnóstico útil en una discusión sobre quién escribió qué.
+2. **Por qué sale esa cifra.** Las dos o tres métricas que más pesan, traducidas: `burstiness` baja
+   = frases demasiado parejas, la marca más constante de la IA; `approx_perplexity` baja = léxico
+   previsible; `paragraph_similarity` alta = párrafos con la misma forma.
+3. **Dónde.** Los `top_fragments` con más señal, citados literalmente y localizados por capítulo.
+   Es lo único accionable de la sección: sin los fragmentos, el número no sirve para nada.
+4. **Los patrones concretos** que ha encontrado (`pattern_hits`): muletillas, conectores de relleno,
+   la doble negación, el «no solo… sino también».
+5. **Qué hacer**, en una línea: `/humanink:humanizer` reescribe esos fragmentos en la voz del autor.
+
+**Reglas duras:**
+- **Es un dato, no un capítulo.** La sección MÁS CORTA del informe: la cifra, qué banda, los
+  fragmentos y adónde ir. **Media página como mucho.** Sin párrafos sobre la ética de la IA, sin
+  reflexiones sobre el futuro de la escritura, sin advertencias morales — nada de eso lo ha pedido
+  nadie y convierte un dato útil en un sermón que el autor se salta.
+- **Detecta, no reescribe.** Aquí no se propone texto nuevo ni una sola frase.
+- **El número no es una nota.** Un ensayo académico y un thriller no puntúan igual, y una cifra
+  alta en no ficción divulgativa puede ser normal. Se dice cuando toque.
+- **Si el motor no está o falla**, se dice y se sigue: «no se ha podido medir la huella de IA en
+  este equipo». Nunca se estima a ojo — es exactamente lo que este motor existe para evitar.
 
 ---
 

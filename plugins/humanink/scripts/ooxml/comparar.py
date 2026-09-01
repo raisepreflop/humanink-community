@@ -187,6 +187,27 @@ def _num_build(f):
     return int(m.group(1)) if m else -1
 
 
+def ficha(fichero, anterior=None):
+    """La medición de UN build, en la misma forma que usa `serie()`.
+
+    Existe porque medir la cadena entera tras cada pasada son minutos sobre una novela con treinta
+    y nueve builds, y lo que acaba de cambiar es UN par. Quien lee `telemetria/v29.json` no debe
+    poder notar por cuál de los dos caminos se escribió: misma forma o la curva sale a trozos.
+    """
+    inv = D.inventario(fichero)
+    previo = D.inventario(anterior)["palabras_aceptando"] if anterior else None
+    return {
+        "build": os.path.basename(fichero),
+        "n": _num_build(fichero),
+        "palabras": inv["palabras_aceptando"],
+        "parrafos": inv["parrafos_aceptando"],
+        "marcas": inv["marcas"],
+        "autores": list(inv["autores"]),
+        "delta": (inv["palabras_aceptando"] - previo) if previo is not None else 0,
+        "metricas": metricas(fichero),
+    }
+
+
 def serie(carpeta):
     """La cadena entera de builds de un proyecto, ordenada por número."""
     fs = [os.path.join(carpeta, f) for f in os.listdir(carpeta)
@@ -340,6 +361,17 @@ def main():
     if not (a.nuevo and a.anterior):
         ap.error("hacen falta dos builds, o --serie <carpeta>")
     r = comparar(a.nuevo, a.anterior)
+    # También en modo par. Antes solo guardaba `--serie`, así que aplicar una pasada medía el
+    # cambio y lo tiraba: la carpeta `telemetria/` no aparecía nunca y la curva no tenía de dónde
+    # salir. Aquí se escribe la ficha del build nuevo, que es lo que acaba de cambiar.
+    if not a.sin_guardar:
+        try:
+            f = ficha(a.nuevo, a.anterior)
+            if f.get("n") is not None:
+                guardar_telemetria(os.path.dirname(os.path.abspath(a.nuevo)) or ".", [f])
+                r["ficha"] = f
+        except Exception as e:            # medir nunca puede tumbar una comparación
+            print(f"  ⚠ no se pudo guardar la ficha: {e}")
     print(json.dumps(r, ensure_ascii=False, indent=2)) if a.json else imprimir_par(r)
     return 0
 

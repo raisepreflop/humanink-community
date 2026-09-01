@@ -190,6 +190,17 @@ def normalizar(s):
     return _ESPACIOS.sub(" ", s).strip()
 
 
+def sha256_de(ruta):
+    """La huella del fichero. Cierra la carrera entre la vista previa y el botón de aplicar: si
+    el autor guardó desde Word en medio, los índices de párrafo ya no son los mismos."""
+    import hashlib
+    h = hashlib.sha256()
+    with open(ruta, "rb") as f:
+        for trozo in iter(lambda: f.read(1 << 20), b""):
+            h.update(trozo)
+    return h.hexdigest()
+
+
 def inventario(ruta):
     """Resumen de un build. Lo que se imprime al verificar una pasada."""
     raiz = leer_xml(ruta)
