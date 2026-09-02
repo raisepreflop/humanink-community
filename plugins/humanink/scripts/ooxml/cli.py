@@ -15,6 +15,7 @@ Así que esto no reimplementa nada. Reordena `sys.argv` y llama al `main()` que 
     ooxml verificar  <nuevo> --base <anterior> --json
     ooxml comparar   <nuevo> <anterior> --json   |   --serie <carpeta> --json
     ooxml decisiones <anterior> <siguiente> --json
+    ooxml crear <entrada.md> <salida.docx> [--titulo T]
     ooxml inventario <docx>
 """
 import importlib
@@ -33,6 +34,9 @@ SUB = {
     "comparar": ("comparar", "ooxml comparar"),
     "decisiones": ("decisiones", "ooxml decisiones"),
     "escanear": ("fase0_scan", "ooxml escanear"),
+    # Markdown → .docx sin pandoc. El informe se prometía en Word y llegaba en Markdown a todo el
+    # que no tuviera pandoc instalado —o sea, a un cliente normal— sin que nadie se lo dijera.
+    "crear": ("crear", "ooxml crear"),
 }
 
 VERSION = "1.0.0"

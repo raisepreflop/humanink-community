@@ -94,12 +94,35 @@ hi_activar() {   # hi_activar <clave> <email> → 0 si quedó activada
 
 # ── El estado ───────────────────────────────────────────────────────────────────────────────
 # Imprime una palabra: valid · missing · offline · expired · <error del servidor>
+# ¿Se puede hablar con nuestro servidor desde aquí?
+#
+# Hace falta para distinguir dos cosas que se veían iguales y no lo son: «este autor no ha
+# activado» y «no puedo comprobar si ha activado». Una barata y sin cabeceras: si el dominio está
+# bloqueado, curl falla y ya está.
+hi_alcanzable() {
+  curl -sS -m 4 -o /dev/null "${HI_VERIFY}/latest?product=word" 2>/dev/null
+}
+
 hi_estado() {
-  [ -f "$HI_LIC" ] || { echo missing; return; }
+  # SIN FICHERO. Hasta el 2-sep-2026 esto contestaba «missing» directamente, y eso rompía la
+  # primera regla de este fichero —«nunca bloquear por un fallo NUESTRO»— sin que nadie lo notara,
+  # porque en un ordenador normal las dos cosas coinciden.
+  #
+  # Donde no coinciden es en un entorno con la salida de red restringida: la sesión arranca sin
+  # fichero (el contenedor es nuevo), el portero dice «activa tu licencia»… y la activación no
+  # puede llegar al servidor porque el dominio está fuera de la lista permitida. Bucle cerrado:
+  # el producto te pide una llave y tapia la cerradura. Le pasó a un cliente el 2-sep-2026.
+  #
+  # Ahora se pregunta primero si el servidor es alcanzable. Si no lo es, el estado es
+  # «desconocido», que la puerta ya trata como «se continúa con normalidad»: ante la duda no se
+  # cierra. Si SÍ es alcanzable y no hay fichero, entonces sí es que no ha activado.
+  if [ ! -f "$HI_LIC" ] || [ -z "$(hi_json "$HI_LIC" key)" ]; then
+    if hi_alcanzable; then echo missing; else echo desconocido; fi
+    return
+  fi
   local clave email valida edad
   clave="$(hi_json "$HI_LIC" key)"
   email="$(hi_json "$HI_LIC" email)"
-  [ -z "$clave" ] && { echo missing; return; }
 
   valida="$(hi_json "$HI_LIC" last_valid)"
   edad=$(( $(date +%s) - $(hi_json "$HI_LIC" checked_at 2>/dev/null || echo 0) ))

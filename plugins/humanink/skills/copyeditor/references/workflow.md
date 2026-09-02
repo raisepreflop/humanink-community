@@ -54,9 +54,56 @@ Improve clarity, rhythm and word choice. Remove redundancies. Vary sentence stru
 Grammar, punctuation, agreement, accents, spelling consistency.
 **Do not reword sentences.**
 
+#### Ortotipografía española — la lista concreta, no "revisa la puntuación"
+
+Esta lista existe porque sin ella no se encuentra nada. Descrita en abstracto —"puntuación,
+acentos, consistencia"— la pasada corre por encima y el error más común de la narrativa en
+español, la raya de diálogo, sale intacto del manuscrito; preguntado a bocajarro, en cambio,
+aparece a la primera. Lo que no se nombra, no se busca. **Recorre estos puntos uno a uno.**
+
+**La raya (—, U+2014). No es el guion (-) ni la semirraya (–).** Es el error nº 1 y va primero:
+
+| Mal | Bien | Regla |
+|---|---|---|
+| `- ¿Vienes?` · `– ¿Vienes?` | `—¿Vienes?` | Raya de diálogo, **pegada** a la primera palabra |
+| `—¿Vienes? — preguntó` | `—¿Vienes? —preguntó` | La raya del inciso va **pegada** al verbo |
+| `—¿Vienes? —preguntó. Es tarde.` | `—¿Vienes? —preguntó—. Es tarde.` | Si el parlamento sigue, el inciso **se cierra** con raya |
+| `—Ven —dijo—.` (y ahí acaba) | `—Ven —dijo.` | Si el parlamento **no** sigue, no se cierra |
+| `—Ven. —dijo` | `—Ven —dijo` | El punto del parlamento **desaparece** ante el inciso |
+| `—Ven —Dijo ella.` | `—Ven —dijo ella.` | Verbo de habla en **minúscula** |
+
+El inciso encierra: la raya de cierre lleva la puntuación **detrás**, nunca delante (`—preguntó—.`,
+no `—preguntó.—`). Si el verbo no es de habla sino una acción, el parlamento se cierra con punto y
+la acción va aparte: `—Ven. —Se levantó y abrió la puerta.`
+
+Y el resto, por orden de frecuencia real:
+
+- **Comillas**: latinas «» primero; dentro, “ ”; dentro de esas, ' '. Nunca `"` recta.
+- **Puntos suspensivos**: `…` o exactamente tres puntos, nunca cuatro ni dos. Pegados a la palabra.
+- **Apertura obligatoria** de `¿` y `¡`, también a media frase (`Pero ¿tú qué sabes?`).
+- **Espacios**: ninguno antes de `,` `.` `;` `:` `?` `!` `»`; ninguno después de `¿` `¡` `«`.
+- **Números y siglas**: `siglo XXI` en versalitas o versales, nunca `siglo 21`.
+- **Cursiva**: extranjerismos crudos y títulos de obra; no para enfatizar cada tres párrafos.
+
+Si el manuscrito ya es coherente con **otro** criterio —guion largo con espacios a ambos lados en
+todo el libro, comillas inglesas en todo el libro—, **no lo cambies en silencio**: respétalo y
+dilo en el informe. La coherencia del autor manda sobre la preferencia de la RAE; lo que no vale
+es la mezcla.
+
 ### Pass 3 — Proofread
 Only typos, double spaces, wrong capitalization, paired marks.
 **If it is correct, return it unchanged.**
+
+Cierra comprobando que **cada raya de apertura de inciso tiene su pareja** cuando el parlamento
+continúa, y que no ha quedado ningún `-` ni `–` haciendo de raya. Es lo que más se cuela: un
+párrafo corregido a mano y otro no, y el libro sale con las dos formas.
+
+## 2·bis. Si el autor ha pedido algo concreto
+
+Cuando `$ARGUMENTS` nombra un problema —"espaciado de rayas de inciso", "los gerundios", "las
+comas de más"—, eso **no** sustituye a las tres pasadas: se añade como una pasada propia sobre
+todo el texto, y en el informe va su recuento aparte. El autor que pide zoom sobre algo ya sabe
+que está ahí; lo que espera es que se lo saques entero, no una muestra.
 
 ## 3. Save the result to Word
 
