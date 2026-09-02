@@ -109,6 +109,53 @@ def _runs(texto):
     return "".join(fuera) or '<w:r><w:t xml:space="preserve"></w:t></w:r>'
 
 
+# Las tablas del informe. Sin esto salían como texto con barras —«| Aspecto | Nota |»— y el autor
+# recibía un documento que Word abre pero que no se puede leer: justo lo que más usa un informe de
+# lectura, que es una tabla por capítulo.
+FILA = re.compile(r"^\s*\|(.+)\|\s*$")
+SEPARADOR = re.compile(r"^\s*\|[\s:|-]+\|\s*$")
+
+
+def _celdas(linea):
+    return [c.strip() for c in FILA.match(linea).group(1).split("|")]
+
+
+def _tabla(filas):
+    """filas: lista de listas de texto. La primera es la cabecera."""
+    ancho = max(len(f) for f in filas)
+    # 9026 twips = el ancho útil de un A4 con los márgenes de este documento. Repartido a partes
+    # iguales: adivinar el contenido para dar anchos distintos sale peor que una rejilla regular.
+    col = 9026 // ancho
+    grid = "".join(f'<w:gridCol w:w="{col}"/>' for _ in range(ancho))
+    bordes = "".join(
+        f'<w:{b} w:val="single" w:sz="4" w:space="0" w:color="BFBFBF"/>'
+        for b in ("top", "left", "bottom", "right", "insideH", "insideV")
+    )
+    fuera = [
+        "<w:tbl><w:tblPr>"
+        f'<w:tblW w:w="9026" w:type="dxa"/><w:tblBorders>{bordes}</w:tblBorders>'
+        '<w:tblLayout w:type="fixed"/></w:tblPr>'
+        f"<w:tblGrid>{grid}</w:tblGrid>"
+    ]
+    for i, fila in enumerate(filas):
+        celdas = []
+        for j in range(ancho):
+            texto = fila[j] if j < len(fila) else ""
+            # La cabecera en negrita: se marca en el propio texto para no duplicar la lógica de runs.
+            contenido = f"**{texto}**" if i == 0 and texto else texto
+            celdas.append(
+                f'<w:tc><w:tcPr><w:tcW w:w="{col}" w:type="dxa"/></w:tcPr>'
+                f'<w:p><w:pPr><w:spacing w:before="40" w:after="40"/></w:pPr>{_runs(contenido)}</w:p></w:tc>'
+            )
+        # tblHeader repite la cabecera si la tabla parte de página, que es lo normal en un informe.
+        pr = '<w:trPr><w:tblHeader/></w:trPr>' if i == 0 else ""
+        fuera.append(f"<w:tr>{pr}{''.join(celdas)}</w:tr>")
+    fuera.append("</w:tbl>")
+    # Word necesita un párrafo detrás de una tabla; si no, dos tablas seguidas se funden en una.
+    fuera.append('<w:p><w:pPr><w:spacing w:after="0"/></w:pPr></w:p>')
+    return "".join(fuera)
+
+
 def _parrafo(texto, estilo=None):
     ppr = f'<w:pPr><w:pStyle w:val="{estilo}"/></w:pPr>' if estilo else ""
     return f"<w:p>{ppr}{_runs(texto)}</w:p>"
@@ -116,9 +163,23 @@ def _parrafo(texto, estilo=None):
 
 def markdown_a_parrafos(md):
     salida = []
-    for linea in md.replace("\r\n", "\n").split("\n"):
-        t = linea.rstrip()
+    lineas = md.replace("\r\n", "\n").split("\n")
+    i = -1
+    while i + 1 < len(lineas):
+        i += 1
+        t = lineas[i].rstrip()
         if not t.strip():
+            continue
+
+        # ¿Empieza una tabla? Una fila de barras seguida de la línea de guiones. Se consume entera
+        # aquí: si se dejara al bucle normal, cada fila saldría como un párrafo con barras.
+        if FILA.match(t) and i + 1 < len(lineas) and SEPARADOR.match(lineas[i + 1]):
+            filas = [_celdas(t)]
+            i += 1                                   # la línea de guiones no se pinta
+            while i + 1 < len(lineas) and FILA.match(lineas[i + 1]) and not SEPARADOR.match(lineas[i + 1]):
+                i += 1
+                filas.append(_celdas(lineas[i]))
+            salida.append(_tabla(filas))
             continue
         enc = re.match(r"^(#{1,3})\s+(.*)$", t)
         if enc:
