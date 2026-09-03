@@ -169,3 +169,61 @@ hi_mensaje() {   # hi_mensaje <estado>
       echo "🔑 No he podido validar tu licencia. Prueba \`/humanink:activate TU-CLAVE tu@email\`, y si sigue igual escríbenos desde humanink.io." ;;
   esac
 }
+
+# ── El aviso de versión ─────────────────────────────────────────────────────────────────────────
+#
+# POR QUÉ EXISTE. Claude no actualiza los plugins solo, y el autor no entra a mirar si hay una
+# versión nueva: no lo hace y no lo va a hacer. Medido el 3-sep-2026 en el equipo de Rais, que es
+# quien los publica: tenía cargada la 2.0.1-club con la 2.0.8 publicada desde hacía días, y el
+# fallo que le hacía repetir la clave en cada chat estaba corregido en la 2.0.5. Un cliente activo
+# puede ir cinco versiones atrás sin que nada se lo cuente, y cada arreglo que publicamos se queda
+# sin llegar.
+#
+# Así que lo cuenta el propio plugin, una vez al día, y nunca bloquea nada.
+HI_VER_CACHE="${HI_DIR}/plugin-ultima"
+# `${BASH_SOURCE[0]:-$0}`, con respaldo: esta librería la cargan varios hooks y podría cargarla
+# una skill desde `sh` o `zsh`, donde BASH_SOURCE no existe y con `set -u` aborta el fichero
+# entero —incluido el portero de licencia—. Un aviso de versión no puede tirar nada.
+HI_PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-${0:-.}}")/.." 2>/dev/null && pwd || printf .)"
+
+# La versión de ESTE paquete, leída de su propio manifiesto.
+hi_version_local() {
+  sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' \
+    "$HI_PLUGIN_DIR/.claude-plugin/plugin.json" 2>/dev/null | head -1
+}
+
+# Cada edición se anuncia por separado: la del Club no lleva las mismas skills que la completa.
+hi_producto_plugin() {
+  case "$(hi_version_local)" in
+    *-club) printf 'plugin-club' ;;
+    *)      printf 'plugin' ;;
+  esac
+}
+
+# La última publicada, con caché de un día. Si la caché está fresca no se toca la red: este hook
+# corre en CADA arranque de sesión y no puede costar una petición cada vez.
+hi_ultima_plugin() {
+  local ahora edad r v
+  ahora="$(date +%s)"
+  if [ -f "$HI_VER_CACHE" ]; then
+    edad=$(( ahora - $(cut -f1 "$HI_VER_CACHE" 2>/dev/null || echo 0) ))
+    if [ "$edad" -lt 86400 ] && [ "$edad" -ge 0 ]; then
+      cut -f2 "$HI_VER_CACHE" 2>/dev/null
+      return 0
+    fi
+  fi
+  r="$(curl -sS -m 3 "${HI_VERIFY}/latest?product=$(hi_producto_plugin)" 2>/dev/null)" || return 0
+  v="$(hi_campo "$r" version)"
+  [ -n "$v" ] || return 0
+  mkdir -p "$HI_DIR" 2>/dev/null && printf '%s\t%s\n' "$ahora" "$v" > "$HI_VER_CACHE" 2>/dev/null
+  printf '%s' "$v"
+}
+
+# ¿Es la primera MENOR que la segunda? Se compara solo la parte numérica: «2.0.8-club» y «2.0.8»
+# son la misma versión en ediciones distintas, y ordenar el sufijo daría un aviso falso.
+hi_atrasado() {   # hi_atrasado <local> <remota> → 0 si hay que actualizar
+  local a="${1%%-*}" b="${2%%-*}"
+  [ -n "$a" ] && [ -n "$b" ] || return 1
+  [ "$a" = "$b" ] && return 1
+  [ "$(printf '%s\n%s\n' "$a" "$b" | sort -V 2>/dev/null | head -1)" = "$a" ]
+}

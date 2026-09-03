@@ -55,4 +55,18 @@ case "$ESTADO" in
     ;;
 esac
 
+# ── Y si va atrasado, se le dice ────────────────────────────────────────────────────────────────
+# Va DESPUÉS del veredicto de licencia y es independiente de él: alguien sin activar también
+# merece saber que su copia es vieja, y de hecho es el caso más probable —el fallo que le impide
+# activar puede estar corregido en la versión que no tiene—. Envuelto para que un fallo aquí no
+# arrastre al portero: esto es un aviso, no una puerta.
+{
+  LOCAL="$(hi_version_local 2>/dev/null || true)"
+  ULTIMA="$(hi_ultima_plugin 2>/dev/null || true)"
+  if [ -n "${LOCAL:-}" ] && [ -n "${ULTIMA:-}" ] && hi_atrasado "$LOCAL" "$ULTIMA"; then
+    echo "HUMANINK_VERSION: instalada=$LOCAL publicada=$ULTIMA"
+    echo "HUMANINK_AVISO: 🔄 Tienes HumanInk $LOCAL y ya está publicada la $ULTIMA. Claude no actualiza los plugins solo: entra en Plugins → Gestionar plugins y vuelve a instalarlo. Merece la pena — los arreglos de licencia y de los correctores van ahí."
+  fi
+} 2>/dev/null || true
+
 exit 0
