@@ -17,6 +17,16 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=/dev/null
 . "$DIR/license-lib.sh" 2>/dev/null || exit 0
 
+# QUIÉN HABLA. Ojo con las llaves: `«$QUIEN»` se lee como la variable `QUIEN»` cuando la
+# localización no es UTF-8 —el contenedor de Cowork y CI, por ejemplo—, y con `set -u` eso MATA el
+# portero después de la primera línea. Pasó el 3-sep-2026 y solo se vio al mirar el stderr, que
+# nadie leía. Toda variable pegada a un carácter no ASCII va entre llaves.
+# QUIÉN HABLA. Con dos ediciones instaladas se imprimen dos veredictos seguidos, y hasta hoy
+# ninguno decía de cuál venía. Es la diferencia entre «mi producto está roto» y «este otro
+# paquete no es el mío».
+QUIEN="$(hi_nombre_local 2>/dev/null || true)"
+QUIEN="${QUIEN:-humanink}$( [ -n "$(hi_version_local 2>/dev/null || true)" ] && printf " %s" "$(hi_version_local)" )"
+
 ESTADO="$(hi_estado 2>/dev/null || echo desconocido)"
 
 # gate.conf lo escribe el build con los tiers que abre este paquete: una clave de Reescritura no
@@ -35,22 +45,22 @@ mkdir -p "$HI_DIR" 2>/dev/null && printf '%s\n' "$ESTADO" > "$HI_ESTADO" 2>/dev/
 
 case "$ESTADO" in
   valid)
-    echo "HUMANINK_LICENSE: valid tier=$(hi_json "$HI_LIC" tier)"
+    echo "HUMANINK_LICENSE [${QUIEN}]: valid tier=$(hi_json "$HI_LIC" tier)"
     ;;
   offline)
     # Se avisa pero no se cierra: la última validación buena sigue dentro de la gracia.
-    echo "HUMANINK_LICENSE: valid (sin conexión — validada por última vez hace menos de 7 días)"
+    echo "HUMANINK_LICENSE [${QUIEN}]: valid (sin conexión — validada por última vez hace menos de 7 días)"
     ;;
   tier_no_valido)
-    echo "HUMANINK_LICENSE: tier_no_valido"
-    echo "HUMANINK_GATE: 🔑 Tu clave es de otro producto de HumanInk. Esta edición necesita su propia licencia — mira en humanink.io cuál te corresponde."
+    echo "HUMANINK_LICENSE [${QUIEN}]: tier_no_valido (tu tier: $(hi_json "$HI_LIC" tier) · este paquete abre: $TIERS_OK)"
+    echo "HUMANINK_GATE: 🔑 Tu clave no abre «${QUIEN}» — es de otro producto de HumanInk. Los demás plugins de HumanInk que tengas instalados siguen funcionando con normalidad. Si no reconoces este paquete, quítalo desde Plugins → Gestionar plugins; si lo quieres, mira en humanink.io qué licencia le corresponde."
     ;;
   desconocido)
     # No se ha podido averiguar nada. Ante la duda NO se cierra: el fallo es nuestro, no del autor.
-    echo "HUMANINK_LICENSE: desconocido (no se pudo comprobar; se continúa con normalidad)"
+    echo "HUMANINK_LICENSE [${QUIEN}]: desconocido (no se pudo comprobar; se continúa con normalidad)"
     ;;
   *)
-    echo "HUMANINK_LICENSE: $ESTADO"
+    echo "HUMANINK_LICENSE [${QUIEN}]: $ESTADO"
     echo "HUMANINK_GATE: $(hi_mensaje "$ESTADO")"
     ;;
 esac
@@ -68,5 +78,10 @@ esac
     echo "HUMANINK_AVISO: 🔄 Tienes HumanInk $LOCAL y ya está publicada la $ULTIMA. Claude no actualiza los plugins solo: entra en Plugins → Gestionar plugins y vuelve a instalarlo. Merece la pena — los arreglos de licencia y de los correctores van ahí."
   fi
 } 2>/dev/null || true
+
+# LA CLAVE NO SE ENSEÑA. Hoy, diagnosticando un bloqueo, el modelo leyó license.json y escribió la
+# clave y el email del autor en la conversación, que es un sitio del que se copian capturas. El
+# portero ya publica todo lo que hace falta para diagnosticar; el secreto, no.
+echo "HUMANINK_PRIVADO: no muestres nunca la clave de licencia ni el contenido de ~/.humanink/license.json en la conversación; para diagnosticar basta con estas líneas."
 
 exit 0

@@ -192,6 +192,14 @@ hi_version_local() {
     "$HI_PLUGIN_DIR/.claude-plugin/plugin.json" 2>/dev/null | head -1
 }
 
+# El NOMBRE de este paquete. Sin esto, con dos ediciones instaladas el autor lee dos veredictos
+# contradictorios y ninguno dice quién habla: el 3-sep-2026 Rais tuvo que rastrear rutas dentro de
+# ~/Library para descubrir que quien le bloqueaba era su propio plugin de pruebas.
+hi_nombre_local() {
+  sed -n 's/.*"name"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' \
+    "$HI_PLUGIN_DIR/.claude-plugin/plugin.json" 2>/dev/null | head -1
+}
+
 # Cada edición se anuncia por separado: la del Club no lleva las mismas skills que la completa.
 hi_producto_plugin() {
   case "$(hi_version_local)" in
