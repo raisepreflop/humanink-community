@@ -50,13 +50,44 @@ PROMPT="$(cat | tr -d '\n' | sed -n 's/.*"prompt"[[:space:]]*:[[:space:]]*"\(.*\
 # Lo que separa una clave de un trozo de UUID no es la longitud de los grupos: es que la clave está
 # SUELTA. Dentro de un UUID, cualquier tramo de cuatro grupos lleva un guion pegado a un lado. Así
 # que se exige que lo que hay alrededor no sea ni guion ni alfanumérico, y después se recorta.
-CLAVE="$(printf '%s' "$PROMPT" \
+#
+# Y hay una SEGUNDA forma de clave que esta expresión no veía: las de suscripción, que el propio
+# servidor acuña como `HIWORD-` o `HIPRO-` más veinte caracteres hexadecimales
+# (verify-worker/src/index.js:924). Un solo guion y un grupo de veinte: no casaban con nada, el hook
+# salía en silencio y el autor veía «pongo el código y no lo reconoce» sin ningún error. Es la
+# hipótesis principal del caso de César, 8-sep-2026.
+#
+# ANTES DE BUSCAR, SE QUITA LO QUE NO ES UNA CLAVE DE VERDAD: los bloques de código y las líneas con
+# marcadores de ejemplo. El 8-sep-2026 un ejemplo escrito en prosa activó de verdad y dejó al dueño
+# del producto sin licencia. Un ejemplo en una conversación no es una intención de activar.
+# Solo se quitan los BLOQUES DE CÓDIGO, que es donde viven los comandos de ejemplo. Filtrar la
+# línea entera por palabras como «ejemplo» era demasiado bruto: rechazaba una clave buena escrita
+# junto a un correo de dominio ejemplo.com, y lo cazó la propia prueba.
+SINEJEMPLOS="$(printf '%s' "$PROMPT" | sed 's/```[^`]*```/ /g; s/`[^`]*`/ /g')"
+
+CLAVE="$(printf '%s' "$SINEJEMPLOS" \
+  | grep -oE '(^|[^A-Za-z0-9-])(HIWORD|HIPRO)-[A-Fa-f0-9]{12,32}([^A-Za-z0-9-]|$)' \
+  | head -1 | grep -oE '(HIWORD|HIPRO)-[A-Fa-f0-9]{12,32}')"
+[ -n "$CLAVE" ] || CLAVE="$(printf '%s' "$SINEJEMPLOS" \
   | grep -oE '(^|[^A-Za-z0-9-])[A-Za-z0-9]{2,8}(-[A-Za-z0-9]{2,8}){3}([^A-Za-z0-9-]|$)' \
   | head -1 | grep -oE '[A-Za-z0-9]{2,8}(-[A-Za-z0-9]{2,8}){3}')"
 # Permisivo a propósito: aquí NO se valida un email, solo se detecta. Exigir un dominio de dos o
 # más letras rechazaba direcciones que el hook anterior aceptaba, y quien decide si el email vale
 # es el servidor. Un patrón nuestro más severo que el suyo solo sirve para rechazar clientes buenos.
-EMAIL="$(printf '%s' "$PROMPT" | grep -oE '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+' | head -1)"
+EMAIL="$(printf '%s' "$SINEJEMPLOS" | grep -oE '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+' | head -1)"
+
+# ¿ES UN MARCADOR DE POSICIÓN Y NO UNA CLAVE?
+#
+# `xxxxx-xxxxx-xxxx-xxxxxxxx` o `TU-CLAVE-AQUI-XXXX` no son claves de nadie: son lo que se escribe
+# al EXPLICAR cómo se activa. El 8-sep-2026 uno de esos, escrito en una conversación, activó de
+# verdad. Se mira la clave misma —cuántos caracteres distintos tiene— y no las palabras de al lado.
+if [ -n "$CLAVE" ]; then
+  _distintos="$(printf '%s' "$CLAVE" | tr -d '-' | fold -w1 | tr 'A-Z' 'a-z' | sort -u | wc -l | tr -d ' ')"
+  case "$CLAVE" in
+    TU-*|TU_*|*-CLAVE-*|*CLAVE-AQUI*) CLAVE="" ;;
+  esac
+  [ "${_distintos:-9}" -le 2 ] && CLAVE=""
+fi
 
 PEND="$HI_DIR/.clave-pendiente"
 

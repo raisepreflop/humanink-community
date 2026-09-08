@@ -9,7 +9,7 @@ model: haiku
 <!-- AI-TRANSPARENCY-50-1 -->
 > **Primera respuesta — transparencia de IA (Reglamento europeo de IA, art. 50(1)).** Abre tu primerísima respuesta en este comando con esta línea EXACTA, en español, y continúa normalmente:
 >
-> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.1.1-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
+> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.1.3-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
 
 Activas la licencia de HumanInk en este equipo. Es de una vez: después, todos los colaboradores
 funcionan sin volver a preguntar nada.
@@ -23,26 +23,15 @@ Si el autor solo da la clave, pregúntale el email así:
 
 > ¿Con qué email compraste? La clave se queda ligada a esa dirección — una clave, una cuenta.
 
-## 2. Actívala — por el conector, siempre
+## 2. Actívala — lo que cuenta es que quede en SU disco
 
-Usa **`awap_activate`** con la clave y el email. Es la vía buena y la única que funciona en todos
-los equipos: corre en nuestro servidor, así que no depende de que el ordenador del autor tenga red
-en el recinto aislado, ni `curl`, ni `python3` — cosas que en Windows sencillamente no están.
+**Mira primero la línea del hook.** Al enviar el mensaje, el equipo del autor ya ha intentado
+activar por su cuenta y ha dejado el resultado en tu contexto:
 
-Si el conector responde, ya está: ve al paso 3 con lo que te haya dicho.
-
-> Si `awap_activate` no aparece entre tus herramientas, el conector no está conectado. Díselo tal
-> cual: **Plugins → HumanInk → Connectors → awap → Connect**, y que repita el comando. Es un clic.
-
-### Solo si el conector no está
-
-**Lo normal es que ya esté hecha.** Al enviar el mensaje, el equipo del autor activa por su cuenta y
-deja el resultado en tu contexto, en una línea `HUMANINK_ACTIVACION:`. Búscala antes de nada:
-
-- `HUMANINK_ACTIVACION: ok tier=…` → activada. Ve al paso 3.
+- `HUMANINK_ACTIVACION: ok tier=…` → **activada y guardada**. Ve al paso 3. No hagas nada más.
 - `HUMANINK_ACTIVACION: error=…` → la palabra del error dice qué pasó (tabla del paso 3).
 
-**Solo si la línea NO aparece**, actívala tú:
+**Si la línea no aparece**, actívala tú con este bloque, que escribe en el disco del autor:
 
 ```bash
 ROOT="${CLAUDE_PLUGIN_ROOT:-$HOME/.humanink}"; [ -d "$ROOT/hooks" ] || ROOT="$HOME/.humanink"
@@ -50,9 +39,21 @@ ROOT="${CLAUDE_PLUGIN_ROOT:-$HOME/.humanink}"; [ -d "$ROOT/hooks" ] || ROOT="$HO
 hi_activar "<CLAVE>" "<EMAIL>" && echo "ACTIVADA · tier $(hi_json "$HI_LIC" tier)" || echo "NO ACTIVADA"
 ```
 
-> Por qué en ese orden: este bloque corre en una máquina aislada que **puede no tener red**. Cuando
-> no la tiene, devuelve `network` aunque el servidor esté perfecto — y el autor se queda en bucle,
-> con la puerta pidiéndole que active y la activación sin poder llegar. La línea del hook viene del
+### El conector `awap_activate` NO sirve para activar
+
+Existe y funciona, pero **valida contra el servidor y no escribe nada en el equipo del autor**. El
+portero solo mira `~/.humanink/license.json`, así que una activación por el conector deja al autor
+leyendo «licencia activada» y con la puerta pidiéndosela otra vez en la sesión siguiente.
+
+Eso es exactamente lo que le pasó a un cliente durante seis días (8-sep-2026), con esta misma skill
+diciéndole al modelo que usara el conector «siempre, primero». Ya no.
+
+**Úsalo solo si el bloque de Bash ha fallado por falta de red** (devuelve `network`), y entonces
+dile al autor la verdad, sin adornos:
+
+> Tu licencia está activada en nuestro servidor, pero **este equipo no ha podido guardarla**. Es
+> probable que te la vuelva a pedir. Si pasa, avísanos: es cosa nuestra, no tuya.
+
 > equipo del autor, que sí tiene red.
 
 ## 3. Cuenta el resultado

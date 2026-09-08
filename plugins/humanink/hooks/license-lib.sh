@@ -79,16 +79,50 @@ hi_preguntar() {   # hi_preguntar <clave> <email> → imprime el JSON de /activa
     2>/dev/null
 }
 
+# ¿Hay ahora mismo una licencia BUENA en el disco?
+#
+# Hace falta para la regla de abajo, que es la que faltaba: un intento fallido no puede llevarse por
+# delante una activación que funciona.
+hi_hay_buena() {
+  [ -f "$HI_LIC" ] || return 1
+  [ -n "$(hi_json "$HI_LIC" key)" ] || return 1
+  [ "$(hi_json "$HI_LIC" last_valid)" = "true" ]
+}
+
 hi_activar() {   # hi_activar <clave> <email> → 0 si quedó activada
   local r; r="$(hi_preguntar "$1" "$2")"
   [ -z "$r" ] && { echo "network"; return 1; }
+
+  # ¿HA CONTESTADO EL SERVIDOR A ESTA PREGUNTA? Un 5xx, un HTML de error o un cuerpo cortado a mitad
+  # llegan con algo dentro pero SIN `valid`. Tratar eso como «tu clave no vale» es lo que convertía
+  # una caída ajena en una licencia destruida.
+  case "$r" in *'"valid"'*) ;; *) echo "network"; return 1 ;; esac
+
   local valida tier expira err
   valida="$([ "$(hi_campo_crudo "$r" valid)" = "true" ] && echo 1 || echo 0)"
   tier="$(hi_campo "$r" tier)"
   expira="$(hi_campo "$r" expires_at)"
   err="$(hi_campo "$r" error)"
-  hi_guardar "$1" "$2" "$tier" "$expira" "${valida:-0}" "$err"
-  [ "$valida" = "1" ] && return 0
+
+  if [ "$valida" = "1" ]; then
+    hi_guardar "$1" "$2" "$tier" "$expira" 1 "$err"
+    return 0
+  fi
+
+  # NO SE PISA UNA LICENCIA BUENA CON UN INTENTO FALLIDO.
+  #
+  # Hasta el 8-sep-2026 `hi_guardar` se ejecutaba ANTES de mirar `valid`, así que cualquier intento
+  # que saliera mal sobrescribía la activación que funcionaba — y `hi_estado` repetía la operación
+  # en cada revalidación, de modo que el fichero envenenado se reescribía solo para siempre.
+  #
+  # Ocurrió de verdad: un ejemplo de clave escrito en PROSA, en una conversación, disparó el hook y
+  # dejó el equipo del dueño del producto con una licencia de mentira. Lo que el autor pierde aquí
+  # es su herramienta de escribir; lo que se gana escribiendo el fallo es una línea de diagnóstico.
+  # No hay color.
+  if hi_hay_buena; then
+    echo "${err:-invalid}"; return 1
+  fi
+  hi_guardar "$1" "$2" "$tier" "$expira" 0 "$err"
   echo "${err:-invalid}"; return 1
 }
 
@@ -135,6 +169,11 @@ hi_estado() {
   fi
 
   local r; r="$(hi_preguntar "$clave" "$email")"
+  # SIN RESPUESTA, O CON UNA QUE NO CONTESTA A LA PREGUNTA. Lo segundo es lo que faltaba: un 5xx, un
+  # HTML de error o un cuerpo cortado llegan con algo dentro pero sin `valid`, y hasta hoy eso se
+  # leía como «tu clave no vale» y se escribía en el disco. Una caída ajena dejaba al autor fuera de
+  # su libro, y el fichero ya no se recuperaba solo.
+  case "$r" in *'"valid"'*) ;; *) r="" ;; esac
   if [ -z "$r" ]; then
     # Sin red: se respeta la última validación buena durante la gracia. Un autor de viaje o con
     # el wifi caído no puede quedarse fuera de su propio libro.
