@@ -35,4 +35,4 @@ important part.
 
 Remind the writer, in one line: **you choose** — type any command (optionally with a project path
 and flags), nothing is forced. Point to `user-manual.md` for the full step-by-step guide, and to
-`/humanink:dashboard` to see their project's live status.
+`el panel de HumanInk Studio` to see their project's live status.

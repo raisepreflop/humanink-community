@@ -1,6 +1,6 @@
 # HumanInk Community
 
-`v2.1.3-club`
+`v2.2.0-club`
 
 **The editorial suite for Escritores Aumentados members.**
 
@@ -15,7 +15,6 @@ Part of **HumanInk** — turn your Claude subscription into a full editorial tea
 This package installs the following collaborators (call any of them, in any order — nothing is mandatory):
 
 - **`/humanink:help`** — Command Cheat-Sheet: Visual reference of every command in this plugin, grouped by phase — what each does and its key flags.
-- **`/humanink:dashboard`** — Project Dashboard: Live cockpit of your project — Human Authorship Score, active collaborators, metrics.
 - **`/humanink:log`** — Usage Logger: Records each collaborator run (tokens, documents in/out) and shows the dashboard.
 - **`/humanink:author`** — Author Onboarding (01): Interview that builds your author profile — voice, goals, history, limits, habits.
 - **`/humanink:analyst`** — Market Analyst (02): Full market intelligence for any genre: reader avatar, rankings, competition, keywords, categories.
@@ -32,18 +31,15 @@ This package installs the following collaborators (call any of them, in any orde
 - **`/humanink:cover`** — Cover Designer (13): 5 cover concepts with AI prompts, then the full KDP paperback wrap (front+spine+back) and ebook JPG.
 - **`/humanink:community`** — Community Manager (14): Content strategy for 2 networks with funnels & KPIs, monthly calendar, banners/carousels/video scripts.
 - **`/humanink:humanizer`** — Humanizer · iParser (16): Detects AI marks in your text (score 0–100, 100+ patterns) and rewrites the most artificial fragments in your voice.
-- **`/humanink:auditor`** — Authorship Auditor (17): Certifies your human authorship with AWAP: records every writing event, computes your Human Authorship Score, signs a QR-verifiable PDF certificate.
 - **`/humanink:kdp-audit`** — Amazon KDP Auditor: Full audit of your book's Amazon listing from its ASIN: title, BSR, categories, cover, reviews, KDP policies, pricing, 3+ competitors — scored /100 with an improvement plan (Word + JSON history).
 - **`/humanink:projects`** — Project Portfolio: One live HTML dashboard for all your projects: per-project cards, milestones and an SVG Gantt with a today line — updated by talking, no forms.
 - **`/humanink:agenda`** — Agenda: Turns conversation into Google Calendar events, Gmail drafts and task lists (with your Google connectors authorized in Claude; degrades to a markdown agenda without them). Never sends email — drafts only.
-
-It also bundles the **AWAP engine** (the Authorship Audit Protocol) so the auditor can sign a publicly verifiable certificate of human authorship.
 
 ---
 
 ## License
 
-**Commercial — HumanInk Single License (Model B).** One-time purchase, lifetime use. No subscription, no recurring fee for the plugin itself.
+**HumanInk Community — membership edition.** Included with your Escritores Aumentados membership, for as long as you are a member. No purchase, no licence key.
 
 **You may:**
 - Install and use it on the machines you personally control.
@@ -55,7 +51,7 @@ It also bundles the **AWAP engine** (the Authorship Audit Protocol) so the audit
 - Repackage the collaborators, prompts or the iParser/AWAP code into another product.
 - Remove or alter authorship, license or attribution notices.
 
-The license is personal to the purchaser. One purchase = one author/seat. Lost or shared files that appear in the wild may have their license key revoked.
+The edition is personal to the member. If you leave the community, please uninstall it.
 
 © Rais Busom / HumanInk. All rights reserved. See https://humanink.io for the full terms.
 
@@ -70,26 +66,17 @@ To use HumanInk you need **Anthropic Claude Cowork**, which requires:
 
 HumanInk runs *inside* your own Claude — it never uses an API key, your manuscript text never leaves your machine, and there are no token bills from us. (Claude Code in the terminal also works to install and run the plugin.)
 
-For certificates: AWAP runs as a **hosted HumanInk service** (nothing to install or configure; needs an internet connection). It receives only document **hashes and metadata** — score inputs, titles, dates — **never your manuscript text**.
-
 ---
 
 ## Installation (1 minute)
 
-1. In the Claude desktop app: **Settings → Plugins → Add → Upload plugin**, and choose **`humanink-community-full-v2.1.3-club.plugin`**.
-2. Open a **new** chat and type `/humanink:help`. If the command list appears, you're done.
+1. In the Claude desktop app: **Customize → Plugins → Add ▾ → Add marketplace**, paste `raisepreflop/humanink-community` and confirm. (If it says the marketplace is already added, press **Sync**.)
+2. **Browse** → search *humanink* → **Install**.
+3. Open a **new** chat and type `/humanink:help`. If the command list appears, you're done.
 
-The collaborators appear as `/humanink:…` commands.
+**No licence key and nothing to activate.** The first time, a collaborator will ask for your email once — it only tells us who uses HumanInk in the community; it never opens or closes anything.
 
-> **If the plugin shows under Settings → Plugins but the chat says the skill is unknown** — this only happens on machines that also have Claude Code installed — upload the same file from your browser instead: **claude.ai → Settings → Plugins → Add → Upload plugin**. Then open a new chat.
-
-### One more click — only if you will use the Authorship Auditor
-
-Cowork does **not** connect a plugin's connectors automatically. Once, after installing:
-
-**Plugins → HumanInk → Connectors → `awap` → Connect**
-
-Without it, the Auditor and the certificate cannot record your authorship. Everything else works regardless.
+Updates arrive on their own, within about an hour of a release. **Never install this edition from a `.plugin` file**: a copy installed from a file cannot update itself, and two copies with the same name disable each other. If you have one, remove it under **Yours** and install from the catalogue instead.
 
 ---
 
@@ -97,21 +84,21 @@ Without it, the Auditor and the certificate cannot record your authorship. Every
 
 **1. Open your book's folder.** Work in the folder where your book files are (or will be). No pre-existing structure is required.
 
-**2. Point the dashboard at it:**
+**2. Tell the front desk what you want to do today:**
 
 ```
-/humanink:awos ~/Documents/my-novel
+/humanink:recepcion quiero un informe de lectura de ~/Documents/mi-novela
 ```
 
-If the folder isn't set up yet, it will guide you to initialize it.
+It tells you which collaborator does that and what they need from you.
 
 **3. Start with the collaborator you need.** A few examples for this package:
 
 ```
 /humanink:help
-/humanink:dashboard ~/my-novel
 /humanink:log
 /humanink:author ~/my-novel
+/humanink:analyst ~/my-novel
 ```
 
 ---
@@ -127,18 +114,6 @@ Every collaborator is invoked the same way:
 ```
 
 Pass the project path and, where it applies, a mode flag. Run a collaborator with no flags to see its options.
-
-### Proving your authorship (the certificate)
-
-Use the **Authorship Auditor** to record your process and sign a certificate:
-
-```
-/humanink:auditor ~/Documents/my-novel --init         # start auditing from day one
-/humanink:auditor ~/Documents/my-novel --status       # status & Human Authorship Score
-/humanink:auditor ~/Documents/my-novel --certificate  # sign the PDF certificate (QR-verifiable)
-```
-
-It's **process evidence**, not a result scan — aligned with what the U.S. Copyright Office asks for to register AI-assisted work.
 
 ---
 

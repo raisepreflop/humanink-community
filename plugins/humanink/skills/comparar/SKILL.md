@@ -1,7 +1,7 @@
 ---
 name: comparar
 description: "Comparador de versiones — el antes y el después de un manuscrito a lo largo de sus versiones numeradas. Mide qué cambió de verdad entre dos versiones (palabras, capítulos, párrafos, cortes de escena, longitud de frase, porcentaje de diálogo, adverbios) y dónde, listando los pasajes añadidos, cortados y reescritos. Produce un informe en Word con la tabla de evolución y, sobre una serie entera, el historial versión a versión. Úsalo cuando el autor pregunte qué cambió entre dos versiones, cuánto ha crecido el libro, qué hizo realmente una pasada, o quiera el registro de la reescritura."
-allowed-tools: Bash, Read, Write, mcp__plugin_humanink_awap__awap_log_telemetry
+allowed-tools: Bash, Read, Write
 argument-hint: "<version-nueva.docx> [version-anterior.docx] [--serie] [--informe]"
 model: sonnet
 effort: low
@@ -12,25 +12,15 @@ background: false
 <!-- AI-TRANSPARENCY-50-1 -->
 > **Primera respuesta — transparencia de IA (Reglamento europeo de IA, art. 50(1)).** Abre tu primerísima respuesta en este comando con esta línea EXACTA, en español, y continúa normalmente:
 >
-> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.1.3-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
+> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.2.0-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
 
-<!-- HI-GATE -->
-> **Licencia.** Busca en tu contexto la línea `HUMANINK_LICENSE:` que deja el arranque de sesión.
-> Si dice `valid` o no aparece, sigue con normalidad y **no menciones nada de esto**.
->
-> **Solo se para el trabajo con estas cuatro**, que son las únicas en las que el servidor ha
-> demostrado que la licencia no sirve: `expired`, `blocked`, `activated_elsewhere`, `tier_no_valido`.
-> Entonces responde únicamente con el texto de la línea `HUMANINK_GATE:` y para ahí. No lo resumas
-> ni improvises otra versión: está redactado para que el autor sepa qué hacer.
->
-> Con cualquier otra cosa —`missing`, `offline_expirado`, `desconocido`, un error de red— **haz el
-> trabajo igualmente** y añade al final una sola línea: «Por cierto, no he podido comprobar tu
-> licencia; si no la has activado, escribe `/humanink:activate TU-CLAVE tu@email`.»
->
-> Por qué: no poder comprobar algo no es lo mismo que saber que está mal. La comprobación necesita
-> `python3` en el equipo del autor, y en Windows no está; y quien activa por el conector queda
-> registrado en el servidor, no en su disco. Bloquear ahí castiga justo a quien ha pagado.
-
+<!-- HI-PRESENCIA -->
+> **Presencia — solo si en el contexto de esta sesión aparece la línea `HUMANINK_PRESENCIA: falta_email`.**
+> Antes de ponerte a trabajar, pide al autor su email con estas palabras, y sigue después con lo suyo:
+> «Para saber quién usa HumanInk en el Club, escribe tu email en un mensaje solo, sin nada más. No abre
+> ni cierra nada: es solo para el censo.» Si no aparece esa línea, no menciones nada de esto. Si el
+> autor no quiere darlo, trabaja igual. Si alguna vez quiere cambiarlo, basta con escribir
+> «presencia nuevo@email» en un mensaje solo.
 # Comparador de builds
 
 ## Qué es
@@ -116,20 +106,8 @@ Estructura del informe:
 ## Subir la telemetría (solo en `--serie`)
 
 Al terminar una serie, el script deja `telemetria/v*.json` y `telemetria/global.json` en la carpeta.
-Esos ficheros son lo que alimenta el panel — pero el panel de Cowork corre en la nube y **no tiene
-acceso al disco del autor**, así que hasta que no se suben, todo lo medido es invisible desde ahí.
-
-Léelos y pásalos por MCP:
-
-```
-mcp__plugin_humanink_awap__awap_log_telemetry({
-  versions: [ …contenido de cada telemetria/v<N>.json… ],
-  global:   { …contenido de telemetria/global.json… }
-})
-```
-
-Si el conector AWAP no está disponible, no pares ni des un error: el informe ya está hecho y los
-ficheros siguen en su carpeta. Di en una línea que la telemetría no se ha subido y sigue.
+En esta edición la telemetría **no se sube a ningún sitio**: los ficheros se quedan en la carpeta
+del libro y son los que lee HumanInk Studio. No hay conector que llamar ni nada que avisar.
 
 **Viajan métricas y posiciones, nunca texto.** El servidor recorta las primeras palabras de cada
 pasaje y reduce los nombres de fichero a su marca de versión, porque llevan las siglas del libro.

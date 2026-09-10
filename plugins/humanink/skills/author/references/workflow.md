@@ -122,7 +122,7 @@ y sigue — es lo que más se le escapa a un autor nuevo, porque nada se lo pide
 
 > ℹ️ Esta carpeta no está registrando tu trabajo todavía. Si algún día quieres demostrar que el libro
 > es tuyo, el registro tiene que existir **desde el principio**: no se puede reconstruir después.
-> Se activa con `/humanink:auditor`. Puedes dejarlo para más adelante, pero cuanto antes, más vale.
+> Se activa con `el certificado de autoría en HumanInk Studio`. Puedes dejarlo para más adelante, pero cuanto antes, más vale.
 
 Con lo que conteste (o sin ello), **elige un solo siguiente paso** para el resumen final:
 

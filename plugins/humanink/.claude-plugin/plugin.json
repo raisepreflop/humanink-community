@@ -1,23 +1,21 @@
 {
   "name": "humanink",
-  "version": "2.1.3-club",
-  "description": "HumanInk Community — the editorial suite for Escritores Aumentados members. All collaborators except advertising-campaign management; strategy stays (Market Analyst and Community Manager), plus Brain, the Humanizer and the full publishing suite, with the AWAP draft certificate. The official, publicly verifiable certificate is the separate HumanInk Certificate product. Personal license, valid while you are an Escritores Aumentados member.",
+  "version": "2.2.0-club",
+  "description": "HumanInk Community — the editorial suite for Escritores Aumentados members. All collaborators except advertising-campaign management; strategy stays (Market Analyst and Community Manager), plus Brain, the Humanizer and the full publishing suite. No licence key and nothing to activate. The authorship certificate (AWAP) lives in HumanInk Studio. Personal use, for Escritores Aumentados members.",
   "author": {
     "name": "Rais Busom",
     "url": "https://humanink.io"
   },
-  "license": "HumanInk Community — membership license (personal; valid while you are an Escritores Aumentados member)",
+  "license": "HumanInk Community — membership edition for Escritores Aumentados members (personal use)",
   "keywords": [
     "writing",
     "editorial",
     "ai",
     "books",
     "authorship",
-    "awap",
     "humanink",
     "community"
   ],
-  "mcpServers": "./.mcp.json",
   "hooks": "./hooks/hooks.json",
   "homepage": "https://humanink.io"
 }

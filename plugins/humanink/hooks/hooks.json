@@ -9,7 +9,7 @@
           },
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/license-gate.sh\""
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/presencia.sh\" sesion"
           }
         ]
       }
@@ -30,7 +30,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/activar-hook.sh\""
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/presencia.sh\" mensaje"
           }
         ]
       }

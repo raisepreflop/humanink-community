@@ -1,5 +1,0 @@
-{
-  "mcpServers": {
-    "awap": { "type": "http", "url": "https://humanink-mcp.rais-busom.workers.dev/mcp" }
-  }
-}
