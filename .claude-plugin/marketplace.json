@@ -5,7 +5,7 @@
     "email": "info@humanink.io",
     "url": "https://humanink.io"
   },
-  "description": "HumanInk Community — la edición para miembros de Escritores Aumentados. Sin clave y sin activar: se instala desde el catálogo y se actualiza sola.",
+  "description": "HumanInk Community — la edición para miembros de Escritores Aumentados. Sin clave y sin activar: se instala desde el catálogo. Para recibir versiones nuevas, pulsa Sincronizar en el marketplace.",
   "version": "2.2.0-club",
   "plugins": [
     {
