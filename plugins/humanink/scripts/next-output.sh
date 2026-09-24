@@ -35,14 +35,35 @@ if [ -d "$CARPETA/capitulos" ]; then
   exit 0
 fi
 
-# ── Modo builds ──
-if [ -n "$CURRENT" ] && printf '%s' "$CURRENT" | grep -qE '\-b[0-9]+'; then
+# ── Modo manuscrito (m01-v01: manuscrito y versión, la convención recomendada desde el
+#    Studio, 13-sep-2026). El número de MANUSCRITO se conserva tal cual venga (casi todos
+#    tendrán un solo m01); solo la VERSIÓN avanza. ──
+if [ -n "$CURRENT" ] && printf '%s' "$CURRENT" | grep -qiE '\-m[0-9]+-v[0-9]+'; then
+  dir=$(dirname "$CURRENT")
+  file=$(basename "$CURRENT")
+  slug=$(printf '%s' "$file" | sed -E 's/(.*)-[mM][0-9]+-[vV][0-9]+.*/\1/')
+  mparte=$(printf '%s' "$file" | sed -E 's/.*-([mM][0-9]+)-[vV][0-9]+.*/\1/' | tr '[:upper:]' '[:lower:]')
+  num=$(printf '%s' "$file" | sed -E 's/.*-[vV]0*([0-9]+).*/\1/')
+  width=$(printf '%s' "$file" | sed -E 's/.*-[vV]([0-9]+).*/\1/' | awk '{print length($0)}')
+  next=$((num + 1))
+  echo "MODE=manuscrito"
+  echo "SOURCE=$CURRENT"
+  printf 'OUT=%s/%s-%s-v%0*d.docx\n' "$dir" "$slug" "$mparte" "$width" "$next"
+  exit 0
+fi
+
+# ── Modo builds (la convención antigua: -bNN) ──
+# CASE-INSENSITIVE (13-sep-2026): un fichero real de autor llega como «LDDLL-1-B32-…», con B
+# mayúscula. Sin -i esta rama no lo reconocía y trataba una novela con 32 builds como si fuera
+# un proyecto nuevo, reiniciando en b01 al lado del b32 real. latest-chapters.sh ya elegía bien
+# el CURRENT con -i; esta rama, que decide qué escribir a partir de él, se había quedado atrás.
+if [ -n "$CURRENT" ] && printf '%s' "$CURRENT" | grep -qiE '\-b[0-9]+'; then
   dir=$(dirname "$CURRENT")
   file=$(basename "$CURRENT")
   # slug = todo lo anterior a "-b<NN>"; se conserva el ancho del número (b09 → b10, b28 → b29)
-  slug=$(printf '%s' "$file" | sed -E 's/(.*)-b[0-9]+.*/\1/')
-  num=$(printf '%s' "$file" | sed -E 's/.*-b0*([0-9]+).*/\1/')
-  width=$(printf '%s' "$file" | sed -E 's/.*-b([0-9]+).*/\1/' | awk '{print length($0)}')
+  slug=$(printf '%s' "$file" | sed -E 's/(.*)-[bB][0-9]+.*/\1/')
+  num=$(printf '%s' "$file" | sed -E 's/.*-[bB]0*([0-9]+).*/\1/')
+  width=$(printf '%s' "$file" | sed -E 's/.*-[bB]([0-9]+).*/\1/' | awk '{print length($0)}')
   next=$((num + 1))
   echo "MODE=builds"
   echo "SOURCE=$CURRENT"
@@ -50,8 +71,8 @@ if [ -n "$CURRENT" ] && printf '%s' "$CURRENT" | grep -qE '\-b[0-9]+'; then
   exit 0
 fi
 
-# ── Proyecto nuevo: se estrena con el sistema recomendado ──
+# ── Proyecto nuevo: se estrena con el sistema recomendado (m01-v01 desde el 13-sep-2026) ──
 name=$(basename "$CARPETA" | tr ' ' '-')
-echo "MODE=builds"
+echo "MODE=manuscrito"
 echo "SOURCE="
-echo "OUT=$CARPETA/${name}-b01.docx"
+echo "OUT=$CARPETA/${name}-m01-v01.docx"

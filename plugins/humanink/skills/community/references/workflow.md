@@ -353,9 +353,9 @@ if [ "$TIPO_CONTENIDO" = "guion" ] || [ "$TIPO_CONTENIDO" = "todos" ]; then
   ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; [ -d "$ROOT/scripts" ] || ROOT="$HOME/.humanink"
   cp "$ROOT/skills/community/scripts/templates/guion.md" "$GUION_MD"
 
-  python3 ~/.awos/md2docx.py "$GUION_MD" "$CARPETA/social/guion-video.docx" "Video Script"
-  rm -f "$GUION_MD"
-  echo "✓ Script: $CARPETA/social/guion-video.docx"
+  python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$GUION_MD" "$CARPETA/social/guion-video.docx" "Video Script"
+  [ $? -eq 0 ] && rm -f "$GUION_MD"   # el .md solo se borra si el Word salió
+  [ -f "$CARPETA/social/guion-video.docx" ] && echo "✓ Script: $CARPETA/social/guion-video.docx" || echo "✗ No se ha podido crear guion-video.docx: el texto sigue en el .md de la misma carpeta."
 fi
 
 ls "$CARPETA/social/"
@@ -500,16 +500,16 @@ ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; 
 eval "$(python3 "$ROOT/scripts/hi-args.py" "$ARGUMENTS")"
 CARPETA="$FOLDER"; MODO="$MODE"
 if $DO_ESTRATEGIA; then
-  python3 ~/.awos/md2docx.py "$CARPETA/estrategia-contenidos.md" \
+  python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$CARPETA/estrategia-contenidos.md" \
     "$CARPETA/estrategia-contenidos.docx" "Content Strategy"
-  echo "✓ Strategy: $CARPETA/estrategia-contenidos.docx"
+  [ -f "$CARPETA/estrategia-contenidos.docx" ] && echo "✓ Strategy: $CARPETA/estrategia-contenidos.docx" || echo "✗ No se ha podido crear estrategia-contenidos.docx: el texto sigue en el .md de la misma carpeta."
 fi
 
 if $DO_ANALISIS; then
   FECHA=$(date +%Y-%m-%d 2>/dev/null || echo "semana")
-  python3 ~/.awos/md2docx.py "$CARPETA/analisis-semanal.md" \
+  python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$CARPETA/analisis-semanal.md" \
     "$CARPETA/analisis-$FECHA.docx" "Weekly Analysis"
-  echo "✓ Analysis: $CARPETA/analisis-$FECHA.docx"
+  [ -f "$CARPETA/analisis-$FECHA.docx" ] && echo "✓ Analysis: $CARPETA/analisis-$FECHA.docx" || echo "✗ No se ha podido crear analisis-$FECHA.docx: el texto sigue en el .md de la misma carpeta."
 fi
 
 echo ""

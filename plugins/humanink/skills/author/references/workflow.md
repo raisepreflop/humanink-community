@@ -223,9 +223,9 @@ Then convert to Word:
 
 ```bash
 [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"
-python3 ~/.awos/md2docx.py "$CARPETA/perfil-autor.md" "$CARPETA/perfil-autor.docx" "Author profile"
-rm -f "$CARPETA/perfil-autor.md"
-echo "✓ Word ready: $CARPETA/perfil-autor.docx"
+python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$CARPETA/perfil-autor.md" "$CARPETA/perfil-autor.docx" "Author profile"
+[ $? -eq 0 ] && rm -f "$CARPETA/perfil-autor.md"   # el .md solo se borra si el Word salió
+[ -f "$CARPETA/perfil-autor.docx" ] && echo "✓ Word ready: $CARPETA/perfil-autor.docx" || echo "✗ No se ha podido crear perfil-autor.docx: el texto sigue en el .md de la misma carpeta."
 ```
 
 ## 6. Final summary

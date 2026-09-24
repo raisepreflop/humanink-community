@@ -117,6 +117,7 @@ META = {
     "projects":    ("·",  "Panel",        ""),
     "agenda":      ("·",  "Panel",        ""),
     "help":        ("·",  "Panel",        ""),
+    "diagnostico": ("·",  "Panel",        ""),
 }
 
 PHASES = ["Concepto","Escritura","Reescritura","Publicación","Marketing","Confianza","Memoria","Panel","Herramientas"]

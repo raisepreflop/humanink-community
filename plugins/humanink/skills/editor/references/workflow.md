@@ -304,15 +304,9 @@ report to `$OUT_MD` using the Write tool. Then convert and record the invocation
 ```bash
 [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"
 ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; [ -d "$ROOT/scripts" ] || ROOT="$HOME/.humanink"
-# Install the converter if it doesn't exist
-if [ ! -f ~/.awos/md2docx.py ]; then
-  mkdir -p ~/.awos
-  cp "$ROOT/scripts/md2docx.py" ~/.awos/md2docx.py 2>/dev/null \
-  || python3 -m pip install python-docx -q
-fi
-python3 ~/.awos/md2docx.py "$OUT_MD" "$OUT_DOCX" "Editorial report — $(basename ${CARPETA})"
-rm -f "$OUT_MD"
-echo "✓ Word ready: $OUT_DOCX"
+python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$OUT_MD" "$OUT_DOCX" "Editorial report — $(basename ${CARPETA})"
+[ $? -eq 0 ] && rm -f "$OUT_MD"   # el .md solo se borra si el Word salió
+[ -f "$OUT_DOCX" ] && echo "✓ Word ready: $OUT_DOCX" || echo "✗ No se ha podido crear el Word: el texto sigue en el .md de la misma carpeta."
 bash "$ROOT/scripts/hi-log.sh" awos-editor "Editor (04)" "$CARPETA" "$MODO" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"
 ```
 

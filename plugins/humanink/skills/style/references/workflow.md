@@ -385,9 +385,9 @@ Then convert to Word:
 
 ```bash
 [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"
-python3 ~/.awos/md2docx.py "$CARPETA/estilo.md" "$CARPETA/estilo.docx" "Style guide — $(basename $CARPETA)"
-rm -f "$CARPETA/estilo.md"
-echo "✓ Word ready: $CARPETA/estilo.docx"
+python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$CARPETA/estilo.md" "$CARPETA/estilo.docx" "Style guide — $(basename $CARPETA)"
+[ $? -eq 0 ] && rm -f "$CARPETA/estilo.md"   # el .md solo se borra si el Word salió
+[ -f "$CARPETA/estilo.docx" ] && echo "✓ Word ready: $CARPETA/estilo.docx" || echo "✗ No se ha podido crear estilo.docx: el texto sigue en el .md de la misma carpeta."
 ```
 
 ---

@@ -107,7 +107,7 @@ def construir(parrafos, original, propuesta, autor, motivo=""):
                 cursor = k + 1
                 break
 
-    lote, sin_ancla = [], []
+    lote, sin_ancla, protegidos = [], [], []
     ops = difflib.SequenceMatcher(None, [_norm(t) for t in orig], [_norm(t) for t in prop]).get_opcodes()
 
     for etiqueta, i1, i2, j1, j2 in ops:
@@ -123,6 +123,9 @@ def construir(parrafos, original, propuesta, autor, motivo=""):
                                       "texto": orig[n][:120]})
                     continue
                 p = parrafos[indice[n]]
+                if p.get("campo"):
+                    protegidos.append(orig[n][:120])
+                    continue
                 tramo = _tramo_que_cambia(p["texto"], prop[j1 + k])
                 if not tramo:
                     continue
@@ -150,6 +153,9 @@ def construir(parrafos, original, propuesta, autor, motivo=""):
                 if n not in indice:
                     continue
                 p = parrafos[indice[n]]
+                if p.get("campo"):
+                    protegidos.append(orig[n][:120])
+                    continue
                 if p.get("tabla"):
                     sin_ancla.append({"motivo": "está dentro de una tabla y no se borra",
                                       "texto": orig[n][:120]})
@@ -159,7 +165,12 @@ def construir(parrafos, original, propuesta, autor, motivo=""):
             resto = [prop[j] for j in range(j1 + min(i2 - i1, j2 - j1), j2)]
             if resto:
                 ancla = _ancla_anterior(indice, parrafos, i1)
-                if ancla:
+                # Si el bloque que sustituye incluye entradas del índice, lo sobrante es el índice
+                # reescrito: no se cuelga como párrafo nuevo (equipo rojo, 24-sep).
+                toca_campo = any(parrafos[indice[n]].get("campo") for n in range(i1, i2) if n in indice)
+                if toca_campo or (ancla and ancla.get("campo")):
+                    protegidos.extend(t[:120] for t in resto)
+                elif ancla:
                     lote.append({"op": "insertar_despues", "parrafo": ancla["i"],
                                  "huella": ancla["huella"], "texto": resto, "autor": autor,
                                  "motivo": motivo or "añadido"})
@@ -174,6 +185,9 @@ def construir(parrafos, original, propuesta, autor, motivo=""):
                                       "texto": orig[n][:120]})
                     continue
                 p = parrafos[indice[n]]
+                if p.get("campo"):
+                    protegidos.append(orig[n][:120])
+                    continue
                 if p.get("tabla"):
                     sin_ancla.append({"motivo": "está dentro de una tabla y no se borra",
                                       "texto": orig[n][:120]})
@@ -184,7 +198,10 @@ def construir(parrafos, original, propuesta, autor, motivo=""):
         elif etiqueta == "insert":
             ancla = _ancla_anterior(indice, parrafos, i1)
             nuevos = [prop[j] for j in range(j1, j2)]
-            if ancla:
+            # Nada nuevo se cuelga de una entrada del índice: sería una línea fantasma dentro de él.
+            if ancla and ancla.get("campo"):
+                protegidos.extend(t[:120] for t in nuevos)
+            elif ancla:
                 lote.append({"op": "insertar_despues", "parrafo": ancla["i"],
                              "huella": ancla["huella"], "texto": nuevos, "autor": autor,
                              "motivo": motivo or "añadido"})
@@ -196,6 +213,8 @@ def construir(parrafos, original, propuesta, autor, motivo=""):
     return {
         "lote": lote,
         "sin_ancla": sin_ancla,
+        # Párrafos con campos de Word (el índice): se dejan como están, a propósito.
+        "protegidos": protegidos,
         "resumen": {
             "reemplazos": sum(1 for x in lote if x["op"] == "reemplazar"),
             "inserciones": sum(1 for x in lote if x["op"] == "insertar_despues"),
@@ -225,7 +244,7 @@ def main():
 
     ps = I.parrafos_de(a.documento)
     parrafos = [{"i": i, "texto": I._texto_vivo(p), "huella": I.huella_de(ps, i),
-                 "tabla": I._en_tabla(p)}
+                 "tabla": I._en_tabla(p), "campo": I._con_campo(p)}
                 for i, p in enumerate(ps) if I._texto_vivo(p).strip()]
 
     with open(a.original, encoding="utf-8") as f:

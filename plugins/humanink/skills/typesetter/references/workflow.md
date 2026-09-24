@@ -232,11 +232,11 @@ fi
 # Word studio A4
 if $DO_ESTUDIO; then
   ESTUDIO_OUT="$OUT_DIR/${SLUG}-estudio.docx"
-  if [ -f ~/.awos/md2docx.py ]; then
-    python3 ~/.awos/md2docx.py "$MANUSCRITO_MD" "$ESTUDIO_OUT" "$TITULO — complete manuscript"
-    echo "✓ Word studio A4: $ESTUDIO_OUT"
+  if [ -f "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" ]; then
+    python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$MANUSCRITO_MD" "$ESTUDIO_OUT" "$TITULO — complete manuscript"
+    [ -f "$ESTUDIO_OUT" ] && echo "✓ Word studio A4: $ESTUDIO_OUT" || echo "✗ No se ha podido crear el Word: el texto sigue en el .md de la misma carpeta."
   else
-    echo "⚠️ md2docx.py not found in ~/.awos/ — install the full HumanInk"
+    echo "⚠️ No encuentro el conversor a Word del plugin: pulsa Sincronizar en el catálogo y abre un chat nuevo."
   fi
 fi
 

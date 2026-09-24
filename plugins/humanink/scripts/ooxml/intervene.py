@@ -52,7 +52,12 @@ import sys
 import zipfile
 from datetime import datetime, timezone
 
-from lxml import etree
+try:
+    from lxml import etree
+except ImportError:  # equipo rojo, 24-sep-2026: un traceback de Python no le dice nada a un autor
+    import sys as _sys
+    _sys.exit("✗ Falta el módulo «lxml», que necesito para leer y escribir el control de cambios de Word.\n"
+              "  En tu ordenador: python3 -m pip install lxml. En Cowork, dímelo en el chat y lo resolvemos.")
 
 sys.path.insert(0, __file__.rsplit("/", 1)[0])
 import docxtc as D  # noqa: E402
@@ -107,6 +112,18 @@ def _en_tabla(p):
             return True
         n = n.getparent()
     return False
+
+
+def _con_campo(p):
+    """¿El párrafo lleva un campo de Word (índice, número de página, referencia)?
+
+    Sus runs no son prosa: título, tabulador y el resultado de un PAGEREF que Word recalcula. Al
+    reescribirlos se pierde el tabulador y «rechazar todo» ya no devuelve el original (Rais,
+    24-sep: una corrección de 88 minutos descartada por las entradas del índice). No se tocan: el
+    índice lo regenera Word desde los títulos.
+    """
+    return (p.find(f".//{{{D.W}}}fldChar") is not None or p.find(f".//{{{D.W}}}instrText") is not None
+            or p.find(f".//{{{D.W}}}fldSimple") is not None)
 
 
 def _texto_vivo(p):
@@ -392,6 +409,7 @@ def _escribir(entrada, raiz, salida, extra=None):
         shutil.copyfile(entrada, salida)
     with zipfile.ZipFile(entrada) as z_in:
         items = [(i, z_in.read(i.filename)) for i in z_in.infolist()]
+    ya = {i.filename for i, _ in items}
     with zipfile.ZipFile(salida, "w", zipfile.ZIP_DEFLATED) as z_out:
         for info, datos in items:
             if info.filename == "word/document.xml":
@@ -399,6 +417,11 @@ def _escribir(entrada, raiz, salida, extra=None):
             elif info.filename in extra:
                 datos = extra[info.filename]
             z_out.writestr(info, datos)
+        # Partes NUEVAS (word/comments.xml la primera vez): antes se perdían en silencio, porque
+        # esto solo sabía sustituir lo que ya estaba en el paquete.
+        for nombre, datos in extra.items():
+            if nombre not in ya:
+                z_out.writestr(nombre, datos)
 
 
 def _activar_track_changes(entrada, raiz, salida):
@@ -426,6 +449,30 @@ def parrafos_de(entrada):
     return list(cuerpo.iter(w("p")))
 
 
+def _estilo_de(p):
+    """El nombre del estilo del párrafo, tal cual lo guarda Word, o None si no tiene ninguno."""
+    pPr = p.find(f"{{{D.W}}}pPr")
+    if pPr is None:
+        return None
+    st = pPr.find(f"{{{D.W}}}pStyle")
+    return st.get(f"{{{D.W}}}val") if st is not None else None
+
+
+def _nivel_de(p):
+    """El nivel de esquema: 0 para «Título 1». De `outlineLvl` si está; si no, del estilo."""
+    pPr = p.find(f"{{{D.W}}}pPr")
+    if pPr is not None:
+        lvl = pPr.find(f"{{{D.W}}}outlineLvl")
+        if lvl is not None:
+            try:
+                return int(lvl.get(f"{{{D.W}}}val"))
+            except (TypeError, ValueError):
+                pass
+    st = (_estilo_de(p) or "").replace(" ", "").lower()
+    m = re.match(r"^(?:heading|t[íi]?tulo|encabezado)(\d)$", st)
+    return int(m.group(1)) - 1 if m else None
+
+
 def listar(entrada, desde, hasta, ancho=90, como_json=False):
     ps = parrafos_de(entrada)
     hasta = min(hasta if hasta is not None else len(ps), len(ps))
@@ -451,6 +498,11 @@ def listar(entrada, desde, hasta, ancho=90, como_json=False):
             "texto": vivo,
             "palabras": len(vivo.split()),
             "huella": huella_de(ps, i),
+            # El ESTILO del párrafo (M-03, 18-sep-2026). Los cortes de capítulo se sacaban de
+            # patrones de texto —«15», «1»— y en un ensayo con listas eso inventa capítulos. Word
+            # ya sabe cuál es un título: su estilo («Heading1», «Ttulo1»…) y su nivel de esquema.
+            "estilo": _estilo_de(ps[i]),
+            "nivel": _nivel_de(ps[i]),
         })
     print(json.dumps({
         "fichero": entrada,

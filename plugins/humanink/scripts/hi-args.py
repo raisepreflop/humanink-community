@@ -43,8 +43,45 @@ def _proyecto_activo():
         return None
 
 
-m = re.search(r'(~?/[^\s"]+|~[^\s"]*)', raw)
-folder = m.group(1) if m else (_proyecto_activo() or os.getcwd())
+# LA RUTA (24-sep-2026). Antes era «hasta el primer espacio», y en castellano casi toda carpeta lleva
+# espacios: «/Users/ana/Mi novela/cap-03.docx» se quedaba en «/Users/ana/Mi». Y cualquier barra
+# suelta («3/4», «a/b») contaba como ruta. Ahora, por este orden:
+#   1. una ruta entre comillas ("…", '…' o «…»);
+#   2. sin comillas, la ruta MÁS LARGA que existe en el disco, añadiendo palabra a palabra;
+#   3. sin comillas y sin disco a la vista (la VM de Cowork no siempre lo ve), hasta la primera
+#      extensión de documento (.docx, .md, .txt, .pdf, .odt), aunque haya espacios en medio;
+#   4. si no, el primer tramo sin espacios, como antes.
+# Una ruta tiene que empezar por «/» o «~/» al principio o tras un espacio: «3/4» no es una ruta.
+EXT = r'\.(?:docx|md|txt|pdf|odt|rtf)'
+
+def _ruta_escrita(texto):
+    # La PRIMERA ruta del texto, venga entre comillas o no: es la del manuscrito o el proyecto. Una
+    # ruta que va detrás de un flag («--style "/x/estilo.docx"») es el valor de ese flag, no el
+    # proyecto (equipo rojo, 24-sep: el reader leía la guía de estilo como si fuera el manuscrito).
+    cands = []
+    for q in re.finditer(r'(?:^|\s)["«]((?:~|/)[^"»\n]*)["»]', texto):
+        if not re.search(r'--[\w-]+\s*$', texto[:q.start(1) - 1]):
+            cands.append((q.start(1), q.group(1).strip()))
+    for ini in re.finditer(r'(?:^|\s)((?:~/|/)\S)', texto):
+        if re.search(r'--[\w-]+\s*$', texto[:ini.start(1)]):
+            continue
+        resto = texto[ini.start(1):]
+        palabras = resto.split(" ")
+        hallada = None
+        for n in range(len(palabras), 0, -1):
+            cand = " ".join(palabras[:n]).rstrip(" ,;:)")
+            if os.path.exists(os.path.expanduser(cand)):
+                hallada = cand
+                break
+        if not hallada:
+            e = re.match(r'(.*?' + EXT + r')(?=[\s,;:)]|$)', resto, flags=re.I)
+            hallada = e.group(1) if e and "--" not in e.group(1) else palabras[0].rstrip(",;:)")
+        cands.append((ini.start(1), hallada))
+        break
+    return min(cands)[1] if cands else None
+
+ruta = _ruta_escrita(raw)
+folder = ruta if ruta else (_proyecto_activo() or os.getcwd())
 folder = os.path.expanduser(folder)
 
 # --- goal: quoted text after an intent flag -----------------------------
@@ -55,16 +92,23 @@ g = re.search(r'--(?:goal|section|ask|genre|amazon|topic|about|on)\s+"([^"]+)"',
 if g:
     goal = g.group(1)
 
+# --- base: la versión anterior para /verificar --base (antes se perdía: FLAGS solo lleva nombres) --
+b = re.search(r'--base\s+(?:"([^"]+)"|«([^»]+)»|(\S+(?:\s\S+)*?' + EXT + r')|(\S+))', raw, flags=re.I)
+base = os.path.expanduser(next(x for x in b.groups() if x)) if b else ""
+
 # --- all flags (e.g. --rewrite --report) --------------------------------
 flags = " ".join(re.findall(r'--\w[\w-]*', raw))
 
 # --- chapter: leftover after stripping flags, paths and quoted spans ----
 chapter = raw
 chapter = re.sub(r'--\w[\w-]*(\s+"[^"]*")?', " ", chapter)  # flags + their quoted value
-chapter = re.sub(r'~?/[^\s"]+', " ", chapter)               # paths
+if ruta:
+    chapter = chapter.replace(ruta, " ")                        # la ruta, entera, con sus espacios
+chapter = re.sub(r'«[^»]*»', " ", chapter)                     # comillas españolas
+chapter = re.sub(r'(?:^|(?<=\s))~?/[^\s"]+', " ", chapter)      # rutas sueltas que queden (valores de flags)
 chapter = re.sub(r'"[^"]*"', " ", chapter)                  # any remaining quotes
 chapter = re.sub(r'\s+', " ", chapter).strip()
 
 for k, v in (("MODE", mode), ("FOLDER", folder), ("CHAPTER", chapter),
-             ("GOAL", goal), ("FLAGS", flags)):
+             ("GOAL", goal), ("FLAGS", flags), ("BASE", base)):
     print(f"{k}={shlex.quote(v)}")

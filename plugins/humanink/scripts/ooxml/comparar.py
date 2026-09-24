@@ -179,7 +179,7 @@ def comparar(nuevo, anterior):
 # SIN distinguir mayúsculas: los ficheros reales del autor venían en mayúscula (LDDLL-1-B32-…)
 # y el patrón antiguo, solo minúsculas, no casaba con ninguno. La serie salía vacía con 39
 # versiones delante.
-RE_VERSION = re.compile(r"-[vb]0*(\d+)", re.I)
+from libros import RE_VERSION, libro_de, destinos  # noqa: E402  (la regla del libro vive en libros.py)
 
 
 def _num_build(f):
@@ -208,14 +208,31 @@ def ficha(fichero, anterior=None):
     }
 
 
-def serie(carpeta):
-    """La cadena entera de builds de un proyecto, ordenada por número."""
+def serie(carpeta, libro=None):
+    """La cadena entera de builds de un proyecto, ordenada por número.
+
+    Con `libro`, solo los builds de ese libro (ver `libro_de`). Sin él, si en la carpeta hay más de
+    un libro, se mide el que más versiones tiene y se dice: mezclar números de libros distintos
+    daba una curva falsa.
+    """
     fs = [os.path.join(carpeta, f) for f in os.listdir(carpeta)
           if f.lower().endswith(".docx") and RE_VERSION.search(f)
           and not f.startswith("~$") and "copia" not in f.lower() and "copy" not in f.lower()]
+    libros = {}
+    for f in fs:
+        libros.setdefault(libro_de(f), []).append(f)
+    otros = []
+    if libro is not None:
+        clave = " ".join(str(libro).split()).lower()
+        otros = sorted(k for k in libros if k != clave)
+        fs = libros.get(clave, [])
+    elif len(libros) > 1:
+        clave = max(libros, key=lambda k: len(libros[k]))
+        otros = sorted(k for k in libros if k != clave)
+        fs = libros[clave]
     fs.sort(key=_num_build)
     if len(fs) < 2:
-        return {"error": f"hacen falta al menos 2 builds; encontrados {len(fs)}", "builds": fs}
+        return {"error": f"hacen falta al menos 2 builds; encontrados {len(fs)}", "builds": fs, "otros_libros": otros}
     filas, previo = [], None
     for f in fs:
         inv = D.inventario(f)
@@ -234,8 +251,8 @@ def serie(carpeta):
         previo = inv["palabras_aceptando"]
         filas.append(fila)
     total = comparar(fs[-1], fs[0])
-    return {"carpeta": carpeta, "builds": filas, "primero": os.path.basename(fs[0]),
-            "ultimo": os.path.basename(fs[-1]), "global": total}
+    return {"carpeta": carpeta, "libro": libro_de(fs[0]), "otros_libros": otros, "builds": filas,
+            "primero": os.path.basename(fs[0]), "ultimo": os.path.basename(fs[-1]), "global": total}
 
 
 ETIQUETAS = {
@@ -255,38 +272,35 @@ def guardar_telemetria(carpeta, filas):
     versiones eso son treinta mediciones tiradas, y sin la serie no hay forma de dibujar cómo
     evolucionó el manuscrito. Un número impreso se lee una vez; un fichero se compara.
     """
-    destino = os.path.join(carpeta, "telemetria")
-    try:
-        os.makedirs(destino, exist_ok=True)
-    except OSError as e:
-        print(f"  ⚠ no se pudo crear {destino}: {e}")
-        return []
     escritos = []
     for f in filas:
         n = f.get("n")
         if n is None:
             continue
-        ruta = os.path.join(destino, f"v{n:02d}.json")
-        try:
-            with open(ruta, "w", encoding="utf-8") as fh:
-                json.dump(f, fh, ensure_ascii=False, indent=1)
-            escritos.append(ruta)
-        except OSError as e:
-            print(f"  ⚠ no se pudo escribir {ruta}: {e}")
+        # Por libro (1.6.5): en una carpeta con varios, v48 de uno ya no pisa a v48 de otro.
+        for destino in destinos(carpeta, f.get("build") or ""):
+            ruta = os.path.join(destino, f"v{n:02d}.json")
+            try:
+                os.makedirs(destino, exist_ok=True)
+                with open(ruta, "w", encoding="utf-8") as fh:
+                    json.dump(f, fh, ensure_ascii=False, indent=1)
+                escritos.append(ruta)
+            except OSError as e:
+                print(f"  ⚠ no se pudo escribir {ruta}: {e}")
     return escritos
 
 
 def guardar_global(carpeta, r):
     """telemetria/global.json — el neto de la cadena: primera versión contra última."""
-    destino = os.path.join(carpeta, "telemetria")
     try:
-        os.makedirs(destino, exist_ok=True)
         g = dict(r.get("global") or {})
         g["primero"] = r.get("primero")
         g["ultimo"] = r.get("ultimo")
         g["versiones"] = len(r.get("builds") or [])
-        with open(os.path.join(destino, "global.json"), "w", encoding="utf-8") as fh:
-            json.dump(g, fh, ensure_ascii=False, indent=1)
+        for destino in destinos(carpeta, r.get("primero") or ""):
+            os.makedirs(destino, exist_ok=True)
+            with open(os.path.join(destino, "global.json"), "w", encoding="utf-8") as fh:
+                json.dump(g, fh, ensure_ascii=False, indent=1)
         return True
     except OSError as e:
         print(f"  aviso: no se pudo guardar el global: {e}")
@@ -338,6 +352,8 @@ def main():
     ap.add_argument("anterior", nargs="?")
     ap.add_argument("--serie", metavar="CARPETA")
     ap.add_argument("--json", action="store_true")
+    ap.add_argument("--libro", metavar="NOMBRE",
+                    help="con --serie: solo los builds de este libro (el nombre hasta -bNN / -vNN)")
     # La telemetría se guarda POR DEFECTO: el objetivo de todo esto es que la medición deje de
     # perderse. --sin-guardar existe para inspeccionar una carpeta ajena sin dejar rastro.
     ap.add_argument("--sin-guardar", action="store_true",
@@ -345,7 +361,7 @@ def main():
     a = ap.parse_args()
 
     if a.serie:
-        r = serie(a.serie)
+        r = serie(a.serie, a.libro)
         if not a.sin_guardar and "builds" in r and not r.get("error"):
             escritos = guardar_telemetria(a.serie, r["builds"])
             # El NETO primera→última: es el diff que el autor hace a mano en Word (b02 vs b39) y

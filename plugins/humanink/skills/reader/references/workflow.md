@@ -238,8 +238,8 @@ footer). Then convert to Word and record the invocation — one block (estimate
 ```bash
 [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"
 ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; [ -d "$ROOT/scripts" ] || ROOT="$HOME/.humanink"
-python3 ~/.awos/md2docx.py "$OUT_MD" "$OUT_DOCX" "Informe de lectura — $(basename ${CARPETA})"
-echo "✓ Word ready: $OUT_DOCX"
+python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$OUT_MD" "$OUT_DOCX" "Informe de lectura — $(basename ${CARPETA})"
+[ -f "$OUT_DOCX" ] && echo "✓ Word ready: $OUT_DOCX" || echo "✗ No se ha podido crear el Word: el texto sigue en el .md de la misma carpeta."
 echo "✓ Markdown conservado: $OUT_MD"
 bash "$ROOT/scripts/hi-log.sh" awos-lector "Lector (07)" "$CARPETA" "$MODO" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"
 ```

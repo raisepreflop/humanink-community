@@ -23,7 +23,12 @@ este módulo predijo 44.169 palabras aceptando y 44.004 rechazando; Microsoft Wo
 import re
 import zipfile
 
-from lxml import etree
+try:
+    from lxml import etree
+except ImportError:  # equipo rojo, 24-sep-2026: un traceback de Python no le dice nada a un autor
+    import sys as _sys
+    _sys.exit("✗ Falta el módulo «lxml», que necesito para leer y escribir el control de cambios de Word.\n"
+              "  En tu ordenador: python3 -m pip install lxml. En Cowork, dímelo en el chat y lo resolvemos.")
 
 W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
 NS = {"w": W}

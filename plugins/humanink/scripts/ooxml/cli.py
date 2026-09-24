@@ -16,6 +16,7 @@ Así que esto no reimplementa nada. Reordena `sys.argv` y llama al `main()` que 
     ooxml comparar   <nuevo> <anterior> --json   |   --serie <carpeta> --json
     ooxml decisiones <anterior> <siguiente> --json
     ooxml crear <entrada.md> <salida.docx> [--titulo T]
+    ooxml procedencia <fichero.docx|.md|.txt|.png> --json
     ooxml inventario <docx>
 """
 import importlib
@@ -37,6 +38,15 @@ SUB = {
     # Markdown → .docx sin pandoc. El informe se prometía en Word y llegaba en Markdown a todo el
     # que no tuviera pandoc instalado —o sea, a un cliente normal— sin que nadie se lo dijera.
     "crear": ("crear", "ooxml crear"),
+    # Escaneo de procedencia del baseline (AWAP 2, §3.3): lo que el fichero declara de sí mismo.
+    # Vive en scripts/ai-parser/ para la skill; sync-motor.sh lo trae al motor como extra.
+    "procedencia": ("procedencia", "ooxml procedencia"),
+    # Las notas del Studio, dentro del documento: marcadores de Word por nota («Ir a → Marcador») y,
+    # si el autor quiere, comentarios. No tocan el texto ni el recuento (M-27).
+    "anotar": ("anotar", "ooxml anotar"),
+    # Lo que el autor decidió en Word, leído del documento que guardó (M-21): aceptado, retocado
+    # o rechazado, y qué notas se pueden cerrar con prueba.
+    "vuelta": ("vuelta", "ooxml vuelta"),
 }
 
 VERSION = "1.0.0"

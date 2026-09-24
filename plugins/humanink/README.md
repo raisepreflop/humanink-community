@@ -1,6 +1,6 @@
 # HumanInk Community
 
-`v2.2.0-club`
+`v2.2.1-club`
 
 **The editorial suite for Escritores Aumentados members.**
 
@@ -15,6 +15,7 @@ Part of **HumanInk** — turn your Claude subscription into a full editorial tea
 This package installs the following collaborators (call any of them, in any order — nothing is mandatory):
 
 - **`/humanink:help`** — Command Cheat-Sheet: Visual reference of every command in this plugin, grouped by phase — what each does and its key flags.
+- **`/humanink:diagnostico`** — Setup Check: Checks what your Cowork (or computer) has for HumanInk to work: Python modules for Word and tracked changes, typesetting tools, fonts, internet and write access. Touches no files, costs nothing.
 - **`/humanink:log`** — Usage Logger: Records each collaborator run (tokens, documents in/out) and shows the dashboard.
 - **`/humanink:author`** — Author Onboarding (01): Interview that builds your author profile — voice, goals, history, limits, habits.
 - **`/humanink:analyst`** — Market Analyst (02): Full market intelligence for any genre: reader avatar, rankings, competition, keywords, categories.
@@ -34,6 +35,8 @@ This package installs the following collaborators (call any of them, in any orde
 - **`/humanink:kdp-audit`** — Amazon KDP Auditor: Full audit of your book's Amazon listing from its ASIN: title, BSR, categories, cover, reviews, KDP policies, pricing, 3+ competitors — scored /100 with an improvement plan (Word + JSON history).
 - **`/humanink:projects`** — Project Portfolio: One live HTML dashboard for all your projects: per-project cards, milestones and an SVG Gantt with a today line — updated by talking, no forms.
 - **`/humanink:agenda`** — Agenda: Turns conversation into Google Calendar events, Gmail drafts and task lists (with your Google connectors authorized in Claude; degrades to a markdown agenda without them). Never sends email — drafts only.
+- **`/humanink:verificar`** — Version Checker: Checks a manuscript version is sound: the .docx opens, tracked changes are legal, headings survived — and that rejecting every change gives back the previous version word for word.
+- **`/humanink:comparar`** — Version Comparer: Compares two versions (or the whole series) of your manuscript: words added and cut, chapter by chapter.
 
 ---
 
@@ -96,9 +99,9 @@ It tells you which collaborator does that and what they need from you.
 
 ```
 /humanink:help
+/humanink:diagnostico
 /humanink:log
 /humanink:author ~/my-novel
-/humanink:analyst ~/my-novel
 ```
 
 ---

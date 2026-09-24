@@ -218,9 +218,9 @@ Produce the complete document with all sections. Don't leave sections empty — 
 Save to Word:
 ```bash
 [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"
-python3 ~/.awos/md2docx.py "$CARPETA/biblia.md" "$CARPETA/biblia.docx" "Bible — [Title]"
-rm -f "$CARPETA/biblia.md"
-echo "✓ Bible saved: $CARPETA/biblia.docx"
+python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$CARPETA/biblia.md" "$CARPETA/biblia.docx" "Bible — [Title]"
+[ $? -eq 0 ] && rm -f "$CARPETA/biblia.md"   # el .md solo se borra si el Word salió
+[ -f "$CARPETA/biblia.docx" ] && echo "✓ Bible saved: $CARPETA/biblia.docx" || echo "✗ No se ha podido crear biblia.docx: el texto sigue en el .md de la misma carpeta."
 ```
 
 ---
@@ -344,9 +344,9 @@ Build or update `escaleta.md`. The outline is the blueprint of the novel: it doe
 Save to Word:
 ```bash
 [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"
-python3 ~/.awos/md2docx.py "$CARPETA/escaleta.md" "$CARPETA/escaleta.docx" "Outline — [Title]"
-rm -f "$CARPETA/escaleta.md"
-echo "✓ Outline saved: $CARPETA/escaleta.docx"
+python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$CARPETA/escaleta.md" "$CARPETA/escaleta.docx" "Outline — [Title]"
+[ $? -eq 0 ] && rm -f "$CARPETA/escaleta.md"   # el .md solo se borra si el Word salió
+[ -f "$CARPETA/escaleta.docx" ] && echo "✓ Outline saved: $CARPETA/escaleta.docx" || echo "✗ No se ha podido crear escaleta.docx: el texto sigue en el .md de la misma carpeta."
 ```
 
 ---

@@ -2,7 +2,20 @@
 """
 AWOS md2docx v2 — Conversor Markdown → Word con formato predefinido + track changes + versionado
 
-Formato predefinido:
+UN SOLO CONVERSOR (14-sep-2026). La conversión SIN marcas de revisión ya no la hace este fichero:
+delega en `ooxml/crear.py` (el motor stdlib-only, sin `pip install`, que ya lleva el instalador de
+Word/Studio) para que los 34 skills dejen de tener tablas, citas, `####` y bloques de código
+distintos de lo que el propio producto sabe escribir — antes había DOS conversores divergentes.
+Si el motor compartido no está donde se le busca, cae al camino de siempre (python-docx, este
+fichero) sin que el autor note la diferencia salvo que la tabla no salga en celdas.
+
+Lo que SIGUE siendo cosa de este fichero, porque el motor compartido no lo hace: fusionar una
+reescritura DENTRO de un .docx ya existente con marcas de <w:ins>/<w:del> (`--base`, `--tracked`,
+`--mode`) y el versionado automático (`--version`). Eso sí necesita python-docx, y solo se instala
+cuando de verdad hace falta — antes se instalaba SIEMPRE, en cada llamada, aunque fuera a usar el
+motor compartido y no le hiciera falta a nadie.
+
+Formato predefinido (camino con marcas / --base):
   Times New Roman 12, 1.5 espaciado, justificado, sangría primera línea
   Título 1: 14pt Bold, salto de página   |   Título 2: 13pt Bold
   Separadores: *** centrado
@@ -36,13 +49,69 @@ def install_deps():
         )
 
 
-install_deps()
+# CARGA PEREZOSA. Antes `install_deps()` corría al importar el fichero, así que CUALQUIER llamada
+# —incluida la conversión simple, que hoy resuelve el motor compartido— disparaba un `pip install`
+# con red, y si no había red, fallaba en silencio (`capture_output=True` se traga el error). Ahora
+# solo se paga cuando de verdad se necesita python-docx: el camino con marcas de revisión.
+_docx_cargado = False
 
-from docx import Document
-from docx.shared import Pt, Mm, Inches
-from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
-from docx.oxml.ns import qn
-from docx.oxml import OxmlElement
+
+def _asegurar_docx():
+    global _docx_cargado, Document, Pt, Mm, Inches, WD_ALIGN_PARAGRAPH, WD_LINE_SPACING, qn, OxmlElement
+    if _docx_cargado:
+        return
+    install_deps()
+    from docx import Document as _Document
+    from docx.shared import Pt as _Pt, Mm as _Mm, Inches as _Inches
+    from docx.enum.text import WD_ALIGN_PARAGRAPH as _WAP, WD_LINE_SPACING as _WLS
+    from docx.oxml.ns import qn as _qn
+    from docx.oxml import OxmlElement as _OxmlElement
+    Document, Pt, Mm, Inches = _Document, _Pt, _Mm, _Inches
+    WD_ALIGN_PARAGRAPH, WD_LINE_SPACING, qn, OxmlElement = _WAP, _WLS, _qn, _OxmlElement
+    _docx_cargado = True
+
+
+# ──────────────────────────────────────────────
+# EL MOTOR COMPARTIDO (ooxml/crear.py) — el camino nuevo, sin marcas de revisión
+# ──────────────────────────────────────────────
+
+def _motor_ooxml_crear():
+    """Busca `crear.py` del motor compartido: primero junto a este fichero —cuando corre desde el
+    repo del plugin, en desarrollo o en `sim.sh`, donde `ooxml/` es su hermana—; si no, en el
+    mirror que `hooks/mirror-scripts.sh` deja en `~/.humanink/scripts/ooxml` al empezar la sesión
+    de Cowork, que es donde vive cuando este fichero corre copiado y solo en `~/.awos/`. Sin
+    ninguno de los dos, `None`: quien llama cae al camino de siempre."""
+    candidatos = [
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "ooxml", "crear.py"),
+        os.path.expanduser("~/.humanink/scripts/ooxml/crear.py"),
+    ]
+    for ruta in candidatos:
+        if os.path.exists(ruta):
+            try:
+                import importlib.util
+                spec = importlib.util.spec_from_file_location("hi_ooxml_crear", ruta)
+                mod = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(mod)
+                return mod
+            except Exception:
+                continue  # un motor a medias no puede tumbar la conversión: se cae al de siempre
+    return None
+
+
+def crear_con_motor_compartido(md_content, output_path, doc_title=''):
+    """Intenta el motor compartido. Devuelve la ruta si escribió el documento, o `None` si el
+    motor no está o falló — NUNCA lanza: quien llama decide qué hacer con un `None`."""
+    mod = _motor_ooxml_crear()
+    if mod is None:
+        return None
+    try:
+        md = md_content
+        if doc_title and not md.lstrip().startswith('# '):
+            md = f'# {doc_title}\n\n{md}'
+        mod.crear(md, output_path)
+        return output_path
+    except Exception:
+        return None
 
 
 # ──────────────────────────────────────────────
@@ -286,6 +355,7 @@ def md_to_docx(md_content, output_path, doc_title='', tracked=False, author=TRAC
     Convierte markdown a .docx con formato predefinido.
     tracked=True → todo el contenido se marca como <w:ins> (inserción nueva).
     """
+    _asegurar_docx()
     doc = Document()
 
     section = doc.sections[0]
@@ -400,6 +470,7 @@ def create_tracked_revision(base_docx_path, new_md_content, output_path,
 
     version: número de versión para la nota de revisión.
     """
+    _asegurar_docx()
     base = Document(base_docx_path)
     out = Document()
 
@@ -538,9 +609,43 @@ def _inject_tracked_md(doc, md_content, author=TRACK_AUTHOR):
 # ──────────────────────────────────────────────
 
 def read_docx_text(docx_path):
-    """Extrae el texto plano de un .docx."""
-    doc = Document(docx_path)
-    return '\n\n'.join(p.text for p in doc.paragraphs if p.text.strip())
+    """
+    Extrae el texto de un .docx SOLO con la biblioteca estándar (24-sep-2026: `--read` lo invocaban
+    el corrector y el fantasma y no existía, así que leían siempre vacío).
+
+    Lee el texto tal como quedaría aceptando los cambios pendientes: lo insertado cuenta, lo borrado
+    (`w:del`/`w:delText`) no, y los códigos de campo (`w:instrText`, el índice) tampoco. Un párrafo
+    por bloque, separados por una línea en blanco.
+    """
+    import zipfile
+    import xml.etree.ElementTree as ET
+    W = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
+    with zipfile.ZipFile(docx_path) as z:
+        raiz = ET.fromstring(z.read('word/document.xml'))
+    cuerpo = raiz.find(W + 'body')
+    parrafos = []
+
+    def texto(nodo):
+        partes = []
+        for hijo in nodo:
+            etiqueta = hijo.tag
+            if etiqueta in (W + 'del', W + 'delText', W + 'instrText', W + 'moveFrom'):
+                continue
+            if etiqueta == W + 't':
+                partes.append(hijo.text or '')
+            elif etiqueta == W + 'tab':
+                partes.append('\t')
+            elif etiqueta in (W + 'br', W + 'cr'):
+                partes.append('\n')
+            else:
+                partes.append(texto(hijo))
+        return ''.join(partes)
+
+    for p in (cuerpo.iter(W + 'p') if cuerpo is not None else []):
+        t = texto(p).strip()
+        if t:
+            parrafos.append(t)
+    return '\n\n'.join(parrafos)
 
 
 # ──────────────────────────────────────────────
@@ -568,6 +673,7 @@ if __name__ == '__main__':
     parser.add_argument('output', nargs='?', help='Fichero .docx de salida')
     parser.add_argument('title', nargs='?', default='', help='Título del documento')
     parser.add_argument('--install', action='store_true', help='Instalar en ~/.awos/')
+    parser.add_argument('--read', metavar='DOCX', help='Imprimir el texto de un .docx (solo biblioteca estándar)')
     parser.add_argument('--tracked', action='store_true', help='Marcar todo como inserción')
     parser.add_argument('--version', action='store_true', help='Incrementar versión automáticamente')
     parser.add_argument('--base', help='Docx base para track changes')
@@ -577,6 +683,13 @@ if __name__ == '__main__':
 
     if args.install:
         install_self()
+        sys.exit(0)
+
+    if args.read:
+        try:
+            print(read_docx_text(args.read))
+        except Exception as e:
+            sys.exit(f'✗ No he podido leer {os.path.basename(args.read)}: {e}')
         sys.exit(0)
 
     if not args.input or not args.output:
@@ -605,8 +718,16 @@ if __name__ == '__main__':
             section_marker=args.section_marker,
             version=version_num
         )
+    elif args.tracked:
+        # Con marcas de revisión: sigue siendo cosa de python-docx, el motor compartido no las hace.
+        result = md_to_docx(content, output, args.title, tracked=True)
     else:
-        result = md_to_docx(content, output, args.title, tracked=args.tracked)
+        # UN SOLO CONVERSOR: el camino simple prueba primero el motor compartido —tablas, citas,
+        # #### y bloques de código de verdad, sin pip install—. Solo si no está o falla cae al
+        # camino de siempre, y entonces sí hace falta python-docx.
+        result = crear_con_motor_compartido(content, output, args.title)
+        if result is None:
+            result = md_to_docx(content, output, args.title, tracked=False)
 
     print(f'✓ Word guardado: {result}')
     if version_num:

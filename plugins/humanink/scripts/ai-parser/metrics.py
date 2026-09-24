@@ -5,10 +5,17 @@ Todas son locales (sin LLM ni GPU).
 
 import re
 import math
+import sys
 from collections import Counter
 from typing import NamedTuple
 
-import textstat
+# textstat solo da el índice de Flesch, y no es de la biblioteca estándar: si en tu equipo (o en la
+# máquina de Cowork) no está, el análisis sale igual, sin ese índice, en vez de morir con un
+# ImportError (equipo rojo, 24-sep-2026).
+try:
+    import textstat
+except ImportError:
+    textstat = None
 
 
 class TextMetrics(NamedTuple):
@@ -204,7 +211,11 @@ def analyze(text: str, pattern_hits: list[dict]) -> TextMetrics:
     perp = approx_perplexity(words)
     pattern_s = compute_ai_pattern_score(pattern_hits, len(words))
 
-    flesch = textstat.flesch_reading_ease(text)
+    if textstat is not None:
+        flesch = textstat.flesch_reading_ease(text)
+    else:
+        flesch = 0.0
+        print("ℹ️ Sin el módulo textstat no calculo la legibilidad (Flesch); el resto del análisis sale completo.", file=sys.stderr)
 
     ai_score = overall_ai_score(ld, ttr, burst, para_sim, pattern_s, perp)
 

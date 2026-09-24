@@ -11,7 +11,7 @@ effort: medium
 <!-- AI-TRANSPARENCY-50-1 -->
 > **Primera respuesta — transparencia de IA (Reglamento europeo de IA, art. 50(1)).** Abre tu primerísima respuesta en este comando con esta línea EXACTA, en español, y continúa normalmente:
 >
-> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.2.0-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
+> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.2.1-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
 
 <!-- HI-PRESENCIA -->
 > **Presencia — solo si en el contexto de esta sesión aparece la línea `HUMANINK_PRESENCIA: falta_email`.**
@@ -105,7 +105,7 @@ Si penalizas, cita exactamente qué criterio de la rúbrica no se cumple.
 Escribe primero el informe en Markdown y conviértelo con el conversor del plugin:
 
 ```bash
-python3 ~/.awos/md2docx.py "<informe>.md" "<informe>.docx" "Auditoría KDP — <título>"
+python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "<informe>.md" "<informe>.docx" "Auditoría KDP — <título>"
 ```
 
 Estructura del informe (siempre esta plantilla, en el idioma del autor):

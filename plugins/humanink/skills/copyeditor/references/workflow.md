@@ -40,8 +40,8 @@ print(f'Snapshot: {dst}')
 echo "=== TEXT TO CORRECT ==="
 case "$ARCHIVO" in
   *.docx)
-    npx mammoth "$ARCHIVO" --output-format=text 2>/dev/null \
-      || python3 ~/.awos/md2docx.py --read "$ARCHIVO" 2>/dev/null \
+    python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" --read "$ARCHIVO" 2>/dev/null \
+      || npx mammoth "$ARCHIVO" --output-format=text 2>/dev/null \
       || echo "(no docx extractor available — Read the file with the Read tool)" ;;
   *) echo "(plain text file — read it with the Read tool)" ;;
 esac
@@ -180,10 +180,9 @@ OUT_DOCX="$DEST/${ARCHIVO_BASE}-corregido.docx"
 
 # Convert to Word: Times New Roman 12, 1.5, justified, first-line indent
 # In the copyeditor, scene breaks are *** (not ---)
-python3 ~/.awos/md2docx.py "$OUT_MD" "$OUT_DOCX" ""
-rm -f "$OUT_MD"
-echo "✓ Word ready: $OUT_DOCX"
-
+python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$OUT_MD" "$OUT_DOCX" ""
+[ $? -eq 0 ] && rm -f "$OUT_MD"   # el .md solo se borra si el Word salió
+[ -f "$OUT_DOCX" ] && echo "✓ Word ready: $OUT_DOCX" || echo "✗ No se ha podido crear el Word: el texto sigue en el .md de la misma carpeta."
 # AWAP event (no-op if the project has no AWAP)
 echo '{"event_type":"text_generated","document_type":"revision","description":"Copyeditor 08 — three passes"}' >> "$DEST/.awap/pending.jsonl" 2>/dev/null || true
 

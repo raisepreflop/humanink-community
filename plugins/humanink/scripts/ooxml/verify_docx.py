@@ -32,7 +32,12 @@ import json
 import sys
 import zipfile
 
-from lxml import etree
+try:
+    from lxml import etree
+except ImportError:  # equipo rojo, 24-sep-2026: un traceback de Python no le dice nada a un autor
+    import sys as _sys
+    _sys.exit("✗ Falta el módulo «lxml», que necesito para leer y escribir el control de cambios de Word.\n"
+              "  En tu ordenador: python3 -m pip install lxml. En Cowork, dímelo en el chat y lo resolvemos.")
 
 sys.path.insert(0, __file__.rsplit("/", 1)[0])
 import docxtc as D  # noqa: E402

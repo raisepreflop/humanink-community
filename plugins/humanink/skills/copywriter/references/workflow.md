@@ -339,26 +339,26 @@ TITULO=$(grep -m1 "^# " "$CARPETA/biblia.md" 2>/dev/null | sed 's/^# //' | sed '
 SLUG=$(echo "$TITULO" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-' | head -c25)
 
 if $DO_BLURB; then
-  python3 ~/.awos/md2docx.py "$CARPETA/blurb-contraportada.md" \
+  python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$CARPETA/blurb-contraportada.md" \
     "$CARPETA/blurb-contraportada.docx" "Blurb and bio — $TITULO"
-  rm -f "$CARPETA/blurb-contraportada.md"
-  echo "✓ Blurb: $CARPETA/blurb-contraportada.docx"
+  [ $? -eq 0 ] && rm -f "$CARPETA/blurb-contraportada.md"   # el .md solo se borra si el Word salió
+  [ -f "$CARPETA/blurb-contraportada.docx" ] && echo "✓ Blurb: $CARPETA/blurb-contraportada.docx" || echo "✗ No se ha podido crear blurb-contraportada.docx: el texto sigue en el .md de la misma carpeta."
 fi
 
 if $DO_AMAZON; then
   # The Amazon HTML is saved as .html to paste directly into KDP
   # The rest of the listing is saved in Word
-  python3 ~/.awos/md2docx.py "$CARPETA/ficha-amazon.md" \
+  python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$CARPETA/ficha-amazon.md" \
     "$CARPETA/ficha-amazon.docx" "Amazon listing — $TITULO"
-  rm -f "$CARPETA/ficha-amazon.md"
-  echo "✓ Amazon listing: $CARPETA/ficha-amazon.docx"
+  [ $? -eq 0 ] && rm -f "$CARPETA/ficha-amazon.md"   # el .md solo se borra si el Word salió
+  [ -f "$CARPETA/ficha-amazon.docx" ] && echo "✓ Amazon listing: $CARPETA/ficha-amazon.docx" || echo "✗ No se ha podido crear ficha-amazon.docx: el texto sigue en el .md de la misma carpeta."
 fi
 
 if $DO_TAGLINES; then
-  python3 ~/.awos/md2docx.py "$CARPETA/taglines.md" \
+  python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$CARPETA/taglines.md" \
     "$CARPETA/taglines.docx" "Taglines — $TITULO"
-  rm -f "$CARPETA/taglines.md"
-  echo "✓ Taglines: $CARPETA/taglines.docx"
+  [ $? -eq 0 ] && rm -f "$CARPETA/taglines.md"   # el .md solo se borra si el Word salió
+  [ -f "$CARPETA/taglines.docx" ] && echo "✓ Taglines: $CARPETA/taglines.docx" || echo "✗ No se ha podido crear taglines.docx: el texto sigue en el .md de la misma carpeta."
 fi
 ```
 

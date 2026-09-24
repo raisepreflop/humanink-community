@@ -172,9 +172,9 @@ Save to Word:
 ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; [ -d "$ROOT/scripts" ] || ROOT="$HOME/.humanink"
 eval "$(python3 "$ROOT/scripts/hi-args.py" "$ARGUMENTS")"
 CARPETA="$FOLDER"; MODO="$MODE"
-python3 ~/.awos/md2docx.py "$CARPETA/query-letter.md" "$CARPETA/query-letter.docx" "Query Letter — $TITULO"
-rm -f "$CARPETA/query-letter.md"
-echo "✓ Query Letter: $CARPETA/query-letter.docx"
+python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$CARPETA/query-letter.md" "$CARPETA/query-letter.docx" "Query Letter — $TITULO"
+[ $? -eq 0 ] && rm -f "$CARPETA/query-letter.md"   # el .md solo se borra si el Word salió
+[ -f "$CARPETA/query-letter.docx" ] && echo "✓ Query Letter: $CARPETA/query-letter.docx" || echo "✗ No se ha podido crear query-letter.docx: el texto sigue en el .md de la misma carpeta."
 ```
 
 ---
@@ -401,9 +401,9 @@ Save to Word:
 ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; [ -d "$ROOT/scripts" ] || ROOT="$HOME/.humanink"
 eval "$(python3 "$ROOT/scripts/hi-args.py" "$ARGUMENTS")"
 CARPETA="$FOLDER"; MODO="$MODE"
-python3 ~/.awos/md2docx.py "$CARPETA/briefing-editorial.md" "$CARPETA/briefing-editorial.docx" "Editorial Briefing — $TITULO"
-rm -f "$CARPETA/briefing-editorial.md"
-echo "✓ Editorial briefing: $CARPETA/briefing-editorial.docx"
+python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$CARPETA/briefing-editorial.md" "$CARPETA/briefing-editorial.docx" "Editorial Briefing — $TITULO"
+[ $? -eq 0 ] && rm -f "$CARPETA/briefing-editorial.md"   # el .md solo se borra si el Word salió
+[ -f "$CARPETA/briefing-editorial.docx" ] && echo "✓ Editorial briefing: $CARPETA/briefing-editorial.docx" || echo "✗ No se ha podido crear briefing-editorial.docx: el texto sigue en el .md de la misma carpeta."
 ```
 
 ---
@@ -595,9 +595,9 @@ ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; 
 eval "$(python3 "$ROOT/scripts/hi-args.py" "$ARGUMENTS")"
 CARPETA="$FOLDER"; MODO="$MODE"
 if $DO_FICHA; then
-  python3 ~/.awos/md2docx.py "$CARPETA/ficha-cinematografica.md" "$CARPETA/ficha-cinematografica.docx" "Film Listing — $TITULO"
-  rm -f "$CARPETA/ficha-cinematografica.md"
-  echo "✓ Film listing: $CARPETA/ficha-cinematografica.docx"
+  python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$CARPETA/ficha-cinematografica.md" "$CARPETA/ficha-cinematografica.docx" "Film Listing — $TITULO"
+  [ $? -eq 0 ] && rm -f "$CARPETA/ficha-cinematografica.md"   # el .md solo se borra si el Word salió
+  [ -f "$CARPETA/ficha-cinematografica.docx" ] && echo "✓ Film listing: $CARPETA/ficha-cinematografica.docx" || echo "✗ No se ha podido crear ficha-cinematografica.docx: el texto sigue en el .md de la misma carpeta."
 fi
 ```
 

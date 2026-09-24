@@ -171,17 +171,26 @@ def imagenes_docx(ruta):
     return fuera
 
 
+# Por qué no se pudo leer el texto, si no se pudo. Un escaneo que devuelve «0 palabras» sin decir
+# que no leyó el fichero se lee como «fichero vacío», y no lo es (AWAP 2, 10-sep-2026: sin lxml
+# a mano el docx salía con cero palabras y ninguna explicación).
+MOTIVO_TEXTO = None
+
+
 def texto_de(ruta):
+    global MOTIVO_TEXTO
+    MOTIVO_TEXTO = None
     if ruta.lower().endswith(".docx"):
         try:
             sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "ooxml"))
             import docxtc as D
             return D.texto(ruta, D.ACEPTAR)
-        except Exception:
+        except Exception as e1:
             try:
                 from docx import Document
                 return "\n".join(p.text for p in Document(ruta).paragraphs)
-            except Exception:
+            except Exception as e2:
+                MOTIVO_TEXTO = f"no se pudo leer el texto del .docx ({type(e1).__name__}: {e1}; {type(e2).__name__}: {e2})"
                 return ""
     if ruta.lower().endswith((".png", ".jpg", ".jpeg", ".webp", ".svg")):
         return ""
@@ -199,6 +208,8 @@ def escanear(ruta):
         "fichero": os.path.basename(ruta),
         "tipo": "imagen" if es_imagen else ("docx" if ruta.lower().endswith(".docx") else "texto"),
         "palabras": len(texto.split()),
+        # Si el texto no se pudo leer, se dice: «0 palabras» a secas sería una afirmación falsa.
+        "texto": {"leido": bool(texto), "motivo": MOTIVO_TEXTO},
         "invisibles": invisibles(texto) if texto else {},
         "homoglifos": homoglifos(texto) if texto else [],
         "metadatos": metadatos_docx(ruta) if ruta.lower().endswith(".docx") else {},

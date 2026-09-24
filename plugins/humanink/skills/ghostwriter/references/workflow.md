@@ -43,7 +43,7 @@ done
 echo "=== EXISTING CHAPTERS (full text) ==="
 for f in $(bash "$ROOT/scripts/latest-chapters.sh" "$CARPETA"); do
   echo "=== $(basename "$f") ==="
-  python3 ~/.awos/md2docx.py --read "$f" 2>/dev/null
+  python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" --read "$f" 2>/dev/null
 done
 
 echo "=== DESTINATION ==="
@@ -192,9 +192,9 @@ Save to `$OUT_MD`, convert, and record the invocation — one block (estimate `_
 ```bash
 [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"
 ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; [ -d "$ROOT/scripts" ] || ROOT="$HOME/.humanink"
-python3 ~/.awos/md2docx.py "$OUT_MD" "$OUT_DOCX" "" --version
-rm -f "$OUT_MD"
-echo "✓ New chapter: $OUT_DOCX"
+python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$OUT_MD" "$OUT_DOCX" "" --version
+[ $? -eq 0 ] && rm -f "$OUT_MD"   # el .md solo se borra si el Word salió
+[ -f "$OUT_DOCX" ] && echo "✓ New chapter: $OUT_DOCX" || echo "✗ No se ha podido crear el Word: el texto sigue en el .md de la misma carpeta."
 bash "$ROOT/scripts/hi-log.sh" awos-escritor "Escritor (01)" "$CARPETA" "$MODO" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"
 ```
 
@@ -214,12 +214,12 @@ Save the new text to `$OUT_MD`, create the document with track changes, and reco
 ```bash
 [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"
 ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; [ -d "$ROOT/scripts" ] || ROOT="$HOME/.humanink"
-python3 ~/.awos/md2docx.py "$OUT_MD" "$OUT_DOCX" \
+python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$OUT_MD" "$OUT_DOCX" \
   --base "$CURRENT_DOCX" \
   --mode rewrite \
   --version
-rm -f "$OUT_MD"
-echo "✓ Rewrite with track changes: $OUT_DOCX (v${NEXT_V})"
+[ $? -eq 0 ] && rm -f "$OUT_MD"   # el .md solo se borra si el Word salió
+[ -f "$OUT_DOCX" ] && echo "✓ Rewrite with track changes: $OUT_DOCX (v${NEXT_V})" || echo "✗ No se ha podido crear el Word: el texto sigue en el .md de la misma carpeta."
 bash "$ROOT/scripts/hi-log.sh" awos-escritor "Escritor (01)" "$CARPETA" "$MODO" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"
 ```
 
@@ -245,13 +245,13 @@ Save the rewritten section to `$OUT_MD`, create the document with track changes,
 [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"
 ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; [ -d "$ROOT/scripts" ] || ROOT="$HOME/.humanink"
 SECTION_MARKER="$OBJETIVO"
-python3 ~/.awos/md2docx.py "$OUT_MD" "$OUT_DOCX" \
+python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$OUT_MD" "$OUT_DOCX" \
   --base "$CURRENT_DOCX" \
   --mode section \
   --section-marker "$SECTION_MARKER" \
   --version
-rm -f "$OUT_MD"
-echo "✓ Section rewritten with track changes: $OUT_DOCX (v${NEXT_V})"
+[ $? -eq 0 ] && rm -f "$OUT_MD"   # el .md solo se borra si el Word salió
+[ -f "$OUT_DOCX" ] && echo "✓ Section rewritten with track changes: $OUT_DOCX (v${NEXT_V})" || echo "✗ No se ha podido crear el Word: el texto sigue en el .md de la misma carpeta."
 bash "$ROOT/scripts/hi-log.sh" awos-escritor "Escritor (01)" "$CARPETA" "$MODO" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"
 ```
 
@@ -273,12 +273,12 @@ Write the new fragment with the same checklist. Then convert and record the invo
 ```bash
 [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"
 ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; [ -d "$ROOT/scripts" ] || ROOT="$HOME/.humanink"
-python3 ~/.awos/md2docx.py "$OUT_MD" "$OUT_DOCX" \
+python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$OUT_MD" "$OUT_DOCX" \
   --base "$CURRENT_DOCX" \
   --mode insert \
   --version
-rm -f "$OUT_MD"
-echo "✓ Fragment inserted with track changes: $OUT_DOCX (v${NEXT_V})"
+[ $? -eq 0 ] && rm -f "$OUT_MD"   # el .md solo se borra si el Word salió
+[ -f "$OUT_DOCX" ] && echo "✓ Fragment inserted with track changes: $OUT_DOCX (v${NEXT_V})" || echo "✗ No se ha podido crear el Word: el texto sigue en el .md de la misma carpeta."
 bash "$ROOT/scripts/hi-log.sh" awos-escritor "Escritor (01)" "$CARPETA" "$MODO" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"
 ```
 

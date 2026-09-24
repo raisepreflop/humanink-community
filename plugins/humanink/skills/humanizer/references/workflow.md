@@ -157,7 +157,7 @@ If the author passed `--style file`, read that file (or the project's `estilo.do
 2. Save it as `[name]-humanizado.docx` next to the original, using the plugin's converter:
    ```bash
 [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"
-   $PYTHON ~/.awos/md2docx.py TEXTO_MD "[name]-humanizado.docx" "Title" 2>/dev/null \
+   $PYTHON "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" TEXTO_MD "[name]-humanizado.docx" "Title" 2>/dev/null \
      || $PYTHON "$(dirname "$0")/../scripts/md2docx.py" TEXTO_MD "[name]-humanizado.docx" "Title"
    ```
    (If the original is `.md`/`.txt`, save in the same format and skip the conversion.)

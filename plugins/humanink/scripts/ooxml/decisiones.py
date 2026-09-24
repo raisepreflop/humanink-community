@@ -30,6 +30,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import docxtc as D  # noqa: E402
+import libros as L  # noqa: E402
 
 # El umbral no es a ojo. Medido sobre un manuscrito real con 9 marcas, contrastando contra el
 # estado "aceptando todo" (donde lo correcto es 0 rechazadas), los falsos negativos desaparecen a
@@ -109,12 +110,15 @@ def _guardar(siguiente, r):
     m = RE_VERSION.search(os.path.basename(siguiente))
     if not m:
         return None
-    destino = os.path.join(os.path.dirname(os.path.abspath(siguiente)), "telemetria")
+    carpeta = os.path.dirname(os.path.abspath(siguiente))
     try:
-        os.makedirs(destino, exist_ok=True)
-        ruta = os.path.join(destino, f"decisiones-v{int(m.group(1)):02d}.json")
-        with open(ruta, "w", encoding="utf-8") as fh:
-            json.dump(r, fh, ensure_ascii=False, indent=1)
+        ruta = None
+        # Por libro (1.6.5), y en la de siempre solo si la carpeta tiene un único libro.
+        for destino in L.destinos(carpeta, siguiente):
+            os.makedirs(destino, exist_ok=True)
+            ruta = ruta or os.path.join(destino, f"decisiones-v{int(m.group(1)):02d}.json")
+            with open(os.path.join(destino, f"decisiones-v{int(m.group(1)):02d}.json"), "w", encoding="utf-8") as fh:
+                json.dump(r, fh, ensure_ascii=False, indent=1)
         return ruta
     except OSError as e:
         print(f"  aviso: no se pudo guardar la telemetria: {e}")
