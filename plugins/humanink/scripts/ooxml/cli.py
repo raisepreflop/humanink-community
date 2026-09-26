@@ -17,6 +17,7 @@ Así que esto no reimplementa nada. Reordena `sys.argv` y llama al `main()` que 
     ooxml decisiones <anterior> <siguiente> --json
     ooxml crear <entrada.md> <salida.docx> [--titulo T]
     ooxml procedencia <fichero.docx|.md|.txt|.png> --json
+    ooxml wrap --front <portada> --content <contraportada.json> --pages N [--paper cream] [--trim 6x9] [--dpi 600] --out <carpeta>
     ooxml inventario <docx>
 """
 import importlib
@@ -41,6 +42,9 @@ SUB = {
     # Escaneo de procedencia del baseline (AWAP 2, §3.3): lo que el fichero declara de sí mismo.
     # Vive en scripts/ai-parser/ para la skill; sync-motor.sh lo trae al motor como extra.
     "procedencia": ("procedencia", "ooxml procedencia"),
+    # La cubierta de tapa blanda para KDP (portada + lomo + contraportada) a medidas exactas y 600 ppp:
+    # el script de la skill cover. Necesita Pillow, que el motor empaquetado lleva (26-sep-2026).
+    "wrap": ("kdp_wrap", "ooxml wrap"),
     # Las notas del Studio, dentro del documento: marcadores de Word por nota («Ir a → Marcador») y,
     # si el autor quiere, comentarios. No tocan el texto ni el recuento (M-27).
     "anotar": ("anotar", "ooxml anotar"),

@@ -1,6 +1,6 @@
 # HumanInk Community
 
-`v2.2.1-club`
+`v2.2.2-club`
 
 **The editorial suite for Escritores Aumentados members.**
 

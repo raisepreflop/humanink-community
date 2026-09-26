@@ -81,8 +81,15 @@ print(' '.join(text.split())[:2500])
 " "$ANALISIS" 2>/dev/null
 fi
 
-echo "=== BLURB (if exists from Copywriter) ==="
-cat "$CARPETA/blurb-texto.txt" 2>/dev/null || echo "(no exported blurb — run /humanink:copywriter first)"
+echo "=== AUTHOR PROFILE (the exact author name for the cover, and the bio) ==="
+if [ -f "$CARPETA/perfil-autor.md" ]; then head -c 4000 "$CARPETA/perfil-autor.md"
+elif [ -f "$CARPETA/perfil-autor.docx" ]; then python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" --read "$CARPETA/perfil-autor.docx" 2>/dev/null | head -c 4000
+else echo "(no author profile — the author name comes from the manuscript's title page or the bible)"; fi
+
+echo "=== BLURB (from the Copywriter) ==="
+if [ -f "$CARPETA/blurb-texto.txt" ]; then cat "$CARPETA/blurb-texto.txt"
+elif [ -f "$CARPETA/blurb-contraportada.docx" ]; then python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" --read "$CARPETA/blurb-contraportada.docx" 2>/dev/null | head -c 6000
+else echo "(no blurb — run /humanink:copywriter --blurb first)"; fi
 
 echo "=== PAGE COUNT FROM TYPESETTING ==="
 PAGINAS_JSON=$(cat "$CARPETA/output/wrap-dimensiones.json" 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('paginas',0))" 2>/dev/null || echo "0")
@@ -115,6 +122,13 @@ Before proposing anything, internally analyze the covers of the **5 comparable t
 - Mood (dark / bright / intimate / epic / minimalist / expressive)
 
 With that market analysis as your foundation, generate the 5 concepts. Each one represents a **distinct visual strategy** — not 5 variations of the same concept.
+
+**The cover text is part of the cover.** Take the exact title (and subtitle, if any) and the author name
+as they will be printed — from the bible, the author profile or the manuscript's title page — and put them
+**literally, in quotes,** in every AI prompt and in every Canva brief, with their typography and their
+position. A prompt that only describes the image gives the author a picture, not a cover. If you cannot
+find the exact title or author name, say so at the top of the document and use `[TITLE]` / `[AUTHOR]`
+so the author can fill them in before generating.
 
 **Knowledge base of 2023-2025 cover trends by genre:**
 
@@ -176,7 +190,9 @@ With that market analysis as your foundation, generate the 5 concepts. Each one 
 ```markdown
 ---
 
-# 5 COVER CONCEPTS — [BOOK TITLE]
+# 5 COVER CONCEPTS — [BOOK TITLE] · [AUTHOR NAME]
+
+**Cover text (exact):** Title: "[exact title]" · Subtitle: "[exact subtitle or none]" · Author: "[exact author name]"
 
 *Base analysis: genres [X], [Y] · Comparable titles: [List of analyzed comparables]*
 *Dominant market trend: [2-line synthesis of what is selling right now]*
@@ -209,12 +225,12 @@ With that market analysis as your foundation, generate the 5 concepts. Each one 
 
 ### 🎨 Midjourney prompt
 ```
-[full prompt in English, including: description of the visual element, artistic style, color palette, lighting, mood, aspect ratio 2:3 --ar 2:3, quality --q 2, style --stylize 500 or similar. Max 250 words]
+[full prompt in English, including: description of the visual element, artistic style, color palette, lighting, mood, AND the cover text written literally in quotes with its typography and position — e.g. 'book cover with the title "[EXACT TITLE]" in bold condensed white sans-serif at the top third, and the author name "[EXACT AUTHOR]" in small elegant serif at the bottom' — aspect ratio 2:3 --ar 2:3, quality --q 2, style --stylize 500 or similar. Max 250 words]
 ```
 
 ### 🤖 DALL-E / GPT-4o prompt
 ```
-[prompt adapted for DALL-E: more descriptive and literal than Midjourney, same image but without MJ's technical modifiers. Include: artistic style, materials, lighting, composition, what NOT to include]
+[prompt adapted for DALL-E: more descriptive and literal than Midjourney, same image but without MJ's technical modifiers. Include: the exact cover text in quotes — the title "[EXACT TITLE]" and the author name "[EXACT AUTHOR]" — with font style, size relative to the cover and position; artistic style, materials, lighting, composition, what NOT to include (e.g. no other text, no misspellings of the title)]
 ```
 
 ### 🖥️ Canva brief
@@ -222,8 +238,8 @@ With that market analysis as your foundation, generate the 5 concepts. Each one 
 Design type: Book cover (1410 × 2250 px recommended)
 Background: [solid color / gradient / photo to search with these keywords: "..."]
 Main element: [what to search in the Canva library or upload manually]
-Title font: [name of the font available in Canva]
-Author font: [name of the font available in Canva]
+Title text: "[EXACT TITLE]" — font: [name of the font available in Canva], position: [...]
+Author text: "[EXACT AUTHOR]" — font: [name of the font available in Canva], position: [...]
 Settings: [contrast, element opacity, text effects if applicable]
 ```
 
@@ -320,12 +336,12 @@ When the author has chosen a concept, dig into all the technical elements a prof
 - Publisher logo (if it exists): bottom-left corner, same height as the barcode
 
 ### Spine composition
-- The spine text reads from bottom to top (standard in Spanish/English)
+- The spine text reads from bottom to top in Spanish (continental convention) and from top to bottom in English — set `spine_direction` in the wrap JSON accordingly
 - Title in bold uppercase + separator " | " + author name in italic
 - Maximum font size given the thickness: [spine_pt]pt
 
 ### Final AI prompt (refined version)
-[The prompt of the chosen concept, now refined with the exact colors in hex, the typographic style, the proportions. This is the final version to send to Midjourney or DALL-E]
+[The prompt of the chosen concept, now refined with the exact colors in hex, the typographic style, the proportions, and the exact cover text in quotes (title "[EXACT TITLE]", author "[EXACT AUTHOR]") with its position. This is the final version to send to Midjourney or DALL-E]
 
 ### Recommended workflow
 1. Generate the cover image with the AI prompt (Midjourney / DALL-E)
@@ -365,8 +381,12 @@ low-res.
    ~261 DPI on a 6×9 front, and it joins a solid-background wrap seamlessly).
 3. Write a `back-cover.json` in the book folder (Write tool) with the closed copy from
    `/humanink:copywriter` — blocks (`head`/`subhead`/`body`), `bio`, `spine_title`, `spine_author`,
-   `logo` filename, and a `palette` (bg/gold/cream/body/muted hex). Example:
-   `{"blocks":[{"type":"head","text":"…"},{"type":"body","text":"…"}],"bio":"…","spine_title":"…","spine_author":"…","logo":"logo.png","palette":{"bg":"#0a0e14","gold":"#FFC400","cream":"#f0e6d2","body":"#cbd5e1","muted":"#6b7280"}}`
+   `spine_direction` (`"up"` = reads bottom-to-top, the Spanish/continental convention; `"down"` =
+   top-to-bottom, the English one; default `"down"`), and optionally a `logo` filename. **Do NOT write
+   a `palette`** unless the author asks for specific colours: the script samples the front's background
+   and picks text colours that read on it (dark text on a light cover, light text on a dark one). A
+   palette you write wins — and the dark-cover example colours are unreadable on a light cover. Example:
+   `{"blocks":[{"type":"head","text":"…"},{"type":"body","text":"…"}],"bio":"…","spine_title":"…","spine_author":"…","spine_direction":"up"}`
 4. Run:
    ```bash
    [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"

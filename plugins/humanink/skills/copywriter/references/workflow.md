@@ -55,7 +55,7 @@ Then Read each source with the Read tool (it reads `.md`, `.txt` and `.docx` dir
 - **Briefing** — Read the `BRIEFING` path (Read tool). If empty, Read `$CARPETA/briefing-editorial.md`; if that is also absent, note `(no briefing — run /humanink:agent --briefing first)`.
 - **Reading report (latest)** — Read the `INFORME` path (Read tool). If empty, note `(no reading report)`.
 - **Market analysis** — Read the `ANALISIS` path (Read tool). If empty, note `(no market analysis)`.
-- **Author profile** — Read `$CARPETA/perfil-autor.md` (Read tool). If absent, note `(no profile)`.
+- **Author profile** — Read `$CARPETA/perfil-autor.md` (Read tool). If absent, Read `$CARPETA/perfil-autor.docx` — the author collaborator saves the profile in Word and removes the `.md`. If neither exists, note `(no profile)`. Its «Author bio» section is the base of the mini bio (4b).
 - **First chapter (the book's real voice)** — Read the `CAP1` path (Read tool). If empty, note `(no chapters available)`.
 
 ---
@@ -162,6 +162,11 @@ Each version has a **different hook** — the same book, the same conflict, thre
 ```
 
 ### 4b. Mini bio
+
+**Start from the author profile.** If `perfil-autor` has an «Author bio» section, use it as the base and
+adapt only the tone to this book's genre. If there is no profile, build the bio ONLY from what the author
+has said in the project documents; never invent awards, sales figures or publishers — leave a `[dato]`
+placeholder and say so. A back cover without a bio is incomplete: always deliver both versions.
 
 Two versions depending on the space available:
 

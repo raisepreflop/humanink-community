@@ -210,6 +210,20 @@ With all the answers, build the document `perfil-autor.md` following exactly thi
 
 ---
 
+## Author bio
+
+*The bio every book will use — back cover, flap, Amazon author page. Third person, only what the author
+has actually said (books, credentials, trajectory, where they live). Never invent an award, a figure or a
+publisher: if something is missing, leave it out.*
+
+**Back-cover version (~35 words):**
+[SHORT BIO]
+
+**Flap / Amazon version (60-80 words):**
+[LONG BIO — career, credentials, trajectory; ends with city · website · main handles if provided]
+
+---
+
 ## Notes from collaborator 01
 
 [Relevant observations the system should keep in mind — tendencies, contradictions, strengths or points of attention you detected during the interview. 2-4 paragraphs.]

@@ -1,9 +1,9 @@
-# HumanInk Community — versión 2.2.1-club
+# HumanInk Community — versión 2.2.2-club
 
 Esta es la edición **Community** de HumanInk para miembros de Escritores Aumentados.
 Aquí tienes, en claro, **qué incluye** y **qué no** — para que sepas exactamente qué has instalado.
 
-> **Versión:** `2.2.1-club` · la edición del Club tiene numeración propia desde la 2.2.0; el sufijo
+> **Versión:** `2.2.2-club` · la edición del Club tiene numeración propia desde la 2.2.0; el sufijo
 > `-club` la identifica. Se actualiza sola desde el catálogo (o pulsa Sincronizar).
 
 ## Lo que incluye
