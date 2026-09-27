@@ -54,18 +54,25 @@ author-marked beats, and your reading of what the numbers *mean* for this genre.
 
 ## 3. The integrated report — §1 to §12
 
+### §0 · Genre and structural lens — fix them BEFORE scoring anything
+Take the genre the author declares (`--genre`, the Studio's «EL GÉNERO ES» block, the author profile or the bible). If there is none and you cannot tell, ask; never assume a thriller. Then read the whole report through the lens of that genre:
+- **Plot lens** — thriller & suspense, crime/noir, romance, genre fantasy & SF, historical, horror: Save the Cat, acts, early hook, rising stakes and chapter cliff-hangers are what its reader expects.
+- **Literary lens** — literary fiction, autofiction & memoir: the structure follows the book's own design (emotional or thematic progression, recurring motifs, time, point of view). Do not map it to beats, and do not demand an early hook or cliff-hangers.
+- **Cumulative/choral lens** — visionary, symbolic or metaphysical fiction, choral novels: meaning builds by layers, symbols and voices, with no mandatory single protagonist or classic antagonist. A contemplative pace and an open or contemplative chapter ending are choices, not defects; judge symbolic coherence, cumulative progression, clarity of the inner world and what each voice adds.
+If the book fits none of these, say so and use the author's own description of it: never force it into the nearest genre. The bar is fixed: the lens changes WHAT is judged, not how much is demanded. State the genre and the lens in §1.
+
 ### §1 · Technical sheet + at-a-glance verdict
 Title, author, genre/subgenre, word count, chapters analyzed, declared style, target audience. A **summary table** with all key scores (development, style, structure, theme, psychology, genre, PPT, **BPS**) and the scope notice.
 
 ### §2 · Development assessment — 10 aspects
 Score **0–10** each + the **overall (mean)**. Table: aspect · score · diagnosis.
-1. Characters · 2. Plot · 3. Description · 4. Dialogue · 5. Narrative pacing · 6. Cliff-hanging · 7. Readability · 8. Vocabulary · 9. Evocation · 10. Settings.
+1. Characters · 2. Plot · 3. Description · 4. Dialogue · 5. Narrative pacing · 6. Chapter endings (cliff-hanging in the plot lens; in the literary or cumulative lens, whether each ending closes or opens what the chapter set up — an open or contemplative ending is not a defect) · 7. Readability · 8. Vocabulary · 9. Evocation · 10. Settings.
 
 ### §3 · Literary style — voice radiography (10 axes)
 Score **10 axes 0–10** + overall. Axes: 1. Concision · 2. Rhythmic alternation · 3. Economy of adjective/adverb · 4. Parentheticals & expressive punctuation · 5. Subtext density · 6. Descriptive restraint · 7. Imagery/evocation · 8. Clinical voice/distance · 9. Atmosphere/dread · 10. Voice originality. Lean on Step 0 for axes 1–4. The score measures **trait intensity**, not superiority. Give the **radar data as a table** (manuscript vs. the declared authors + 1–2 genre references) with the mandatory note: *famous-author profiles are illustrative fingerprints, not measurements of their work*. Close with a diagnosis: orientation, level, what it lacks.
 
 ### §4 · Structure: plot & subplot
-Check the structure against **Save the Cat (Snyder)**, act division, and **5- and 8-point** arcs. Map chapters onto the beats (Opening Image, Set-up, Theme Stated, Catalyst, Debate, Break into Two…) and say which are present/missing. **Rise of stakes:** do the stakes climb each chapter? Demonstrate it. Detect errors, holes and **boredom valleys** (scenes that lose tension). Subplots: which exist, seeded/developed, any that's redundant. **STRUCTURE score 0–10.**
+Read the structure **with the lens of §0**. **Plot lens:** check it against **Save the Cat (Snyder)**, act division, and **5- and 8-point** arcs; map chapters onto the beats (Opening Image, Set-up, Theme Stated, Catalyst, Debate, Break into Two…) and say which are present/missing; **rise of stakes:** do the stakes climb each chapter? Demonstrate it; detect **boredom valleys** (scenes that lose tension). **Literary or cumulative lens:** do NOT map it to beats or judge it by them; show the book's own design (progression, motifs, voices, time) and where it falters within that design — a quiet stretch is a defect only if it breaks it. In every lens, detect errors and holes. Subplots: which exist, seeded/developed, any that's redundant. **STRUCTURE score 0–10.**
 
 ### §5 · Premise, theme & controlling idea (McKee)
 **Premise** (the "what if…?"), **theme** (cite the stated theme if explicit), **controlling idea** (value + cause) with its **counter-idea**. Is it interesting and is it fulfilled (dramatized vs. preached)? **THEMATIC FORCE score 0–10.**
@@ -74,10 +81,10 @@ Check the structure against **Save the Cat (Snyder)**, act division, and **5- an
 For the principals: psychology, **motivation**, **arc/transformation**, **credibility** in dialogue and reflection, and the **need vs. want** contradiction. Who has an arc, who is functional. **PSYCHOLOGICAL DEPTH score 0–10.**
 
 ### §7 · Genre: tropes, fit & innovation
-Expected tropes respected (and which expected ones are missing); innovation; risk when tropes are altered or genres mixed (does it work or disorient?). **FIT/INNOVATION score 0–10.**
+Expected tropes of the declared genre respected (and which expected ones are missing; in literary or visionary fiction, the conventions of that tradition); innovation; risk when tropes are altered or genres mixed (does it work or disorient?). **FIT/INNOVATION score 0–10.**
 
 ### §8 · Professional reader — first person
-No hedging: overall assessment · what you liked most/least · was there boredom and where · when it hooked you · a subplot to cut · impression of each character · believable dialogue? · enough twists? · when you anticipated the ending · anything off-tone/unfortunate · lengthen or trim · the single change that would make the biggest difference.
+No hedging: overall assessment · what you liked most/least · was there boredom and where · when it hooked you · a subplot to cut · impression of each character · believable dialogue? · enough twists (if the genre asks for them)? · when you anticipated the ending · anything off-tone/unfortunate · lengthen or trim · the single change that would make the biggest difference.
 
 ### §9 · PPT — Traditional Publication Probability
 **Score 0–100** of acceptance by a traditional publisher of the genre, justified (quality, market fit, originality, competition, manuscript state). Bands: <30 unlikely · 30–55 needs work · 56–75 competitive · >75 strong.
@@ -86,7 +93,7 @@ No hedging: overall assessment · what you liked most/least · was there boredom
 A second commercial lens, complementary to §9: PPT = *probability a traditional house accepts it*; **BPS = commercial / bestseller potential**. A **weighted checklist** of **16 variables in 4 pillars** (A Structure · B Content · C Market · D Signals), with **weights that change by genre**. Inspired by *The Bestseller Code* (Archer & Jockers, 2016).
 
 **How to score:**
-1. Map the manuscript to one of the **4 supported genres** — **Romántica · Thriller/Suspense · Novela negra · Literaria** — and use that weight column. If it fits none, use the nearest and **say so** (the model is calibrated for these four).
+1. Use the weight column of the **declared genre** (§0) if it is one of the **4 supported genres** — **Romántica · Thriller/Suspense · Novela negra · Literaria**. If the book's genre is none of these (visionary, fantasy, horror, historical…), do **NOT** force the nearest column: skip the BPS, say in one line that the model is only calibrated for these four, and leave it out (null in the data).
 2. Score each variable **0–10** from your own analysis (you already measured development, style, structure, theme, characters, genre). Be evidence-based.
 3. **Execution / pre-publication variables** — A4 (price), C4 (cover & metadata), D1 (launch plan), D2 (early reviews), D3 (keywords) — are **not judgeable from the manuscript**. Score them from the author's stated plan if given; otherwise put **5/10 and tag them "pending — launch lever"**. These carry ~24–26 of the 100 points, so flag that ~¼ of BPS is the author's launch execution, not the text.
 4. **Points = weight × (score / 10)**. **BPS = sum of points (0–100).**
@@ -200,7 +207,7 @@ Keep the §1–§11 skeleton and §11.bis, but: **§2** → 7 essay axes 0–10 
 ---
 
 ## 4. Charts (data + optional images)
-Include the chart **data as tables** inside the report: style radar (10 axes vs. references), interest/tension curve scene by scene (peaks & valleys), beats map (Save the Cat / acts), stakes escalation by chapter, **BPS by pillar (achieved vs. max, the 4 pillars — §9.bis)**, and gain-per-option (Structure 0–10 + PPT 0–100). If `python3` with `matplotlib` is available locally, you MAY also render these as PNGs and embed them in the Word; if not, the data tables are the deliverable (do not fail over missing charts).
+Include the chart **data as tables** inside the report: style radar (10 axes vs. references), interest/tension curve scene by scene (peaks & valleys), structure map (beats in the plot lens; the book's own design otherwise), stakes escalation by chapter, **BPS by pillar (achieved vs. max, the 4 pillars — §9.bis)**, and gain-per-option (Structure 0–10 + PPT 0–100). If `python3` with `matplotlib` is available locally, you MAY also render these as PNGs and embed them in the Word; if not, the data tables are the deliverable (do not fail over missing charts).
 
 ## 5. Save the report
 

@@ -88,9 +88,14 @@ folder = os.path.expanduser(folder)
 # Covers the quoted argument across collaborators: --goal/--section
 # (ghostwriter), --ask (coach), --genre/--amazon/--topic/--about (analyst).
 goal = ""
-g = re.search(r'--(?:goal|section|ask|genre|amazon|topic|about|on)\s+"([^"]+)"', raw)
+g = re.search(r'--(?:goal|section|ask|amazon|topic|about|on)\s+"([^"]+)"', raw)
 if g:
     goal = g.group(1)
+
+# --- genre: su propia variable (27-sep). Hasta hoy iba a GOAL, y el coach o el fantasma lo tomaban por su
+# pregunta u objetivo; y sin comillas, o con «», se perdía. Con él se elige la lente de estructura.
+gm = re.search(r'--(?:genre|genero|género)\s+(?:"([^"]+)"|«([^»]+)»|(\S+))', raw, flags=re.I)
+genre = next(x for x in gm.groups() if x) if gm else ""
 
 # --- base: la versión anterior para /verificar --base (antes se perdía: FLAGS solo lleva nombres) --
 b = re.search(r'--base\s+(?:"([^"]+)"|«([^»]+)»|(\S+(?:\s\S+)*?' + EXT + r')|(\S+))', raw, flags=re.I)
@@ -101,6 +106,7 @@ flags = " ".join(re.findall(r'--\w[\w-]*', raw))
 
 # --- chapter: leftover after stripping flags, paths and quoted spans ----
 chapter = raw
+chapter = re.sub(r'--(?:genre|genero|género)\s+(?:"[^"]*"|«[^»]*»|\S+)', " ", chapter, flags=re.I)  # el género, con su valor
 chapter = re.sub(r'--\w[\w-]*(\s+"[^"]*")?', " ", chapter)  # flags + their quoted value
 if ruta:
     chapter = chapter.replace(ruta, " ")                        # la ruta, entera, con sus espacios
@@ -110,5 +116,5 @@ chapter = re.sub(r'"[^"]*"', " ", chapter)                  # any remaining quot
 chapter = re.sub(r'\s+', " ", chapter).strip()
 
 for k, v in (("MODE", mode), ("FOLDER", folder), ("CHAPTER", chapter),
-             ("GOAL", goal), ("FLAGS", flags), ("BASE", base)):
+             ("GOAL", goal), ("GENRE", genre), ("FLAGS", flags), ("BASE", base)):
     print(f"{k}={shlex.quote(v)}")

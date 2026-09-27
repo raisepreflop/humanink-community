@@ -22,8 +22,8 @@ MODO="genero"
 echo "$ARGS" | grep -qi "\-\-trends" && MODO="tendencias"
 echo "$ARGS" | grep -qi "\-\-amazon"     && MODO="amazon"
 
-# Genre/topic = the --goal text if given, else the leftover after stripping flags/paths:
-GENERO="${GOAL:-$CHAPTER}"
+# Genre/topic = --genre if given, else the --goal text, else the leftover after stripping flags/paths:
+GENERO="${GENRE:-${GOAL:-$CHAPTER}}"
 
 echo "Mode: $MODO"
 echo "Genre/topic: $GENERO"
@@ -47,6 +47,8 @@ If `GENERO` is empty and the mode is `genero`, show the complete map and ask:
 - Main channel: physical bookstore (55%), online (35%), digital (10%)
 
 ### Map of 20 genres (Spanish market)
+
+**Don't force the fit.** If the author's book fits none of these 20 —visionary, symbolic or metaphysical fiction, healing fiction, hybrids— say so plainly, work with the category the author declares (or describes) and look for its real comparables and readers. Never file it under the nearest genre without saying that you are forcing it.
 
 ---
 
@@ -291,7 +293,7 @@ Produce the complete market intelligence report for the requested genre/subgenre
 [...]
 
 **Where the author's idea fits** (if biblia.md or premisa.md is available):
-[Analysis of which subgenre is the most precise for this project]
+[Analysis of which subgenre is the most precise for this project — or, if none is, say so and describe the category it really belongs to]
 
 ---
 

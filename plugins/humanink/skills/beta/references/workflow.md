@@ -60,7 +60,7 @@ Follow this order of priority:
 
 **b) If the user passed `--profile N`** — use the predefined profile N (see list below).
 
-**c) If `biblia.md` or `perfil-autor.md` exists with a declared target audience** — extract the information and build the avatar.
+**c) If `biblia.md` or `perfil-autor.md` exists with a declared target audience** — extract the information and build the avatar. If only the **genre** is declared (`--genre`, the Studio's «EL GÉNERO ES» block), build the avatar of that genre's reader — never a thriller reader by default.
 
 **d) If there's no information** — present the predefined profiles and ask the user to choose:
 
@@ -80,6 +80,9 @@ Follow this order of priority:
 >
 > **5 — Crime / noir reader**
 > Any gender, 40-60 years old, knows the genre's conventions well and spots them. Demands coherence in the twists and zero tolerance for deus ex machina. If the culprit "couldn't have done it," abandons the book.
+>
+> **6 — Visionary / contemplative reader**
+> Any gender, 30-65 years old, reads for voice, image and meaning. Comfortable with a slow pace, choral structures, symbolism and open endings; doesn't need a hook on page one. Abandons the book if the symbolism feels arbitrary, the voices blur into one, or the inner world never becomes clear.
 >
 > **Or describe to me who this book is aimed at** — I can build a custom avatar."
 
@@ -157,7 +160,7 @@ Is there anything the book promises that never appears — or takes too long to 
 
 ---
 
-### The protagonist: do you care?
+### The protagonist (or the voices, in a choral book): do you care?
 
 Do you feel anything for the protagonist? What — sympathy, respect, curiosity, indifference, irritation?
 

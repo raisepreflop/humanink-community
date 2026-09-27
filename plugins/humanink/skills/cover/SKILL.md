@@ -1,6 +1,6 @@
 ---
 name: cover
-description: "Diseñador de portada — propone cinco conceptos de portada con prompts para herramientas de IA, desarrolla el elegido con paleta, tipografía y composición, y produce la cubierta completa de tapa blanda 6×9\" para KDP (portada, lomo y contraportada) en PDF con las medidas exactas calculadas desde el número de páginas maquetadas. También genera la portada del ebook en JPG."
+description: "Diseñador de portada — propone tres conceptos de portada con prompts para herramientas de IA, desarrolla el elegido con paleta, tipografía y composición, y produce la cubierta completa de tapa blanda 6×9\" para KDP (portada, lomo y contraportada) en PDF con las medidas exactas calculadas desde el número de páginas maquetadas. También genera la portada del ebook en JPG."
 allowed-tools: Bash, Read, Write
 argument-hint: "[ruta del proyecto] [--concepts] [--cover N] [--wrap] [--ebook] [--pages N] [--paper white|cream|color]"
 disable-model-invocation: true
@@ -13,7 +13,7 @@ background: false
 <!-- AI-TRANSPARENCY-50-1 -->
 > **Primera respuesta — transparencia de IA (Reglamento europeo de IA, art. 50(1)).** Abre tu primerísima respuesta en este comando con esta línea EXACTA, en español, y continúa normalmente:
 >
-> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.2.2-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
+> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.2.3-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
 
 <!-- HI-PRESENCIA -->
 > **Presencia — solo si en el contexto de esta sesión aparece la línea `HUMANINK_PRESENCIA: falta_email`.**

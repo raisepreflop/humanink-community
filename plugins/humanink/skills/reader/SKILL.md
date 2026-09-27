@@ -1,6 +1,6 @@
 ---
 name: reader
-description: "Lector profesional — el informe de lectura integrado en un documento de Word: notas de desarrollo, estilo literario en diez ejes, estructura (beats y actos), tema e idea rectora, personajes, género y tropos, reacción en primera persona, Probabilidad de Publicación Tradicional (0-100), predicción de bestseller por género (0-100), marketing y ventas, plan de revisión con tres opciones y detección de huella de IA (0-100, motor local del Humanizador; detecta, no reescribe). Ficción y no ficción."
+description: "Lector profesional — el informe de lectura integrado en un documento de Word: notas de desarrollo, estilo literario en diez ejes, estructura con la lente de su género (beats y actos en la ficción de trama), tema e idea rectora, personajes, género y tropos, reacción en primera persona, Probabilidad de Publicación Tradicional (0-100), predicción de bestseller por género (0-100), marketing y ventas, plan de revisión con tres opciones y detección de huella de IA (0-100, motor local del Humanizador; detecta, no reescribe). Ficción y no ficción."
 allowed-tools: Bash, Read, Write
 argument-hint: "[ruta del manuscrito o carpeta del proyecto] [--genre \"…\"] [--style \"…\"]"
 disable-model-invocation: true
@@ -13,7 +13,7 @@ background: false
 <!-- AI-TRANSPARENCY-50-1 -->
 > **Primera respuesta — transparencia de IA (Reglamento europeo de IA, art. 50(1)).** Abre tu primerísima respuesta en este comando con esta línea EXACTA, en español, y continúa normalmente:
 >
-> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.2.2-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
+> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.2.3-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
 
 <!-- HI-PRESENCIA -->
 > **Presencia — solo si en el contexto de esta sesión aparece la línea `HUMANINK_PRESENCIA: falta_email`.**

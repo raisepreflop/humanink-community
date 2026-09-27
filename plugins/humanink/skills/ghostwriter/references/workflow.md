@@ -122,7 +122,7 @@ PLANNED SCENES:      [list of scenes]
 ACTIVE CHARACTERS:   [who appears and with what goal]
 TURNING POINT:       [if there is one, where]
 EXPECTED OPENING:    [type of first sentence]
-EXPECTED CLOSE:      [cliffhanger / revelation / decision]
+EXPECTED CLOSE:      [cliffhanger / revelation / decision — or, in literary, visionary or choral fiction, the close its design asks for]
 PLANNED LENGTH:      [words — or 2500 by default]
 ```
 
@@ -186,7 +186,7 @@ Follow the writing checklist:
 - Subtext present
 
 **Opening:** curiosity, urgency or strangeness — never weather as the sole opening
-**Close:** cliffhanger / partial revelation / decision — never a closed ending
+**Close:** in plot-driven genres, cliffhanger / partial revelation / decision — never a closed ending; in literary, visionary or choral fiction (the declared genre says which), the close the book's design asks for: an image, an echo, an open silence
 
 Save to `$OUT_MD`, convert, and record the invocation — one block (estimate `_AWOS_TOK_IN`/`_AWOS_TOK_OUT` ≈ words × 1.33 before running it):
 ```bash

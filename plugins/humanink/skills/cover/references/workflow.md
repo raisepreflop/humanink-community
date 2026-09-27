@@ -112,7 +112,7 @@ fi
 
 ---
 
-## 4. MODE: concepts — 5 cover concepts
+## 4. MODE: concepts — 3 cover concepts
 
 Before proposing anything, internally analyze the covers of the **5 comparable titles** identified in the briefing/bible. For each one, mentally extract:
 - Dominant palette (2-3 colors)
@@ -121,7 +121,7 @@ Before proposing anything, internally analyze the covers of the **5 comparable t
 - Hero element (photo / illustration / pure typography / abstraction / symbol)
 - Mood (dark / bright / intimate / epic / minimalist / expressive)
 
-With that market analysis as your foundation, generate the 5 concepts. Each one represents a **distinct visual strategy** — not 5 variations of the same concept.
+With that market analysis as your foundation, generate the 3 concepts. Each one represents a **distinct visual strategy** — not 3 variations of the same concept. Three, not more: fewer, better developed options are easier for the author to judge.
 
 **The cover text is part of the cover.** Take the exact title (and subtitle, if any) and the author name
 as they will be printed — from the bible, the author profile or the manuscript's title page — and put them
@@ -190,7 +190,7 @@ so the author can fill them in before generating.
 ```markdown
 ---
 
-# 5 COVER CONCEPTS — [BOOK TITLE] · [AUTHOR NAME]
+# 3 COVER CONCEPTS — [BOOK TITLE] · [AUTHOR NAME]
 
 **Cover text (exact):** Title: "[exact title]" · Subtitle: "[exact subtitle or none]" · Author: "[exact author name]"
 
@@ -254,16 +254,6 @@ Settings: [contrast, element opacity, text effects if applicable]
 ---
 
 ## Concept 3 — [NAME]
-[...]
-
----
-
-## Concept 4 — [NAME]
-[...]
-
----
-
-## Concept 5 — [NAME]
 [...]
 
 ---

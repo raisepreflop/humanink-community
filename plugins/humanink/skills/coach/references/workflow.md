@@ -276,13 +276,13 @@ Build or update `escaleta.md`. The outline is the blueprint of the novel: it doe
 
 **Principles you apply:**
 
-1. **Act structure** — according to the genre and the premise, define which macro structure serves best: classic three acts, five-point structure, W structure, etc.
+1. **Act structure** — according to the genre and the premise, define which macro structure serves best: classic three acts, five-point structure, W structure, etc. In literary, visionary or choral fiction, the book's own design can serve better (cumulative, braided voices, circular, fragmentary): name it instead of forcing acts.
 
-2. **Mandatory Scene/Sequel** — each chapter specifies whether it is a Scene (Goal → Conflict → Disaster) or a Sequel (Reaction → Dilemma → Decision), and how they chain together.
+2. **Scene/Sequel in plot-driven genres** — in thriller, crime, romance, genre fantasy & SF, historical and horror, each chapter specifies whether it is a Scene (Goal → Conflict → Disaster) or a Sequel (Reaction → Dilemma → Decision), and how they chain together. In literary, visionary or choral fiction it is not required: each chapter states its movement instead (what it adds, deepens or turns).
 
 3. **Throughlines** — three guiding threads that must be present or advance in each chapter: the protagonist's emotional throughline, the main plot throughline, the thematic throughline.
 
-4. **Rising pressure** — the outline must show that the stakes rise in each act. If two consecutive chapters have the same level of tension, there's a problem.
+4. **Rising pressure** — in plot-driven genres, the outline must show that the stakes rise in each act: if two consecutive chapters have the same level of tension, there's a problem. In literary, visionary or choral fiction, what must grow is meaning or intensity, not necessarily tension: two quiet chapters in a row are fine if the design asks for them.
 
 ```markdown
 # Outline — [Title]
@@ -294,14 +294,14 @@ Build or update `escaleta.md`. The outline is the blueprint of the novel: it doe
 ---
 
 ## ACT I — [Act name] (chs. 1-N)
-*Function: establish the world, the protagonist and the conflict. The inciting incident must appear before X% of the book.*
+*Function: establish the world, the protagonist and the conflict. In plot-driven genres, the inciting incident must appear before X% of the book.*
 
 ---
 
 ### Ch. 01 — [Title]
 
 **Narrative function:** [what changes in the story with this chapter]
-**Type:** Scene | Sequel
+**Type:** Scene | Sequel | (literary, visionary or choral lens: the chapter's movement)
 **If Scene:** Goal → Conflict → Outcome/Disaster
 **If Sequel:** Reaction → Dilemma → Decision
 
@@ -311,7 +311,7 @@ Build or update `escaleta.md`. The outline is the blueprint of the novel: it doe
 **Thematic throughline:** [which aspect of the theme is touched]
 
 **Opening:** [type of first sentence — image / action / thought / dialogue]
-**Closing:** [type of last sentence — cliffhanger / revelation / irrevocable decision]
+**Closing:** [type of last sentence — cliffhanger / revelation / irrevocable decision; or, in contemplative lenses, image / open echo]
 
 **Estimated length:** [XX00 words]
 **Coach's note:** [specific warning or instruction for this chapter]

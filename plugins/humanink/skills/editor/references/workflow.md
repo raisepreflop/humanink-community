@@ -59,6 +59,8 @@ Read each listed chapter with the Read tool (it reads `.md`, `.txt` and `.docx` 
 
 Length: **minimum 3,000 words, maximum 6,000**. Be specific — quote the text when you diagnose a problem. Each section has its diagnosis + examples + concrete recommendations.
 
+**Genre lens first.** Read the whole report with the lens of the declared genre (`--genre`, the Studio's «EL GÉNERO ES» block, the author profile or the bible; if there is none, ask). Tension escalation, Scene/Sequel, hooks and cliff-hangers are what plot-driven genres demand (thriller, crime, romance, genre fantasy & SF, historical, horror). In literary, visionary or choral fiction, judge the book by its own design —progression of meaning, image or voice— and do not flag as a defect what the genre allows: a slow pace, an open or contemplative ending, a scene without Scene/Sequel structure. The bar is fixed: the lens changes what is judged, not how much is demanded.
+
 ---
 
 ### BLOCK A — GLOBAL NARRATIVE STRUCTURE
@@ -70,7 +72,7 @@ Evaluate the architecture of the story:
 - Is there a clearly identifiable central conflict from the first chapters?
 - Does the plot follow a structure recognizable for the genre? Is it appropriate — or is the author using the wrong structure for what they want to tell?
 - Are the turning points placed with precision? Identify each one and evaluate its impact.
-- Is the escalation of tension progressive, or are there flat valleys that stall the reading?
+- Is the escalation of tension progressive, or are there flat valleys that stall the reading? (Plot-driven genres. In literary, visionary or choral fiction: does the book's own progression —of meaning, image or voice— hold?)
 - Does the climax deliver what the premise promised? Or does the book "pivot" to another unannounced climax?
 - Is the resolution an organic consequence of the plot, or an external solution (deus ex machina)?
 
@@ -98,6 +100,7 @@ For each scene analyzed (or for the representative scenes if it's a complete nov
 Each scene must fulfill at least one of these functions. Identify which one it fulfills and which one is missing:
 - ✅ **Advances the plot** — something changes in the protagonist's objective situation
 - ✅ **Develops the character** — we reveal something new about who they are
+- ✅ **Deepens meaning or image** — in literary, visionary or choral fiction, it adds a layer, a symbol or a voice the book needs
 - ✅ **Raises the tension** — the conflict escalates, even if only internally
 - ✅ **Establishes the world** — introduces information the reader will need later
 
@@ -115,12 +118,12 @@ For reaction/reflection scenes — verify:
 - **Dilemma** — do they have options, and none of them comfortable?
 - **Decision** — do they decide something concrete that sets up the next action scene?
 
-Flag the scenes that have neither Scene nor Sequel structure: they are the most dangerous, because the reader experiences them as "filler".
+In plot-driven genres, flag the scenes that have neither Scene nor Sequel structure: they are the most dangerous, because the reader experiences them as "filler". In literary, visionary or choral fiction, that alone is not a defect: judge what the scene adds to the book's design.
 
 **B.3 — Scene opening and closing**
 
-- Does the first sentence of each scene create a reason to keep reading — mystery, urgency, strangeness, threat?
-- Does the closing generate momentum (cliffhanger, unanswered question, partial revelation), or does the scene "die" on its own?
+- Does the first sentence of each scene create a reason to keep reading — mystery, urgency, strangeness, threat, or, in contemplative lenses, an image or a voice?
+- Does the closing generate momentum (cliffhanger, unanswered question, partial revelation), or does the scene "die" on its own? (In literary, visionary or choral fiction, an open or contemplative closing is a choice, not a death: judge whether it resonates.)
 - Are there scenes that begin too early (before the conflict, with arrivals and greetings) or end too late (after the resolution, with departures and reflections)?
 
 ---
@@ -246,7 +249,7 @@ Describe the tension arc of the manuscript:
 - Where are the points of maximum tension?
 - Where do the valleys of rest fall?
 - Is the escalation progressive, or are there premature peaks that leave the final climax without force?
-- Does the first act generate enough urgency for the reader not to abandon it?
+- Does the first act generate enough urgency for the reader not to abandon it? (Plot-driven genres; in other lenses, enough pull —voice, mystery, image— to keep reading.)
 
 **G.2 — Pacing by chapter:**
 

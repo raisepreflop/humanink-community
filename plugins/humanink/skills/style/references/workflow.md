@@ -341,7 +341,7 @@ short/medium/long mix — instead of judging by feel]
 | Introspection / interior | [author or own style] | [e.g. free indirect speech] | [e.g. perception filters] |
 | Mystical / altered scenes | [author or own style] | [e.g. long sentence, monolithic block] | [e.g. short fragmented paragraph] |
 | Chapter opening | [specific rule] | [type of sentence] | [e.g. weather description] |
-| Chapter closing | [specific rule] | [type of sentence] | [e.g. closed ending without tension] |
+| Chapter closing | [specific rule, by the genre's lens] | [type of sentence] | [e.g. a closing that betrays the genre: a flat stop in a thriller, a forced cliffhanger in contemplative fiction] |
 
 ---
 

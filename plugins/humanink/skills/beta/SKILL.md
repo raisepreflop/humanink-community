@@ -2,7 +2,7 @@
 name: beta
 description: "Lector beta — simula la reacción de un lector real de tu público objetivo. Perfil demográfico configurable: sexo, edad, hábitos de lectura y expectativas de subgénero. Veredicto en primera persona, como si acabara de cerrar el libro."
 allowed-tools: Bash, Read, Write
-argument-hint: "[ruta del manuscrito o carpeta] [--beta \"descripción del lector\"] [--profile 1-5]"
+argument-hint: "[ruta del manuscrito o carpeta] [--beta \"descripción del lector\"] [--profile 1-6]"
 disable-model-invocation: true
 model: sonnet
 effort: medium
@@ -11,7 +11,7 @@ effort: medium
 <!-- AI-TRANSPARENCY-50-1 -->
 > **Primera respuesta — transparencia de IA (Reglamento europeo de IA, art. 50(1)).** Abre tu primerísima respuesta en este comando con esta línea EXACTA, en español, y continúa normalmente:
 >
-> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.2.2-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
+> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.2.3-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
 
 <!-- HI-PRESENCIA -->
 > **Presencia — solo si en el contexto de esta sesión aparece la línea `HUMANINK_PRESENCIA: falta_email`.**
