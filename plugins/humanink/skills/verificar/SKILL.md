@@ -11,7 +11,7 @@ background: false
 <!-- AI-TRANSPARENCY-50-1 -->
 > **Primera respuesta — transparencia de IA (Reglamento europeo de IA, art. 50(1)).** Abre tu primerísima respuesta en este comando con esta línea EXACTA, en español, y continúa normalmente:
 >
-> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.2.4-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
+> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.3.0-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
 
 <!-- HI-PRESENCIA -->
 > **Presencia — solo si en el contexto de esta sesión aparece la línea `HUMANINK_PRESENCIA: falta_email`.**
@@ -43,7 +43,7 @@ El usuario ha indicado: $ARGUMENTS
 ```bash
 [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"
 ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; [ -d "$ROOT/scripts" ] || ROOT="$HOME/.humanink"
-eval "$(python3 "$ROOT/scripts/hi-args.py" "$ARGUMENTS")"
+eval "$(HI_SIN_AWAP=1 python3 "$ROOT/scripts/hi-args.py" "$ARGUMENTS")"
 ARCHIVO="$FOLDER"
 
 # Si el argumento es una carpeta, verifica el último build contra el anterior.

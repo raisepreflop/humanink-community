@@ -1,6 +1,6 @@
 # HumanInk Community
 
-`v2.2.4-club`
+`v2.3.0-club`
 
 **The editorial suite for Escritores Aumentados members.**
 
@@ -32,6 +32,7 @@ This package installs the following collaborators (call any of them, in any orde
 - **`/humanink:cover`** — Cover Designer (13): 5 cover concepts with AI prompts, then the full KDP paperback wrap (front+spine+back) and ebook JPG.
 - **`/humanink:community`** — Community Manager (14): Content strategy for 2 networks with funnels & KPIs, monthly calendar, banners/carousels/video scripts.
 - **`/humanink:humanizer`** — Humanizer · iParser (16): Detects AI marks in your text (score 0–100, 100+ patterns) and rewrites the most artificial fragments in your voice.
+- **`/humanink:auditor`** — Authorship Auditor (17): Keeps the authorship log in your book folder — no connector, nothing leaves your machine: records what each collaborator writes and what you change afterwards, computes your Human Authorship Score and produces a draft PDF certificate (for you; not verifiable by third parties).
 - **`/humanink:kdp-audit`** — Amazon KDP Auditor: Full audit of your book's Amazon listing from its ASIN: title, BSR, categories, cover, reviews, KDP policies, pricing, 3+ competitors — scored /100 with an improvement plan (Word + JSON history).
 - **`/humanink:projects`** — Project Portfolio: One live HTML dashboard for all your projects: per-project cards, milestones and an SVG Gantt with a today line — updated by talking, no forms.
 - **`/humanink:agenda`** — Agenda: Turns conversation into Google Calendar events, Gmail drafts and task lists (with your Google connectors authorized in Claude; degrades to a markdown agenda without them). Never sends email — drafts only.
@@ -117,6 +118,19 @@ Every collaborator is invoked the same way:
 ```
 
 Pass the project path and, where it applies, a mode flag. Run a collaborator with no flags to see its options.
+
+### Keeping a record of your authorship
+
+The **Authorship Auditor** keeps a log in your book folder (`.awap/local/`). No connector, nothing to activate:
+
+```
+/humanink:auditor "~/Documents/my novel" --init         # open the log (do it on day one)
+/humanink:auditor "~/Documents/my novel"                # your Human Authorship Score
+/humanink:auditor "~/Documents/my novel" --report       # breakdown by level and by document
+/humanink:auditor "~/Documents/my novel" --certificate  # draft PDF certificate, in the book folder
+```
+
+From then on each collaborator that works in that folder is logged when it starts and when it finishes, and so is what you change in between. It measures by comparing the files, word by word. The PDF is a **draft for you**: it is not registered anywhere and a third party cannot verify it. The verifiable certificate is issued by HumanInk Studio. To compare versions, `.awap/local/` keeps a compressed copy of each document's text as last seen; it never leaves your machine, but it travels with the folder if you share it.
 
 ---
 

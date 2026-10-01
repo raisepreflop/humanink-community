@@ -169,10 +169,6 @@ If the same AI fingerprint appears in **2 or more** humanized fragments (look at
 
 With the OK, add the line `[WATCHED] term` to the file (create it if it does not exist). If a `[WATCHED]` term reappears in later sessions, propose promoting it to `[HARD]`. This is how the Humanizer teaches the Ghostwriter: each humanization makes the following drafts better.
 
-### 4e. AWAP logging (if the project is audited)
-
-If `.awap/` exists in the project folder, log the revision using the `awap-write` skill (`awap_log_event` with `event_type: "text_revised"` and `tokens_revised_by_human` ≈ rewritten words × 1.33). If AWAP is not active, skip this step silently.
-
 ---
 
 ## 5. REPORT mode

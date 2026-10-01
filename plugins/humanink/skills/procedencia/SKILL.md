@@ -11,7 +11,7 @@ background: false
 <!-- AI-TRANSPARENCY-50-1 -->
 > **Primera respuesta — transparencia de IA (Reglamento europeo de IA, art. 50(1)).** Abre tu primerísima respuesta en este comando con esta línea EXACTA, en español, y continúa normalmente:
 >
-> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.2.4-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
+> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.3.0-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
 
 <!-- HI-PRESENCIA -->
 > **Presencia — solo si en el contexto de esta sesión aparece la línea `HUMANINK_PRESENCIA: falta_email`.**
@@ -38,7 +38,7 @@ El usuario ha indicado: $ARGUMENTS
 ```bash
 [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"
 ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; [ -d "$ROOT/scripts" ] || ROOT="$HOME/.humanink"
-eval "$(python3 "$ROOT/scripts/hi-args.py" "$ARGUMENTS")"
+eval "$(HI_SIN_AWAP=1 python3 "$ROOT/scripts/hi-args.py" "$ARGUMENTS")"
 python3 "$ROOT/scripts/ai-parser/procedencia.py" "$FOLDER"
 ```
 
@@ -77,7 +77,7 @@ Conviene decírselo sin que lo pregunte, porque le quita un miedo que ya no tien
 > sólo dice que hubo una IA en algún punto.
 >
 > Lo que sí distingue es **cuánto trabajo humano hay**, y eso es exactamente lo que documenta tu
-> HAS en `el certificado de autoría en HumanInk Studio`. La marca dice "participó una IA"; el certificado AWAP dice "y este
+> HAS en `/humanink:auditor`. La marca dice "participó una IA"; el certificado AWAP dice "y este
 > es el trabajo que puso el autor".
 
 ## Reglas

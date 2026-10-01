@@ -4,6 +4,7 @@
 # Does two things, silently (never fails the skill):
 #   1) appends a usage event via ~/.awos/awos-log.py
 #   2) writes a project checkpoint via the ai-parser quickcheck
+#   3) closes the collaborator's session in the local authorship log (AWAP), if the book has one
 # Replaces the ~26-line log/checkpoint block repeated at the end of every collaborator.
 set -u
 COLLAB="${1:-awos-unknown}"
@@ -35,5 +36,11 @@ fi
 # 2) project checkpoint (silent ledger)
 QC=$(ls ~/.awos/ai-parser/quickcheck.py 2>/dev/null || ls "$ROOT/scripts/ai-parser/quickcheck.py" 2>/dev/null | head -1)
 [ -n "$QC" ] && "$PY" "$QC" --checkpoint "$COLLAB" "${MODE:---}" "" --root "$CARPETA" --quiet 2>/dev/null || true
+
+# 3) AWAP local: si la carpeta del libro lleva registro de autoría, aquí TERMINA de trabajar este
+#    colaborador, y lo que haya cambiado desde que empezó (hi-args.py) se anota como suyo. Sin
+#    registro no hace nada. Con `=`: el modo empieza por «--» y si no argparse lo toma por opción.
+AW="$SELF_DIR/awap_local.py"
+[ -f "$AW" ] && "$PY" "$AW" fin "$CARPETA" --colab="$COLLAB" --nombre="$NAME" --modo="$MODE" >/dev/null 2>&1 || true
 
 echo "logged: $COLLAB ($MODE) · $PROJECT"

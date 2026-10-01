@@ -118,3 +118,32 @@ chapter = re.sub(r'\s+', " ", chapter).strip()
 for k, v in (("MODE", mode), ("FOLDER", folder), ("CHAPTER", chapter),
              ("GOAL", goal), ("GENRE", genre), ("FLAGS", flags), ("BASE", base)):
     print(f"{k}={shlex.quote(v)}")
+
+
+# --- AWAP local (1-oct-2026) ---------------------------------------------
+# Si la carpeta del libro lleva registro de autoría (`.awap/local/project.json`, lo crea
+# `/humanink:auditor --init`), aquí EMPIEZA a trabajar un colaborador: lo que haya cambiado desde la
+# última vez se anota como del autor, y desde ahora lo que cambie es del colaborador hasta que
+# `hi-log.sh` lo cierre. Esto se evalúa con `eval`, así que no escribe nada en la salida; y no puede
+# romper a ningún colaborador: sin registro no hace nada, y si falla, calla.
+def _con_registro(ruta):
+    p = os.path.abspath(ruta)
+    if os.path.isfile(p):
+        p = os.path.dirname(p)
+    for _ in range(8):
+        if os.path.isfile(os.path.join(p, ".awap", "local", "project.json")):
+            return True
+        if os.path.dirname(p) == p:
+            break
+        p = os.path.dirname(p)
+    return False
+
+
+try:
+    if not os.environ.get("HI_SIN_AWAP") and _con_registro(folder):
+        import subprocess
+        subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "awap_local.py"),
+                        "inicio", folder], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                       stderr=subprocess.DEVNULL, timeout=180)
+except Exception:
+    pass

@@ -1,14 +1,14 @@
-# HumanInk Community — versión 2.2.4-club
+# HumanInk Community — versión 2.3.0-club
 
 Esta es la edición **Community** de HumanInk para miembros de Escritores Aumentados.
 Aquí tienes, en claro, **qué incluye** y **qué no** — para que sepas exactamente qué has instalado.
 
-> **Versión:** `2.2.4-club` · la edición del Club tiene numeración propia desde la 2.2.0; el sufijo
+> **Versión:** `2.3.0-club` · la edición del Club tiene numeración propia desde la 2.2.0; el sufijo
 > `-club` la identifica. Se actualiza sola desde el catálogo (o pulsa Sincronizar).
 
 ## Lo que incluye
 
-**22 colaboradores editoriales.** Los llamas en el orden que quieras — nunca hay un proceso forzado.
+**23 colaboradores editoriales.** Los llamas en el orden que quieras — nunca hay un proceso forzado.
 
 | Comando | Colaborador | Qué hace |
 |---|---|---|
@@ -30,6 +30,7 @@ Aquí tienes, en claro, **qué incluye** y **qué no** — para que sepas exacta
 | `/humanink:cover` | Diseñador de portada | Propone cinco conceptos de portada con prompts para herramientas de IA, desarrolla el elegido con paleta, tipografía y composición, y produce la cubierta completa de tapa blanda 6×9" para KDP (portada, lomo y contraportada) en PDF con las medidas exactas calculadas desde el número de páginas maquetadas. También genera la portada del ebook en JPG. |
 | `/humanink:community` | Community manager | Estrategia de contenido para dos redes (principal y complementaria) con dos embudos y sus KPI, calendario mensual detallado, producción de banners, carruseles y guiones de vídeo con las medidas exactas de cada plataforma, y análisis semanal del rendimiento orgánico con conclusiones y mejoras. |
 | `/humanink:humanizer` | Humanizador | Detecta huellas de IA en tu texto (puntuación 0-100, más de cien patrones lingüísticos) y reescribe los fragmentos más artificiales conservando tu voz narrativa. |
+| `/humanink:auditor` | Auditor de autoría | Lleva el registro de quién ha escrito qué en tu libro y te da tu HAS (Human Authorship Score, de 0 a 100). Todo se guarda en la carpeta del libro, sin conector y sin que nada salga de tu ordenador: compara los ficheros y anota lo que escribe cada colaborador de HumanInk y lo que cambias tú después. Saca un certificado en PDF, que es un borrador para ti. Úsalo cuando el autor quiera empezar a registrar su autoría, ver su HAS o el informe por niveles, declarar un manuscrito que ya tenía escrito, sacar el certificado o comprobar el registro. Con --citations revisa además las citas de terceros. |
 | `/humanink:kdp-audit` | Auditor de fichas de Amazon KDP | Auditoría completa de la página de un libro en Amazon a partir de su ASIN. Analiza título, subtítulo y palabras clave, BSR y categorías con la posición exacta en cada una, calidad de portada y visibilidad en miniatura, ISBN propio o de KDP, reseñas y valoración media, formatos y traducciones disponibles, cumplimiento de la política de metadatos de KDP, precio por formato, inscripción en KDP Select y antigüedad de la publicación, y lo compara con tres o más competidores mejor posicionados en las mismas categorías. Entrega una nota por aspecto y una global sobre 100, un plan de mejoras priorizado en Word y un audit.json legible por máquina para seguir la evolución. Úsalo cuando el autor pida auditar o revisar una ficha de Amazon, dé un ASIN, o mencione BSR, posición por categorías, KDP Select, portada, reseñas o comparación con la competencia. |
 | `/humanink:projects` | Cartera de proyectos | Un panel HTML vivo con todos los proyectos de escritura del autor (libros, series, lanzamientos, cursos). Mantiene un proyectos.json sencillo y repinta un panel autocontenido con una ficha por proyecto (estado, área, próximo hito) y un Gantt en SVG con la línea de hoy. Se actualiza HABLANDO — «añade el proyecto X», «marca el hito Y como hecho», «retrasa Z una semana» — sin formularios ni herramientas externas. Úsalo cuando el autor quiera ver, planificar o actualizar sus proyectos, su cartera, su hoja de ruta, sus hitos o el Gantt. |
 | `/humanink:agenda` | Agenda | Convierte la conversación en eventos de calendario, borradores de correo y listas de tareas usando los conectores de Google (Calendar y Gmail) CUANDO el autor los tenga autorizados en Claude. «Ponme esto en el calendario», «prepárame una respuesta para mi editora», «lleva los hitos del proyecto al calendario». Degrada con limpieza: si los conectores no están autorizados lo dice en una línea, explica dónde activarlos y ofrece una agenda en markdown. Nunca envía correo ni borra eventos —solo borradores y eventos nuevos, y siempre con confirmación explícita—. Úsalo cuando el autor pida agendar, recordar, poner algo en el calendario, redactar un correo u organizar su semana. |
@@ -39,18 +40,37 @@ Aquí tienes, en claro, **qué incluye** y **qué no** — para que sepas exacta
 
 | Comando | Para qué |
 |---|---|
-| `/humanink:help` | Ayuda de HumanInk — La chuleta visual de todos los comandos del plugin (tus 18 colaboradores más el panel, el registro y AWAP), agrupados por fase, con qué hace cada uno y sus opciones principales. Es una tarjeta de referencia, no un menú: eliges tú qué ejecutar. |
+| `/humanink:help` | Ayuda de HumanInk — La chuleta visual de todos los comandos del plugin, agrupados por fase, con qué hace cada uno y sus opciones principales. Es una tarjeta de referencia, no un menú: eliges tú qué ejecutar. |
 | `/humanink:log` | Registro del sistema — Se ejecuta solo al terminar cada colaborador y anota cada operación (colaborador, comando, tokens de entrada y salida, documentos) en ~/.awos. Invócalo a mano para ver la traza cronológica de todo lo que se ha hecho. La vista de conjunto —autoría y uso resumidos— está en el panel de HumanInk Studio. |
 
-## El certificado de autoría
+## El registro de autoría (AWAP): lo que sí, y lo que no
 
-Esta edición **no incluye** el certificado AWAP ni el panel: viven en **HumanInk Studio**,
-que es donde se registra el proceso y se emite el certificado. Aquí no hay nada que activar.
+Esta edición lleva el **registro de autoría local**: `/humanink:auditor`. Todo se guarda en la
+carpeta de tu libro (`.awap/local/`), sin conector y sin que nada salga de tu ordenador.
+
+- **Anota solo.** Lo que escribe cada colaborador de HumanInk y lo que cambias tú después se
+  mide comparando los ficheros, palabra a palabra. No tienes que acordarte de nada.
+- **La procedencia va con el texto.** Un párrafo de la IA pegado en tu novela, cambiado de sitio
+  o guardado con otro nombre sigue contando como de la IA.
+- **Tu Human Authorship Score**, de 0 a 100, con su desglose por niveles.
+- **Un certificado en PDF**, en la carpeta del libro.
+
+**Lo que NO es:** un certificado verificable por terceros. El registro empieza el día que lo
+abres (lo anterior lo declaras tú, y así consta), no está anclado en ningún servidor y quien
+tenga la carpeta podría rehacerlo. El PDF lo dice con esas palabras: es un **borrador para ti**.
+El certificado que puede comprobar una editorial, un agente o un registro se emite con
+**HumanInk Studio**.
+
+**Qué guarda:** para poder comparar, `.awap/local/` conserva una copia comprimida del texto de
+cada documento tal como estaba la última vez que se miró. No sale de tu ordenador, pero si
+compartes o subes la carpeta del libro, va dentro.
+
+Empieza con `/humanink:auditor "<carpeta del libro>" --init`. Cuanto antes, mejor: el registro
+no se puede reconstruir después.
 
 ## Lo que no incluye (y dónde está)
 
 - **Publicista** (`el gestor de campañas (no incluido en esta edición)`) — Amazon Ads y Meta Ads (Facebook e Instagram) para autores y libros. Prepara la estrategia y la estructura de campañas con palabras clave y creatividades, sube la configuración a las plataformas, optimiza a diario según los criterios de ACoS, ROAS y CTR que fijes, y entrega un miniinforme diario y uno completo semanal para que los valides.
-- **Auditor de autoría** (`el certificado de autoría en HumanInk Studio`) — Certifica tu autoría humana con AWAP. Registra cada evento de escritura, calcula el HAS (Human Authorship Score, 0-100) y firma un certificado en PDF con un QR verificable públicamente. Con --citations hace además un escaneo informativo del material citado de terceros para ayudarte a citar bien y defender tu autoría; nunca bloquea nada.
 
 Está en las ediciones de pago (Writers' Room, 69 €) en **https://humanink.io**.
 La estrategia sí la tienes aquí: **Market Analyst (02)** y **Community Manager (14)**.

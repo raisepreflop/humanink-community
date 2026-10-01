@@ -24,7 +24,10 @@ actualizarse, y dos copias con el mismo nombre se deshabilitan entre sí. Si tie
 ## Qué incluye
 
 Los colaboradores editoriales de HumanInk —del coach al maquetador—, Brain, el Humanizador y la
-suite de publicación. El certificado de autoría AWAP y el panel viven en HumanInk Studio.
+suite de publicación. Y, desde la 2.3.0, el **registro de autoría** (`/humanink:auditor`): anota en la
+carpeta de tu libro lo que escribe cada colaborador y lo que cambias tú, te da tu HAS y un certificado
+en PDF que es un borrador para ti. Sin conector y sin que nada salga de tu ordenador. El certificado
+que puede comprobar un tercero, y el panel, viven en HumanInk Studio.
 
 El código está a la vista porque Claude solo instala desde repositorios públicos. Visible no es
 libre: © Rais Busom / HumanInk, uso reservado a miembros de Escritores Aumentados.

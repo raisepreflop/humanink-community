@@ -106,7 +106,9 @@ for f in biblia.md estilo.md escaleta.md premisa.md sinopsis.md; do
   [ -f "$CARPETA/$f" ] && echo "  $f"
 done
 echo "=== AWAP ==="
-[ -d "$CARPETA/.awap" ] && echo "  auditoría activa en esta carpeta" || echo "  sin auditoría en esta carpeta"
+if [ -f "$CARPETA/.awap/local/project.json" ]; then echo "  auditoría activa en esta carpeta (registro local)"
+elif [ -d "$CARPETA/.awap" ]; then echo "  hay una carpeta .awap de otro AWAP, pero sin registro local de HumanInk"
+else echo "  sin auditoría en esta carpeta"; fi
 ```
 
 Then, in **one** short message, ask only what the disk cannot tell you:
@@ -122,7 +124,7 @@ y sigue — es lo que más se le escapa a un autor nuevo, porque nada se lo pide
 
 > ℹ️ Esta carpeta no está registrando tu trabajo todavía. Si algún día quieres demostrar que el libro
 > es tuyo, el registro tiene que existir **desde el principio**: no se puede reconstruir después.
-> Se activa con `el certificado de autoría en HumanInk Studio`. Puedes dejarlo para más adelante, pero cuanto antes, más vale.
+> Se activa con `/humanink:auditor`. Puedes dejarlo para más adelante, pero cuanto antes, más vale.
 
 Con lo que conteste (o sin ello), **elige un solo siguiente paso** para el resumen final:
 

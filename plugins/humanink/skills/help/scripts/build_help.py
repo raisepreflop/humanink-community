@@ -137,7 +137,20 @@ for slug, num, role, phase, purpose, flags in items:
 # El conector AWAP no se activa solo al instalar: Cowork pide un clic en Plugins → Connectors.
 # Quien no lo sepa se topa con un error críptico la primera vez que use el auditor, así que el
 # aviso va donde el autor mira primero. Solo aparece en los tiers que llevan auditor.
-NEEDS_AWAP = "auditor" in present
+# El auditor de la edición del Club es local (sin conector): otras opciones, y ningún aviso. Se
+# reconoce por su propia skill, que es la que llama a awap_local.py.
+try:
+    AUDITOR_LOCAL = "awap_local.py" in (ROOT / "skills" / "auditor" / "SKILL.md").read_text(encoding="utf-8")
+except Exception:
+    AUDITOR_LOCAL = False
+NEEDS_AWAP = "auditor" in present and not AUDITOR_LOCAL
+if AUDITOR_LOCAL:
+    for _i, _it in enumerate(items):
+        if _it[0] == "auditor":
+            items[_i] = _it[:5] + ("--init --base --status --report --certificate --verify --mine --ai",)
+    by_phase = {ph: [] for ph in PHASES}
+    for slug, num, role, phase, purpose, flags in items:
+        by_phase[phase].append((num, slug, role, purpose, flags))
 
 # ---- plain text (stdout fallback) ----
 print(f"HumanInk {VER_TXT} — tus comandos")
