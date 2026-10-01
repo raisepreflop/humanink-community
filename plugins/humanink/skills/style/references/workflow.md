@@ -426,5 +426,5 @@ ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; 
 # Claude estimates the tokens before running this line:
 #   <tokens_in>  ≈ words of files read × 1.33
 #   <tokens_out> ≈ words of generated content × 1.33
-bash "$ROOT/scripts/hi-log.sh" awos-estilo "Estilo (05)" "$CARPETA" "$MODO" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"
+bash "$ROOT/scripts/hi-log.sh" awos-estilo "Style Editor (04)" "$CARPETA" "$MODO" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"
 ```

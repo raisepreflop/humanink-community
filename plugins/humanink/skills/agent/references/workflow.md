@@ -261,7 +261,7 @@ Why the voice is an asset, not just the plot.]
 
 **Target market:**
 [Estimated market size for this subgenre in Spain.
-2024-2025 trend (growing / stable / declining).]
+Trend (growing / stable / declining), with the year of the figure.]
 
 **Sales potential:**
 [Honest. If it's a debut, say "solid debut potential in the [range]

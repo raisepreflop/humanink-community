@@ -312,6 +312,34 @@ def localizar(parrafos_xml, indice, huella, ventana=60):
     raise ErrorDeAnclaje(f"huella {huella!r} aparece {len(globales)} veces: hazla más específica")
 
 
+class Huellas:
+    """Las huellas de TODOS los párrafos de un documento, calculadas de una vez (UAT del 28-sep-2026).
+
+    `huella_de` normaliza el resto del documento para cada párrafo: en DMVM (unos 1.300 párrafos),
+    1,6 millones de normalizaciones y 12 segundos cada vez que el Studio miraba los capítulos. Aquí
+    se normaliza una vez y «¿está este comienzo en otro párrafo?» se cuenta en el texto entero: las
+    veces que sale en total menos las que sale en el suyo. Los párrafos van unidos por saltos de
+    línea y un comienzo normalizado nunca lleva uno, así que ninguna coincidencia cruza de un párrafo
+    a otro. Devuelve EXACTAMENTE lo mismo que `huella_de` (lo comprueba `test_huellas.py`).
+    """
+
+    def __init__(self, parrafos_xml):
+        self.norm = [_normaliza(_texto_vivo(p)) for p in parrafos_xml]
+        self.todo = "\n".join(self.norm)
+
+    def de(self, indice, minimo=30, maximo=200):
+        texto = self.norm[indice]
+        if not texto:
+            return None
+        largo = min(minimo, len(texto))
+        while largo <= min(maximo, len(texto)):
+            cand = texto[:largo]
+            if self.todo.count(cand) - texto.count(cand) == 0:
+                return cand
+            largo += 10
+        return None
+
+
 def huella_de(parrafos_xml, indice, minimo=30, maximo=200):
     """El prefijo más corto de este párrafo que solo aparece en ÉL.
 
@@ -489,6 +517,7 @@ def listar(entrada, desde, hasta, ancho=90, como_json=False):
     # una persona; este lo lee el motor para calcular `buscar`, que se compara EN CRUDO contra
     # el texto vivo. Un texto recortado produciría un `buscar` que no existe en el párrafo.
     salida = []
+    huellas = Huellas(ps)
     for i in range(desde, hasta):
         vivo = _texto_vivo(ps[i])
         if not vivo.strip():
@@ -497,7 +526,7 @@ def listar(entrada, desde, hasta, ancho=90, como_json=False):
             "i": i,
             "texto": vivo,
             "palabras": len(vivo.split()),
-            "huella": huella_de(ps, i),
+            "huella": huellas.de(i),
             # El ESTILO del párrafo (M-03, 18-sep-2026). Los cortes de capítulo se sacaban de
             # patrones de texto —«15», «1»— y en un ensayo con listas eso inventa capítulos. Word
             # ya sabe cuál es un título: su estilo («Heading1», «Ttulo1»…) y su nivel de esquema.

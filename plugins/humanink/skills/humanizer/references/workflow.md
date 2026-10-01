@@ -44,12 +44,10 @@ if [ ! -f "$AIPARSER_DIR/parser.py" ]; then
   # The scripts ship with the plugin (scripts/ai-parser/)
   cp "$ROOT/scripts/ai-parser"/*.py "$ROOT/scripts/ai-parser"/requirements.txt "$AIPARSER_DIR/" 2>/dev/null
 fi
+# Si no se pudo copiar, se usa el del plugin tal cual (o su espejo en ~/.humanink).
+[ -f "$AIPARSER_DIR/parser.py" ] || AIPARSER_DIR="$ROOT/scripts/ai-parser"
+[ -f "$AIPARSER_DIR/parser.py" ] || AIPARSER_DIR="$HOME/.humanink/scripts/ai-parser"
 ```
-
-If the plugin does not expose the path to its scripts, look for `parser.py` in this order and use the first one that exists:
-1. `~/.awos/ai-parser/parser.py`
-2. `~/ai-parser/parser.py`
-3. `~/ClaudeCo/Codigo/ai-parser/parser.py`
 
 If any Python dependency is missing (`python-docx`, `textstat`), install it:
 ```bash
@@ -131,7 +129,7 @@ Read `/tmp/ai-parser-output/analysis.json`. The `top_fragments` field contains t
 
 Rewrite each fragment from `top_fragments` (the first N) **directly in this session**. No external API or key is used: you do the rewriting.
 
-**Style instructions** (the same ones as the classic humanizer):
+**Style instructions:**
 
 > You are a literary editor specialized in high-level contemporary Spanish narrative. You rewrite fiction fragments removing AI-generated text fingerprints, preserving the meaning and the original narrative voice.
 >

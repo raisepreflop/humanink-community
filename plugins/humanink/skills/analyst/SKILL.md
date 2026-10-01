@@ -1,6 +1,6 @@
 ---
 name: analyst
-description: "Analista de mercado — inteligencia editorial completa de cualquier género o subgénero: mapa del mercado español 2024-2025, avatar del lector, rankings, análisis de la competencia (rasgos literarios, comerciales y físicos de los más vendidos), palabras clave, categorías de Amazon.es y códigos BISAC."
+description: "Analista de mercado — inteligencia editorial completa de cualquier género o subgénero: mapa del mercado español, avatar del lector, rankings, análisis de la competencia (rasgos literarios, comerciales y físicos de los más vendidos), palabras clave, categorías de Amazon.es y códigos BISAC."
 allowed-tools: Bash, Read, Write
 argument-hint: "[--genre \"género\"] [--trends] [--amazon \"género\"] [ruta del proyecto]"
 disable-model-invocation: true
@@ -13,7 +13,7 @@ background: false
 <!-- AI-TRANSPARENCY-50-1 -->
 > **Primera respuesta — transparencia de IA (Reglamento europeo de IA, art. 50(1)).** Abre tu primerísima respuesta en este comando con esta línea EXACTA, en español, y continúa normalmente:
 >
-> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.2.3-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
+> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.2.4-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
 
 <!-- HI-PRESENCIA -->
 > **Presencia — solo si en el contexto de esta sesión aparece la línea `HUMANINK_PRESENCIA: falta_email`.**

@@ -7,7 +7,7 @@ You write in the author's voice, not your own. Your work is invisible. You have 
 - **section** — rewrite a specific part with a goal (track changes)
 - **insert** — create a new fragment and add it at the indicated position (track changes)
 
-Each time you work on a chapter, the resulting file carries a new, consecutive version number: `cap-01-v1.docx`, `cap-01-v2.docx`, `cap-01-v3.docx`…
+Each time you work on a chapter, the resulting file carries a new, consecutive version number, in the project's own naming (`MiNovela-m01-v07.docx` → `MiNovela-m01-v08.docx`).
 
 The user has indicated: $ARGUMENTS
 
@@ -75,7 +75,7 @@ Now read the combined output, section by section — the checks are the same as 
 **list in one line the open threads that touch this chapter** and respect them: no promise to the
 reader may disappear without resolution.
 
-**First-order constraints (keep them present AS THE FIRST BLOCK of your writing plan — attention degrades toward the end of the context):**
+**First-order constraints (put them first in your writing plan):**
 1. The `[DURA]` (or unprefixed) entries in `estilo/prohibidas.md` are **banned**; minimize the `[VIGILADA]` ones.
 2. Proper names are written EXACTLY as in `entity-canon.md` (canonical name or registered alias). A name that mutates mid-novel is the most expensive continuity error to fix.
 
@@ -99,11 +99,14 @@ whole manuscript loaded, maintain coherence of:
 system was proven on) keep the whole manuscript in a single ascending file, and writing to the
 wrong place fragments their novel.
 
-- **`MODE=builds`** — the whole manuscript lives in one ascending file
-  (`MiNovela-b28.docx` → `MiNovela-b29.docx`). You edit the chapter **inside the full manuscript**
-  and save the next build. This is the recommended system: for a surgical rewrite you have the
-  entire text in front of you, placeholders are found in one pass, and coherence is checked
-  against the whole novel instead of against reassembled fragments.
+- **`MODE=manuscrito`** — the whole manuscript lives in one file, numbered by manuscript and
+  version (`MiNovela-m01-v07.docx` → `MiNovela-m01-v08.docx`). It is the recommended convention and
+  what a new project starts with. You edit the chapter **inside the full manuscript** and save the
+  next version: for a surgical rewrite you have the entire text in front of you, placeholders are
+  found in one pass, and coherence is checked against the whole novel instead of against
+  reassembled fragments.
+- **`MODE=builds`** — the same single-file system under its older naming
+  (`MiNovela-b28.docx` → `MiNovela-b29.docx`). Work exactly as in `manuscrito`.
 - **`MODE=chapters`** — one versioned file per chapter (`capitulos/cap-07-v3.docx`). Only the
   chapter changes.
 
@@ -192,17 +195,17 @@ Save to `$OUT_MD`, convert, and record the invocation — one block (estimate `_
 ```bash
 [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"
 ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; [ -d "$ROOT/scripts" ] || ROOT="$HOME/.humanink"
-python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$OUT_MD" "$OUT_DOCX" "" --version
-[ $? -eq 0 ] && rm -f "$OUT_MD"   # el .md solo se borra si el Word salió
+python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$OUT_MD" "$OUT_DOCX" ""
+[ $? -eq 0 ] && [ -f "$OUT_DOCX" ] && rm -f "$OUT_MD"   # el .md solo se borra si el Word está donde se dijo
 [ -f "$OUT_DOCX" ] && echo "✓ New chapter: $OUT_DOCX" || echo "✗ No se ha podido crear el Word: el texto sigue en el .md de la misma carpeta."
-bash "$ROOT/scripts/hi-log.sh" awos-escritor "Escritor (01)" "$CARPETA" "$MODO" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"
+bash "$ROOT/scripts/hi-log.sh" awos-escritor "Ghostwriter (05)" "$CARPETA" "$MODO" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"
 ```
 
 ---
 
 ### MODE: rewrite
 
-Rewrite the entire chapter. The original file (`v$CURRENT_V`) is preserved intact. The new version (`v$NEXT_V`) carries track changes: original text marked as deleted (red strikethrough), new text marked as inserted (green).
+Rewrite the entire chapter. The original file (`$CURRENT_DOCX`) is preserved intact. The new version (`$OUT_DOCX`) carries track changes: original text marked as deleted (red strikethrough), new text marked as inserted (green).
 
 The full text of the current chapter is already in your context (EXISTING CHAPTERS section of the
 first block) — re-read it there before rewriting; do not run another extraction.
@@ -216,11 +219,10 @@ Save the new text to `$OUT_MD`, create the document with track changes, and reco
 ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; [ -d "$ROOT/scripts" ] || ROOT="$HOME/.humanink"
 python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$OUT_MD" "$OUT_DOCX" \
   --base "$CURRENT_DOCX" \
-  --mode rewrite \
-  --version
-[ $? -eq 0 ] && rm -f "$OUT_MD"   # el .md solo se borra si el Word salió
-[ -f "$OUT_DOCX" ] && echo "✓ Rewrite with track changes: $OUT_DOCX (v${NEXT_V})" || echo "✗ No se ha podido crear el Word: el texto sigue en el .md de la misma carpeta."
-bash "$ROOT/scripts/hi-log.sh" awos-escritor "Escritor (01)" "$CARPETA" "$MODO" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"
+  --mode rewrite
+[ $? -eq 0 ] && [ -f "$OUT_DOCX" ] && rm -f "$OUT_MD"   # el .md solo se borra si el Word está donde se dijo
+[ -f "$OUT_DOCX" ] && echo "✓ Rewrite with track changes: $OUT_DOCX" || echo "✗ No se ha podido crear el Word: el texto sigue en el .md de la misma carpeta."
+bash "$ROOT/scripts/hi-log.sh" awos-escritor "Ghostwriter (05)" "$CARPETA" "$MODO" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"
 ```
 
 ---
@@ -248,11 +250,10 @@ SECTION_MARKER="$OBJETIVO"
 python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$OUT_MD" "$OUT_DOCX" \
   --base "$CURRENT_DOCX" \
   --mode section \
-  --section-marker "$SECTION_MARKER" \
-  --version
-[ $? -eq 0 ] && rm -f "$OUT_MD"   # el .md solo se borra si el Word salió
-[ -f "$OUT_DOCX" ] && echo "✓ Section rewritten with track changes: $OUT_DOCX (v${NEXT_V})" || echo "✗ No se ha podido crear el Word: el texto sigue en el .md de la misma carpeta."
-bash "$ROOT/scripts/hi-log.sh" awos-escritor "Escritor (01)" "$CARPETA" "$MODO" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"
+  --section-marker "$SECTION_MARKER"
+[ $? -eq 0 ] && [ -f "$OUT_DOCX" ] && rm -f "$OUT_MD"   # el .md solo se borra si el Word está donde se dijo
+[ -f "$OUT_DOCX" ] && echo "✓ Section rewritten with track changes: $OUT_DOCX" || echo "✗ No se ha podido crear el Word: el texto sigue en el .md de la misma carpeta."
+bash "$ROOT/scripts/hi-log.sh" awos-escritor "Ghostwriter (05)" "$CARPETA" "$MODO" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"
 ```
 
 ---
@@ -275,11 +276,10 @@ Write the new fragment with the same checklist. Then convert and record the invo
 ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; [ -d "$ROOT/scripts" ] || ROOT="$HOME/.humanink"
 python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$OUT_MD" "$OUT_DOCX" \
   --base "$CURRENT_DOCX" \
-  --mode insert \
-  --version
-[ $? -eq 0 ] && rm -f "$OUT_MD"   # el .md solo se borra si el Word salió
-[ -f "$OUT_DOCX" ] && echo "✓ Fragment inserted with track changes: $OUT_DOCX (v${NEXT_V})" || echo "✗ No se ha podido crear el Word: el texto sigue en el .md de la misma carpeta."
-bash "$ROOT/scripts/hi-log.sh" awos-escritor "Escritor (01)" "$CARPETA" "$MODO" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"
+  --mode insert
+[ $? -eq 0 ] && [ -f "$OUT_DOCX" ] && rm -f "$OUT_MD"   # el .md solo se borra si el Word está donde se dijo
+[ -f "$OUT_DOCX" ] && echo "✓ Fragment inserted with track changes: $OUT_DOCX" || echo "✗ No se ha podido crear el Word: el texto sigue en el .md de la misma carpeta."
+bash "$ROOT/scripts/hi-log.sh" awos-escritor "Ghostwriter (05)" "$CARPETA" "$MODO" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"
 ```
 
 ---
@@ -287,6 +287,10 @@ bash "$ROOT/scripts/hi-log.sh" awos-escritor "Escritor (01)" "$CARPETA" "$MODO" 
 ## 7. Anti-AISLOP pass (mandatory in all modes)
 
 Before saving, review the generated text and correct any detected pattern:
+
+The examples below are written in English; look for their equivalents in the language of the
+manuscript (in Spanish: «en este sentido», «cabe señalar que», «no solo… sino también»,
+«evidenciar / plasmar / abordar / visibilizar / potenciar», «esto nos muestra que»).
 
 ### Category 1 — Essay transitions
 ```
@@ -338,10 +342,11 @@ Before saving, review the generated text and correct any detected pattern:
 ### Option: objective score with ai-parser
 ```bash
 [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"
-PARSER="$HOME/.awos/ai-parser/parser.py"
-[ -f "$PARSER" ] || PARSER="$HOME/ai-parser/parser.py"
-[ -f "$PARSER" ] || PARSER="$HOME/ClaudeCo/Codigo/ai-parser/parser.py"
-[ -f "$PARSER" ] && python3 "$PARSER" "$OUT_MD" --format markdown 2>/dev/null | head -40
+ROOT="${CLAUDE_PLUGIN_ROOT:-$HOME/.humanink}"; [ -d "$ROOT/scripts" ] || ROOT="$HOME/.humanink"
+PARSER="$ROOT/scripts/ai-parser/parser.py"
+[ -f "$PARSER" ] || PARSER="$HOME/.awos/ai-parser/parser.py"
+TEXTO="$OUT_MD"; [ -f "$TEXTO" ] || TEXTO="$OUT_DOCX"   # tras guardar, el .md ya no está: se mide el Word
+[ -f "$PARSER" ] && python3 "$PARSER" "$TEXTO" --format markdown 2>/dev/null | head -40
 ```
 Score ≥ 45 → second pass before saving.
 
@@ -354,8 +359,8 @@ Score ≥ 45 → second pass before saving.
 
 Mode: [new / rewrite / section / insert]
 Chapter: [XX] — [Title]
-Version: v[N]
-Word file: capitulos/cap-[XX]-v[N].docx
+Version: [the version in the destination file name]
+Word file: [the destination file printed in the first block]
 
 Context loaded:
   Documents: bible ✅ · style ✅ · outline ✅
@@ -376,9 +381,9 @@ Untouchable zones: ✅ respected
 Track changes: ✅ — open the Word, accept or reject changes with Ctrl+Shift+E
 
 → Read and edit. Every change you make raises your HAS score.
-→ Structural analysis: `/humanink:editor capitulos/cap-[XX]-v[N].docx`
-→ Proofreading: `/humanink:copyeditor capitulos/cap-[XX]-v[N].docx`
-→ AI score + humanization: `/humanink:humanizer capitulos/cap-[XX]-v[N].docx`
+→ Structural analysis: `/humanink:editor [that file]`
+→ Proofreading: `/humanink:copyeditor [that file]`
+→ AI score + humanization: `/humanink:humanizer [that file]`
 → Next chapter: `/humanink:ghostwriter new cap-[XX+1] [folder]`
 ```
 
@@ -406,4 +411,4 @@ Editor advice, ignorable). The deep review remains `/humanink:coach --bible-delt
 
 The invocation is recorded by the `hi-log.sh` line already included in the save/convert block of
 each mode — no separate step. If for any reason that block did not run, call it now:
-`bash "$ROOT/scripts/hi-log.sh" awos-escritor "Escritor (01)" "$CARPETA" "$MODO" <tok_in> <tok_out>`.
+`bash "$ROOT/scripts/hi-log.sh" awos-escritor "Ghostwriter (05)" "$CARPETA" "$MODO" <tok_in> <tok_out>`.

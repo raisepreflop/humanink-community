@@ -243,7 +243,8 @@ def main():
     a = ap.parse_args()
 
     ps = I.parrafos_de(a.documento)
-    parrafos = [{"i": i, "texto": I._texto_vivo(p), "huella": I.huella_de(ps, i),
+    huellas = I.Huellas(ps)   # de una vez: huella_de párrafo a párrafo tardaba segundos (UAT 28-sep)
+    parrafos = [{"i": i, "texto": I._texto_vivo(p), "huella": huellas.de(i),
                  "tabla": I._en_tabla(p), "campo": I._con_campo(p)}
                 for i, p in enumerate(ps) if I._texto_vivo(p).strip()]
 

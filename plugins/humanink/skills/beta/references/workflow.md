@@ -279,5 +279,5 @@ Claude estimates the tokens before running this block:
 ```bash
 [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"
 ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; [ -d "$ROOT/scripts" ] || ROOT="$HOME/.humanink"
-bash "$ROOT/scripts/hi-log.sh" awos-beta "Beta (17)" "$CARPETA" "$MODO" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"
+bash "$ROOT/scripts/hi-log.sh" awos-beta "Beta Reader (08)" "$CARPETA" "$MODO" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"
 ```

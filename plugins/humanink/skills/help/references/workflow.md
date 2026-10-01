@@ -26,7 +26,7 @@ plain-text command list yourself (every collaborator installed here, grouped by 
 (starting with the `HumanInk vX.Y.Z — your commands` line, so the writer always knows which version
 they have installed). Do not summarise it away — the commands are the point of this command.
 
-**b) In a panel**: read `/tmp/humanink-help.html` and open it with `mcp__Claude_Preview__preview_start`
+**b) In a panel**: read `/tmp/humanink-help.html` and open it with the preview tool of this environment (`mcp__Claude_Browser__preview_start`; older builds named it `mcp__Claude_Preview__preview_start`)
 (`name: "humanink-help"`). If that tool doesn't exist in this environment, say so in one line and
 give the writer the file path so they can open it themselves — the chat list above already did the
 important part.

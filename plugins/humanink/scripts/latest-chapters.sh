@@ -66,7 +66,7 @@ if [ -n "$alt" ]; then
   echo "⚠️  ATENCIÓN: hay .docx en el proyecto pero no siguen ninguna convención reconocida:" >&2
   printf '%s\n' "$alt" | sed 's/^/     /' >&2
   echo "     EL MANUSCRITO NO SE HA CARGADO. Díselo al autor antes de escribir una sola línea." >&2
-  echo "     Recomiéndale el sistema de builds: <MiNovela>-b01.docx, -b02.docx… (el manuscrito" >&2
+  echo "     Recomiéndale numerarlo por versión: <MiNovela>-m01-v01.docx, -m01-v02.docx… (el manuscrito" >&2
   echo "     entero en cada fichero, numerado ascendente en cada intervención)." >&2
 else
   echo "⚠️  No hay manuscrito en '$CARPETA' — proyecto nuevo, o la ruta es otra." >&2

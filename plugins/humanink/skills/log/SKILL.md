@@ -1,7 +1,7 @@
 ---
 name: log
 description: "Registro del sistema — se ejecuta solo al terminar cada colaborador y anota cada operación (colaborador, comando, tokens de entrada y salida, documentos) en ~/.awos. Invócalo a mano para ver la traza cronológica de todo lo que se ha hecho. La vista de conjunto —autoría y uso resumidos— está en el panel de HumanInk Studio."
-allowed-tools: Bash, Read, Write, mcp__Claude_Preview__preview_start
+allowed-tools: Bash, Read, Write, mcp__Claude_Browser__preview_start, mcp__Claude_Preview__preview_start
 argument-hint: "[dashboard] [--reset] [--project nombre]"
 disable-model-invocation: true
 model: haiku
@@ -10,7 +10,7 @@ model: haiku
 <!-- AI-TRANSPARENCY-50-1 -->
 > **Primera respuesta — transparencia de IA (Reglamento europeo de IA, art. 50(1)).** Abre tu primerísima respuesta en este comando con esta línea EXACTA, en español, y continúa normalmente:
 >
-> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.2.3-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
+> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.2.4-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
 
 <!-- HI-PRESENCIA -->
 > **Presencia — solo si en el contexto de esta sesión aparece la línea `HUMANINK_PRESENCIA: falta_email`.**

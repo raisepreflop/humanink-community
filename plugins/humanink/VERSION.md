@@ -1,9 +1,9 @@
-# HumanInk Community — versión 2.2.3-club
+# HumanInk Community — versión 2.2.4-club
 
 Esta es la edición **Community** de HumanInk para miembros de Escritores Aumentados.
 Aquí tienes, en claro, **qué incluye** y **qué no** — para que sepas exactamente qué has instalado.
 
-> **Versión:** `2.2.3-club` · la edición del Club tiene numeración propia desde la 2.2.0; el sufijo
+> **Versión:** `2.2.4-club` · la edición del Club tiene numeración propia desde la 2.2.0; el sufijo
 > `-club` la identifica. Se actualiza sola desde el catálogo (o pulsa Sincronizar).
 
 ## Lo que incluye
@@ -16,7 +16,7 @@ Aquí tienes, en claro, **qué incluye** y **qué no** — para que sepas exacta
 | `/humanink:verificar` | Verificador de versiones | Comprueba que una versión del manuscrito está sana antes de seguir trabajando sobre ella. Confirma que el .docx abre, que el XML está bien formado y que el control de cambios es legal; que han sobrevivido tablas, imágenes y estilos de encabezado; y sobre todo la REVERSIBILIDAD: que rechazar todos los cambios de la versión N+1 devuelve exactamente el estado de la versión N, palabra por palabra. Cuando no es así, dice dónde. Informa además de los autores de revisión, para que sepas qué puedes aceptar de un clic. Úsalo cuando el autor pida verificar, comprobar o validar una versión o un manuscrito con control de cambios, pregunte si puede volver atrás sin perder nada, o antes de publicar o enviar una versión. |
 | `/humanink:comparar` | Comparador de versiones | El antes y el después de un manuscrito a lo largo de sus versiones numeradas. Mide qué cambió de verdad entre dos versiones (palabras, capítulos, párrafos, cortes de escena, longitud de frase, porcentaje de diálogo, adverbios) y dónde, listando los pasajes añadidos, cortados y reescritos. Produce un informe en Word con la tabla de evolución y, sobre una serie entera, el historial versión a versión. Úsalo cuando el autor pregunte qué cambió entre dos versiones, cuánto ha crecido el libro, qué hizo realmente una pasada, o quiera el registro de la reescritura. |
 | `/humanink:author` | Perfil de autor | La entrevista de arranque que construye tu dossier: voz, objetivos, trayectoria, límites y hábitos de escritura. Es el documento que leen todos los demás colaboradores antes de tocar tu texto. |
-| `/humanink:analyst` | Analista de mercado | Inteligencia editorial completa de cualquier género o subgénero: mapa del mercado español 2024-2025, avatar del lector, rankings, análisis de la competencia (rasgos literarios, comerciales y físicos de los más vendidos), palabras clave, categorías de Amazon.es y códigos BISAC. |
+| `/humanink:analyst` | Analista de mercado | Inteligencia editorial completa de cualquier género o subgénero: mapa del mercado español, avatar del lector, rankings, análisis de la competencia (rasgos literarios, comerciales y físicos de los más vendidos), palabras clave, categorías de Amazon.es y códigos BISAC. |
 | `/humanink:coach` | Coach literario | La biblia de tu historia y la biblia viva (con --bible-delta actualiza la biblia y el registro de promesas después de cada capítulo), escaleta Escena/Secuela, consultoría literaria y comercial, y la cabeza del escritor. El colaborador que te hace escribir mejor y terminar el libro. |
 | `/humanink:style` | Editor de estilo | Estudia tu voz a partir de lo que ya has escrito y de tus referentes literarios, y redacta la guía de estilo definitiva del proyecto en dos niveles, macro y micro, con una tabla de mezcla de estilo por tipo de prosa. |
 | `/humanink:ghostwriter` | Escritor fantasma | Escribe, reescribe o amplía capítulos siguiendo todos los documentos del proyecto. Cuatro modos de trabajo, pasada anti-IA integrada, control de cambios en Word y versionado automático. |

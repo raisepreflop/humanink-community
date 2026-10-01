@@ -53,9 +53,8 @@ If the file is `.md` or `.txt`, read it directly with `Read`.
 
 ## 1·bis. Corrige SOLO lo que te han pedido
 
-`hi-args.py` ya extrae `$CHAPTER` de la instrucción, y hasta ahora **el flujo no lo usaba nunca**:
-se pidiera lo que se pidiera, se corregía el manuscrito entero. Un autor que pide «el prólogo y el
-capítulo 22» espera dos secciones, no ochenta mil palabras — y esperó ocho minutos por ello.
+`hi-args.py` extrae `$CHAPTER` de la instrucción. Un autor que pide «el prólogo y el capítulo 22»
+espera dos secciones, no ochenta mil palabras ni ocho minutos de espera.
 
 **Y el alcance se decide ANTES de leer, no después.** Lo caro no es corregir: es meterse ochenta
 mil palabras en la cabeza para acabar comentando dos capítulos. Si la instrucción nombra secciones,
@@ -121,8 +120,7 @@ Y el resto, por orden de frecuencia real:
 
 #### La cursiva se MARCA, no se menciona
 
-Esto estaba escrito como «cursiva: extranjerismos crudos y títulos de obra» y así no se corregía
-nunca: nombrar una categoría no es dar una instrucción. **Búscalas activamente y márcalas** con
+Nombrar la categoría no basta. **Búscalas activamente y márcalas** con
 `*asteriscos*` — eso se convierte en cursiva de verdad en el .docx que recibe el autor.
 
 **Locuciones y expresiones latinas no asimiladas: cursiva, y sin tildes.**
@@ -184,7 +182,7 @@ python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$
 [ $? -eq 0 ] && rm -f "$OUT_MD"   # el .md solo se borra si el Word salió
 [ -f "$OUT_DOCX" ] && echo "✓ Word ready: $OUT_DOCX" || echo "✗ No se ha podido crear el Word: el texto sigue en el .md de la misma carpeta."
 # AWAP event (no-op if the project has no AWAP)
-echo '{"event_type":"text_generated","document_type":"revision","description":"Copyeditor 08 — three passes"}' >> "$DEST/.awap/pending.jsonl" 2>/dev/null || true
+echo '{"event_type":"text_generated","document_type":"revision","description":"Copyeditor 09 — three passes"}' >> "$DEST/.awap/pending.jsonl" 2>/dev/null || true
 
 # HumanInk log
 bash "$ROOT/scripts/hi-log.sh" awos-corrector "Copyeditor & Proofreader (09)" "$DEST" "$MODE" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"

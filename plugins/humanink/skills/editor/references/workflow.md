@@ -57,7 +57,7 @@ Read each listed chapter with the Read tool (it reads `.md`, `.txt` and `.docx` 
 
 ## 2. Developmental editing report
 
-Length: **minimum 3,000 words, maximum 6,000**. Be specific — quote the text when you diagnose a problem. Each section has its diagnosis + examples + concrete recommendations.
+Length follows the scope: a full novel usually takes 3,000–6,000 words to cover every block with examples, a single chapter far fewer. Do not pad to reach a figure. Be specific — quote the text when you diagnose a problem. Each section has its diagnosis + examples + concrete recommendations.
 
 **Genre lens first.** Read the whole report with the lens of the declared genre (`--genre`, the Studio's «EL GÉNERO ES» block, the author profile or the bible; if there is none, ask). Tension escalation, Scene/Sequel, hooks and cliff-hangers are what plot-driven genres demand (thriller, crime, romance, genre fantasy & SF, historical, horror). In literary, visionary or choral fiction, judge the book by its own design —progression of meaning, image or voice— and do not flag as a defect what the genre allows: a slow pace, an open or contemplative ending, a scene without Scene/Sequel structure. The bar is fixed: the lens changes what is judged, not how much is demanded.
 
@@ -310,7 +310,7 @@ ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; 
 python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" "$OUT_MD" "$OUT_DOCX" "Editorial report — $(basename ${CARPETA})"
 [ $? -eq 0 ] && rm -f "$OUT_MD"   # el .md solo se borra si el Word salió
 [ -f "$OUT_DOCX" ] && echo "✓ Word ready: $OUT_DOCX" || echo "✗ No se ha podido crear el Word: el texto sigue en el .md de la misma carpeta."
-bash "$ROOT/scripts/hi-log.sh" awos-editor "Editor (04)" "$CARPETA" "$MODO" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"
+bash "$ROOT/scripts/hi-log.sh" awos-editor "Developmental Editor (06)" "$CARPETA" "$MODO" "${_AWOS_TOK_IN:-0}" "${_AWOS_TOK_OUT:-0}"
 ```
 
 ---
@@ -333,7 +333,7 @@ Style: [coherence with estilo.md: yes / no / no reference]
 
 ✅ Don't touch: [main strength]
 
-File: informe-editor-[slug].md
+File: informe-editor-[slug].docx
 ```
 
 → "Once you've resolved the structural urgencies, use `/humanink:reader` for a second reading and `/humanink:copyeditor` for the final polish."
