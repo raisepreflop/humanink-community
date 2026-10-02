@@ -666,6 +666,9 @@ def install_self():
 # ──────────────────────────────────────────────
 
 if __name__ == '__main__':
+    # La salida, siempre en UTF-8: Windows la escribe en cp1252 y un «→» tumba el script (ver scripts/ooxml/_utf8.py).
+    for _flujo in (sys.stdin, sys.stdout, sys.stderr):
+        getattr(_flujo, "reconfigure", lambda **_: None)(encoding="utf-8", errors="backslashreplace")
     import argparse
 
     parser = argparse.ArgumentParser(description='AWOS md2docx v2')

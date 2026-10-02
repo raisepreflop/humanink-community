@@ -229,6 +229,8 @@ def build_proof(final, g, template):
     return proof
 
 def main():
+    from _utf8 import salida_en_utf8
+    salida_en_utf8()
     ap = argparse.ArgumentParser()
     ap.add_argument("--front", required=True)
     ap.add_argument("--content", required=True)
@@ -271,7 +273,7 @@ def main():
     canvas.save(png, "PNG")
     canvas.save(pdf, "PDF", resolution=a.dpi)
     build_proof(canvas, g, a.template).save(prf, "PNG")
-    (out / f"{a.slug}-wrap-dimensiones.json").write_text(json.dumps(g, indent=2))
+    (out / f"{a.slug}-wrap-dimensiones.json").write_text(json.dumps(g, indent=2), encoding="utf-8")
 
     print(f"  ✓ PDF   : {pdf}")
     print(f"  ✓ PNG   : {png}")

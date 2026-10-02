@@ -5,6 +5,10 @@ Usage: python3 gen-cover-wrap.py <folder> <pages> [--paper white|cream|color] [-
 import sys, os, json, base64
 from pathlib import Path
 
+# La salida, siempre en UTF-8: Windows la escribe en cp1252 y un «→» tumba el script (ver scripts/ooxml/_utf8.py).
+for _flujo in (sys.stdin, sys.stdout, sys.stderr):
+    getattr(_flujo, "reconfigure", lambda **_: None)(encoding="utf-8", errors="backslashreplace")
+
 args = sys.argv[1:]
 CARPETA = Path(args[0]) if args else Path('.')
 PAGINAS = int(args[1]) if len(args) > 1 else 200
@@ -261,7 +265,7 @@ info = {
     'back_w_mm': pw, 'front_w_mm': pw, 'bleed_mm': bl,
     'safe_mm': sa, 'barcode_w_mm': bc_w, 'barcode_h_mm': bc_h,
 }
-(OUTPUT / 'wrap-dimensiones.json').write_text(json.dumps(info, indent=2, ensure_ascii=False))
+(OUTPUT / 'wrap-dimensiones.json').write_text(json.dumps(info, indent=2, ensure_ascii=False), encoding="utf-8")
 print(f"✓ Dimensions: {OUTPUT / 'wrap-dimensiones.json'}")
 
 try:

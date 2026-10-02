@@ -2,6 +2,10 @@ import sys
 import openpyxl
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 
+# La salida, siempre en UTF-8: Windows la escribe en cp1252 y un «→» tumba el script (ver scripts/ooxml/_utf8.py).
+for _flujo in (sys.stdin, sys.stdout, sys.stderr):
+    getattr(_flujo, "reconfigure", lambda **_: None)(encoding="utf-8", errors="backslashreplace")
+
 EXCEL_OUT = sys.argv[1]
 TITULO    = sys.argv[2] if len(sys.argv) > 2 else ""
 

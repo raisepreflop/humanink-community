@@ -155,6 +155,9 @@ def imprimir(inv):
 
 
 if __name__ == "__main__":
+    # La salida, siempre en UTF-8: Windows la escribe en cp1252 y un «→» tumba el script (ver scripts/ooxml/_utf8.py).
+    for _flujo in (sys.stdin, sys.stdout, sys.stderr):
+        getattr(_flujo, "reconfigure", lambda **_: None)(encoding="utf-8", errors="backslashreplace")
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     inv = inventariar(args[0] if args else ".")
     if "--json" in sys.argv:

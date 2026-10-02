@@ -125,7 +125,7 @@ python3 ~/.awos/md2book-html.py "$MANUSCRITO_MD" "$HTML_OUT" \
   --dedication "$DEDICATORIA" \
   --epigraph "$EPIGRAFE" \
   --epigraph-author "$EPIGRAFE_AUTOR"
-python3 -c "
+python3 -X utf8 -c "
 import re
 html_text = open('$HTML_OUT').read()
 css = re.search(r'<style>(.*?)</style>', html_text, re.DOTALL)

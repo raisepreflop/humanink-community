@@ -5,6 +5,10 @@ argumentos. Ver `kdp_wrap.py --help` y references/kdp-wrap.md."""
 import sys
 from pathlib import Path
 
+# La salida, siempre en UTF-8: Windows la escribe en cp1252 y un «→» tumba el script (ver scripts/ooxml/_utf8.py).
+for _flujo in (sys.stdin, sys.stdout, sys.stderr):
+    getattr(_flujo, "reconfigure", lambda **_: None)(encoding="utf-8", errors="backslashreplace")
+
 for d in (Path(__file__).resolve().parents[3] / "scripts" / "ooxml",   # el plugin
           Path.home() / ".humanink" / "scripts" / "ooxml"):             # la copia de Cowork
     if (d / "kdp_wrap.py").is_file():

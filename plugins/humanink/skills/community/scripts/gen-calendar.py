@@ -5,6 +5,10 @@ from openpyxl.utils import get_column_letter
 from pathlib import Path
 import sys, os
 
+# La salida, siempre en UTF-8: Windows la escribe en cp1252 y un «→» tumba el script (ver scripts/ooxml/_utf8.py).
+for _flujo in (sys.stdin, sys.stdout, sys.stderr):
+    getattr(_flujo, "reconfigure", lambda **_: None)(encoding="utf-8", errors="backslashreplace")
+
 CARPETA = sys.argv[1] if len(sys.argv)>1 else '.'
 SEMANAS = int(sys.argv[2]) if len(sys.argv)>2 else 4
 

@@ -66,7 +66,7 @@ ULTIMO_INFORME=$(ls "$CARPETA"/informe-lectura-*.docx 2>/dev/null | sort -V | ta
                  ls "$CARPETA"/informe-lectura-*.md   2>/dev/null | sort -V | tail -1)
 if [ -n "$ULTIMO_INFORME" ]; then
   echo "Report: $ULTIMO_INFORME"
-  python3 -c "
+  python3 -X utf8 -c "
 import zipfile, re, sys
 try:
     z = zipfile.ZipFile(sys.argv[1])

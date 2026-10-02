@@ -59,7 +59,7 @@ def inventario(carpeta):
     try:
         out = subprocess.run(
             [sys.executable, os.path.join(AQUI, "inventario.py"), carpeta, "--json"],
-            capture_output=True, text=True, timeout=60,
+            capture_output=True, text=True, encoding="utf-8", timeout=60,
         )
         return json.loads(out.stdout) if out.returncode == 0 else {}
     except Exception:
@@ -120,6 +120,9 @@ def imprimir_lista(d):
 
 
 if __name__ == "__main__":
+    # La salida, siempre en UTF-8: Windows la escribe en cp1252 y un «→» tumba el script (ver scripts/ooxml/_utf8.py).
+    for _flujo in (sys.stdin, sys.stdout, sys.stderr):
+        getattr(_flujo, "reconfigure", lambda **_: None)(encoding="utf-8", errors="backslashreplace")
     if len(sys.argv) < 2:
         print(__doc__.split("\n\n")[1])
         sys.exit(1)

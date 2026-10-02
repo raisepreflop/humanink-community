@@ -271,6 +271,8 @@ def imprimir(r):
 
 
 def main():
+    from _utf8 import salida_en_utf8
+    salida_en_utf8()
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("manuscrito")

@@ -58,7 +58,7 @@ CURRENT_DOCX="$HI_SOURCE"
 # In rewrite/section/insert mode the current chapter is also needed — print it now, same turn.
 if [ -n "$CURRENT_DOCX" ] && [ "$MODO" != "new" ]; then
   echo "=== CURRENT CHAPTER (paragraph index) ==="
-  python3 -c "
+  python3 -X utf8 -c "
 import sys
 from docx import Document
 doc = Document(sys.argv[1])

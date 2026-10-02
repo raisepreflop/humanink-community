@@ -103,7 +103,7 @@ Before rewriting anything, preserve the original:
 
 ```bash
 [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"
-$PYTHON -c "
+$PYTHON -X utf8 -c "
 import shutil, sys, time
 from pathlib import Path
 src = Path(sys.argv[1])

@@ -182,7 +182,7 @@ def resolve(book_dir: Path, given, rel, fallback=None) -> Path:
 def run_epubcheck(epub: Path) -> bool:
     print(f"\n→ EPUBCheck {epub.name} …")
     try:
-        proc = subprocess.run(["epubcheck", str(epub)], capture_output=True, text=True)
+        proc = subprocess.run(["epubcheck", str(epub)], capture_output=True, text=True, encoding="utf-8", errors="replace")
     except FileNotFoundError:
         print("  ⚠ epubcheck no instalado (brew install epubcheck). Validación OMITIDA.")
         return True
@@ -241,7 +241,7 @@ def main():
     print("→ pandoc → EPUB …")
     # Compatibilidad de versiones de pandoc:
     #   pandoc ≥3.0 usa --split-level ; pandoc ≤2.x usa --epub-chapter-level
-    _help = subprocess.run(["pandoc", "--help"], capture_output=True, text=True).stdout
+    _help = subprocess.run(["pandoc", "--help"], capture_output=True, text=True, encoding="utf-8", errors="replace").stdout
     split_flag = "--split-level=1" if "--split-level" in _help else "--epub-chapter-level=1"
     cmd = ["pandoc", str(md_out), "-o", str(epub),
            "--css", str(css), "--epub-cover-image", str(cover),
@@ -257,4 +257,7 @@ def main():
 
 
 if __name__ == "__main__":
+    # La salida, siempre en UTF-8: Windows la escribe en cp1252 y un «→» tumba el script (ver scripts/ooxml/_utf8.py).
+    for _flujo in (sys.stdin, sys.stdout, sys.stderr):
+        getattr(_flujo, "reconfigure", lambda **_: None)(encoding="utf-8", errors="backslashreplace")
     main()

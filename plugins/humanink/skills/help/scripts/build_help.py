@@ -7,19 +7,23 @@ Also prints a plain-text version to stdout (fallback)."""
 import sys, os, json, re
 from pathlib import Path
 
+# La salida, siempre en UTF-8: Windows la escribe en cp1252 y un «→» tumba el script (ver scripts/ooxml/_utf8.py).
+for _flujo in (sys.stdin, sys.stdout, sys.stderr):
+    getattr(_flujo, "reconfigure", lambda **_: None)(encoding="utf-8", errors="backslashreplace")
+
 ROOT = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(".")
 # command namespace = the plugin's name (humanink, or humanink-brain when sold standalone)
 NS = "humanink"
 VERSION = ""
 try:
-    pj = json.loads((ROOT / ".claude-plugin" / "plugin.json").read_text())
+    pj = json.loads((ROOT / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
     NS = pj.get("name", NS)
     VERSION = pj.get("version", "")
 except Exception:
     pass
 if not VERSION:  # el hook de sesión deja aquí la versión espejada
     try:
-        VERSION = (Path.home() / ".humanink" / ".mirror-version").read_text().strip()
+        VERSION = (Path.home() / ".humanink" / ".mirror-version").read_text(encoding="utf-8").strip()
     except Exception:
         pass
 VER_TXT = f"v{VERSION}" if VERSION else "versión desconocida"
@@ -233,6 +237,6 @@ body{{background:#0a0e14;color:#f0f4f8;font-family:'Inter',system-ui,sans-serif;
 <div class="foot">HumanInk <b style="color:#FFC400">{VER_TXT}</b> · humanink.io · {len(items)} comandos en este plugin</div>
 </body></html>"""
 out = "/tmp/humanink-help.html"
-open(out, "w").write(html)
+open(out, "w", encoding="utf-8").write(html)
 print(f"\nOK:{out}")
 print(f"COUNT:{len(items)}")

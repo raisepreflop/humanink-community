@@ -10,6 +10,10 @@ youtube formats:   thumbnail|shorts
 import sys, os, json, base64
 from pathlib import Path
 
+# La salida, siempre en UTF-8: Windows la escribe en cp1252 y un «→» tumba el script (ver scripts/ooxml/_utf8.py).
+for _flujo in (sys.stdin, sys.stdout, sys.stderr):
+    getattr(_flujo, "reconfigure", lambda **_: None)(encoding="utf-8", errors="backslashreplace")
+
 args = sys.argv[1:]
 CARPETA  = Path(args[0]) if args else Path('.')
 TIPO     = args[1] if len(args)>1 else 'banner'

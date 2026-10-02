@@ -154,4 +154,7 @@ body{{background:{BG};color:{INK};font-family:-apple-system,system-ui,'Segoe UI'
 
 
 if __name__ == "__main__":
+    # La salida, siempre en UTF-8: Windows la escribe en cp1252 y un «→» tumba el script (ver scripts/ooxml/_utf8.py).
+    for _flujo in (sys.stdin, sys.stdout, sys.stderr):
+        getattr(_flujo, "reconfigure", lambda **_: None)(encoding="utf-8", errors="backslashreplace")
     build(sys.argv[1] if len(sys.argv) > 1 else ".")

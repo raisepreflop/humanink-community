@@ -4,6 +4,11 @@ import json
 from pathlib import Path
 from datetime import datetime, timezone
 
+# La salida, siempre en UTF-8: Windows la escribe en cp1252 y un «→» tumba el script (ver scripts/ooxml/_utf8.py).
+import sys
+for _flujo in (sys.stdin, sys.stdout, sys.stderr):
+    getattr(_flujo, "reconfigure", lambda **_: None)(encoding="utf-8", errors="backslashreplace")
+
 LOG_DIR  = Path.home() / ".awos" / "logs"
 LOG_FILE = LOG_DIR / "awos-usage.jsonl"
 OUT_FILE = LOG_DIR / "dashboard.html"

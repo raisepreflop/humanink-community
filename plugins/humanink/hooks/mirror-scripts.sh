@@ -35,7 +35,7 @@ if [ -d "$SRC/skills" ]; then
 fi
 
 # 3) stamp the mirrored version for diagnostics (/humanink:help can show it)
-ver=$(python3 -c "import json,os,sys;print(json.load(open(os.path.join(sys.argv[1],'.claude-plugin','plugin.json')))['version'])" "$SRC" 2>/dev/null)
+ver=$(python3 -X utf8 -c "import json,os,sys;print(json.load(open(os.path.join(sys.argv[1],'.claude-plugin','plugin.json')))['version'])" "$SRC" 2>/dev/null)
 printf '%s\n' "${ver:-unknown}" > "$DEST/.mirror-version" 2>/dev/null
 
 exit 0

@@ -11,7 +11,7 @@ background: false
 <!-- AI-TRANSPARENCY-50-1 -->
 > **Primera respuesta — transparencia de IA (Reglamento europeo de IA, art. 50(1)).** Abre tu primerísima respuesta en este comando con esta línea EXACTA, en español, y continúa normalmente:
 >
-> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.3.1-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
+> ℹ️ Estás colaborando con una IA. Este colaborador de HumanInk (v2.3.2-club) funciona sobre Claude, de Anthropic — te asiste, pero el autor eres tú y tú decides. (Reglamento (UE) 2024/1689, art. 50)
 
 <!-- HI-PRESENCIA -->
 > **Presencia — solo si en el contexto de esta sesión aparece la línea `HUMANINK_PRESENCIA: falta_email`.**
@@ -28,10 +28,10 @@ Ejecuta este bloque tal cual, en un solo paso:
 ROOT="${CLAUDE_PLUGIN_ROOT:-/-}"; [ -d "$ROOT/scripts" ] || ROOT="$HOME/.humanink"   # como el resto: si el plugin no se puede leer, el espejo
 echo "=== HumanInk: diagnóstico del equipo ==="
 echo "Plugin: ${CLAUDE_PLUGIN_ROOT:-(sin CLAUDE_PLUGIN_ROOT)} · se lee: $( [ -d "${CLAUDE_PLUGIN_ROOT:-/-}/scripts" ] && echo sí || echo 'no, uso la copia de ~/.humanink')"
-[ -f "$ROOT/.claude-plugin/plugin.json" ] && python3 -c "import json;print('Versión:', json.load(open('$ROOT/.claude-plugin/plugin.json')).get('version'))" 2>/dev/null
+[ -f "$ROOT/.claude-plugin/plugin.json" ] && python3 -X utf8 -c "import json;print('Versión:', json.load(open('$ROOT/.claude-plugin/plugin.json')).get('version'))" 2>/dev/null
 echo "Sistema: $(uname -sm)"
 echo "Python: $(python3 --version 2>&1 || echo 'NO HAY python3')"
-python3 - <<'PY'
+python3 -X utf8 - <<'PY'
 import importlib
 mods = [("docx", "Word con control de cambios (--tracked/--base)"), ("lxml", "leer y escribir el control de cambios; comparar versiones"),
         ("textstat", "legibilidad del humanizador (opcional)"), ("PIL", "portadas KDP (cover --wrap)")]

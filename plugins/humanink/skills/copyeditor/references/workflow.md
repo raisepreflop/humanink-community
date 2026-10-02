@@ -26,7 +26,7 @@ ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; 
 eval "$(python3 "$ROOT/scripts/hi-args.py" "$ARGUMENTS")"
 ARCHIVO="$FOLDER"
 PYTHON=$(command -v python3 2>/dev/null || command -v python 2>/dev/null || echo python3)
-$PYTHON -c "
+$PYTHON -X utf8 -c "
 import shutil, sys, time
 from pathlib import Path
 src = Path(sys.argv[1])

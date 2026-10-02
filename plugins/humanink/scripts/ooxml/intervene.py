@@ -56,6 +56,8 @@ try:
     from lxml import etree
 except ImportError:  # equipo rojo, 24-sep-2026: un traceback de Python no le dice nada a un autor
     import sys as _sys
+    from _utf8 import salida_en_utf8 as _en_utf8   # este aviso sale antes de llegar a main()
+    _en_utf8()
     _sys.exit("✗ Falta el módulo «lxml», que necesito para leer y escribir el control de cambios de Word.\n"
               "  En tu ordenador: python3 -m pip install lxml. En Cowork, dímelo en el chat y lo resolvemos.")
 
@@ -542,6 +544,8 @@ def listar(entrada, desde, hasta, ancho=90, como_json=False):
 
 
 def main():
+    from _utf8 import salida_en_utf8
+    salida_en_utf8()
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("entrada")

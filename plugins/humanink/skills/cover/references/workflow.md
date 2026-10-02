@@ -56,7 +56,7 @@ plugin and need only **Pillow**. Verify it's available before the `--wrap` step:
 ```bash
 [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"
 ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; [ -d "$ROOT/scripts" ] || ROOT="$HOME/.humanink"
-python3 -c "import PIL; print('✓ Pillow', PIL.__version__)" 2>/dev/null \
+python3 -X utf8 -c "import PIL; print('✓ Pillow', PIL.__version__)" 2>/dev/null \
   || echo "⚠ Pillow missing — run: python3 -m pip install pillow (needed for --wrap)"
 ```
 
@@ -72,7 +72,7 @@ cat "$CARPETA/biblia.md" 2>/dev/null || echo "(no bible)"
 echo "=== BRIEFING / ANALYSIS ==="
 ANALISIS=$(ls "$CARPETA"/analisis-*.docx 2>/dev/null | sort -V | tail -1)
 if [ -n "$ANALISIS" ]; then
-  python3 -c "
+  python3 -X utf8 -c "
 import zipfile, re, sys
 z = zipfile.ZipFile(sys.argv[1])
 xml = z.read('word/document.xml').decode()
@@ -92,7 +92,7 @@ elif [ -f "$CARPETA/blurb-contraportada.docx" ]; then python3 "$(p="${CLAUDE_PLU
 else echo "(no blurb — run /humanink:copywriter --blurb first)"; fi
 
 echo "=== PAGE COUNT FROM TYPESETTING ==="
-PAGINAS_JSON=$(cat "$CARPETA/output/wrap-dimensiones.json" 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('paginas',0))" 2>/dev/null || echo "0")
+PAGINAS_JSON=$(cat "$CARPETA/output/wrap-dimensiones.json" 2>/dev/null | python3 -X utf8 -c "import sys,json; d=json.load(sys.stdin); print(d.get('paginas',0))" 2>/dev/null || echo "0")
 echo "Pages detected in previous output: $PAGINAS_JSON"
 [ "$PAGINAS" = "0" ] && PAGINAS=$PAGINAS_JSON
 echo "Pages to use: $PAGINAS"

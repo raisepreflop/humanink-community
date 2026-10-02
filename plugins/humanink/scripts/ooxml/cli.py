@@ -26,6 +26,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _utf8 import salida_en_utf8  # noqa: E402  (la salida en UTF-8: ver _utf8.py)
 
 # subcomando → (módulo, nombre del programa para los mensajes de error de argparse)
 SUB = {
@@ -93,6 +94,7 @@ def _version():
 
 
 def main(argv=None):
+    salida_en_utf8()
     argv = list(sys.argv[1:] if argv is None else argv)
     if not argv or argv[0] in ("-h", "--help"):
         print(__doc__.strip())

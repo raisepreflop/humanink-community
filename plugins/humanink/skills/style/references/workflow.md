@@ -44,7 +44,7 @@ For `.docx`:
 ```bash
 [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"
 for f in "$CARPETA"/**/*.docx "$CARPETA"/*.docx; do
-  [ -f "$f" ] && python3 -c "
+  [ -f "$f" ] && python3 -X utf8 -c "
 import zipfile, re, sys
 z = zipfile.ZipFile(sys.argv[1])
 xml = z.read('word/document.xml').decode()

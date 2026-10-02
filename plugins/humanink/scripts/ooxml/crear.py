@@ -427,6 +427,8 @@ def crear(md, destino):
 
 
 def main(argv=None):
+    from _utf8 import salida_en_utf8
+    salida_en_utf8()
     p = argparse.ArgumentParser(description="Markdown → .docx, sin pandoc")
     p.add_argument("entrada")
     p.add_argument("salida")

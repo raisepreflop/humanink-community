@@ -232,7 +232,7 @@ def main():
     proof = build_proof(final, g, a.template)
     proof.save(proof_path, "PNG")
     json_path.write_text(json.dumps({**g, "source_eff_dpi": round(min(eff_dpi, eff_dpi_h), 1),
-                                     "fit": used}, indent=2))
+                                     "fit": used}, indent=2), encoding="utf-8")
 
     print("-" * 64)
     print(f"  ✓ PDF   (upload to KDP): {pdf_path}")
@@ -242,4 +242,7 @@ def main():
     print("=" * 64)
 
 if __name__ == "__main__":
+    # La salida, siempre en UTF-8: Windows la escribe en cp1252 y un «→» tumba el script (ver scripts/ooxml/_utf8.py).
+    for _flujo in (sys.stdin, sys.stdout, sys.stderr):
+        getattr(_flujo, "reconfigure", lambda **_: None)(encoding="utf-8", errors="backslashreplace")
     main()

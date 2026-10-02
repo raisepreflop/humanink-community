@@ -8,7 +8,11 @@ the combined markdown to /tmp/awos-manuscript.md.
 import zipfile, re, sys
 from pathlib import Path
 
-caps_file = open('/tmp/awos-caps-list.txt').read().strip().split('\n')
+# La salida, siempre en UTF-8: Windows la escribe en cp1252 y un «→» tumba el script (ver scripts/ooxml/_utf8.py).
+for _flujo in (sys.stdin, sys.stdout, sys.stderr):
+    getattr(_flujo, "reconfigure", lambda **_: None)(encoding="utf-8", errors="backslashreplace")
+
+caps_file = open('/tmp/awos-caps-list.txt', encoding='utf-8').read().strip().split('\n')
 output_parts = []
 
 for cap_path in caps_file:

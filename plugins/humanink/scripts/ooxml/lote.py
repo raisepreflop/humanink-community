@@ -233,6 +233,8 @@ def _ancla_anterior(indice, parrafos, n):
 
 
 def main():
+    from _utf8 import salida_en_utf8
+    salida_en_utf8()
     ap = argparse.ArgumentParser(description="Construye un lote de intervenciones a partir de dos textos.")
     ap.add_argument("documento")
     ap.add_argument("--original", required=True, help="fichero con el texto de partida")

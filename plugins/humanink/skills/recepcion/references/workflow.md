@@ -14,7 +14,7 @@ Antes de nombrar a nadie, lee la lista real de colaboradores instalados:
 
 ```bash
 _HI="${CLAUDE_PLUGIN_ROOT:-$HOME/.humanink}"; [ -d "$_HI/i18n" ] || _HI="$HOME/.humanink"
-python3 -c "import json,sys;d=json.load(open(sys.argv[1]));[print(k,'·',v.split('—')[0].strip() if '—' in v else v[:60]) for k,v in sorted(d.items())]" "$_HI/i18n/descriptions.es.json" 2>/dev/null || ls "$_HI/skills" 2>/dev/null
+python3 -X utf8 -c "import json,sys;d=json.load(open(sys.argv[1]));[print(k,'·',v.split('—')[0].strip() if '—' in v else v[:60]) for k,v in sorted(d.items())]" "$_HI/i18n/descriptions.es.json" 2>/dev/null || ls "$_HI/skills" 2>/dev/null
 ```
 
 **Solo puedes derivar a alguien que salga en esa lista.** Nada de recomendar un colaborador que

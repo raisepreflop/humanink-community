@@ -20,7 +20,7 @@ AWOS_HOOK_INPUT=$(cat 2>/dev/null || true)
 export AWOS_HOOK_INPUT
 [ -z "$AWOS_HOOK_INPUT" ] && exit 0
 
-"$PYTHON" - "$QC" <<'PY' || true
+"$PYTHON" -X utf8 - "$QC" <<'PY' || true
 import json, os, re, subprocess, sys
 from pathlib import Path
 
