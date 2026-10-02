@@ -1,9 +1,9 @@
-# HumanInk Community — versión 2.3.0-club
+# HumanInk Community — versión 2.3.1-club
 
 Esta es la edición **Community** de HumanInk para miembros de Escritores Aumentados.
 Aquí tienes, en claro, **qué incluye** y **qué no** — para que sepas exactamente qué has instalado.
 
-> **Versión:** `2.3.0-club` · la edición del Club tiene numeración propia desde la 2.2.0; el sufijo
+> **Versión:** `2.3.1-club` · la edición del Club tiene numeración propia desde la 2.2.0; el sufijo
 > `-club` la identifica. Se actualiza sola desde el catálogo (o pulsa Sincronizar).
 
 ## Lo que incluye
@@ -49,7 +49,9 @@ Esta edición lleva el **registro de autoría local**: `/humanink:auditor`. Todo
 carpeta de tu libro (`.awap/local/`), sin conector y sin que nada salga de tu ordenador.
 
 - **Anota solo.** Lo que escribe cada colaborador de HumanInk y lo que cambias tú después se
-  mide comparando los ficheros, palabra a palabra. No tienes que acordarte de nada.
+  mide comparando los ficheros, palabra a palabra. Solo una cosa que recordar: mientras la IA
+  trabaja en la conversación (en el libro o en otra cosa), no guardes cambios tuyos en los
+  ficheros del libro.
 - **La procedencia va con el texto.** Un párrafo de la IA pegado en tu novela, cambiado de sitio
   o guardado con otro nombre sigue contando como de la IA.
 - **Tu Human Authorship Score**, de 0 a 100, con su desglose por niveles.

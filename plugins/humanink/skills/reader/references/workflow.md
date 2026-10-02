@@ -19,7 +19,7 @@ echo "=== CHAPTERS (latest versions) ==="
 bash "$ROOT/scripts/latest-chapters.sh" "$CARPETA"
 
 echo "=== OBJECTIVE MEASUREMENT (prose_stats) ==="
-for f in $(bash "$ROOT/scripts/latest-chapters.sh" "$CARPETA" | grep -vF '(no previous chapters)'); do
+bash "$ROOT/scripts/latest-chapters.sh" "$CARPETA" | grep -vF '(no previous chapters)' | while IFS= read -r f; do
   python3 "$ROOT/scripts/ai-parser/prose_stats.py" "$f"
 done
 

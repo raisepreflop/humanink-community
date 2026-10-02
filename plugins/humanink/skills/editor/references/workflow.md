@@ -24,7 +24,7 @@ echo "=== CHAPTERS (latest versions) ==="
 bash "$ROOT/scripts/latest-chapters.sh" "$CARPETA"
 
 echo "=== PROSE BASELINE (prose_stats — cite these numbers in BLOCK F) ==="
-for f in $(bash "$ROOT/scripts/latest-chapters.sh" "$CARPETA" | grep -vF '(no previous chapters)'); do
+bash "$ROOT/scripts/latest-chapters.sh" "$CARPETA" | grep -vF '(no previous chapters)' | while IFS= read -r f; do
   python3 "$ROOT/scripts/ai-parser/prose_stats.py" "$f"
 done
 

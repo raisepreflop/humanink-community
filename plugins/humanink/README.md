@@ -1,6 +1,6 @@
 # HumanInk Community
 
-`v2.3.0-club`
+`v2.3.1-club`
 
 **The editorial suite for Escritores Aumentados members.**
 
@@ -125,6 +125,7 @@ The **Authorship Auditor** keeps a log in your book folder (`.awap/local/`). No 
 
 ```
 /humanink:auditor "~/Documents/my novel" --init         # open the log (do it on day one)
+/humanink:auditor "~/Documents/my novel" --base "novel.docx"   # declare the manuscript you had already written
 /humanink:auditor "~/Documents/my novel"                # your Human Authorship Score
 /humanink:auditor "~/Documents/my novel" --report       # breakdown by level and by document
 /humanink:auditor "~/Documents/my novel" --certificate  # draft PDF certificate, in the book folder

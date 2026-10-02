@@ -10,6 +10,17 @@
 # CHAPTERS: un fichero por capítulo versionado.
 #   …/capitulos/cap-07-v2.docx  →  OUT=…/capitulos/cap-07-v3.docx
 set -u
+# --sh: las tres líneas como asignaciones HI_MODE / HI_SOURCE / HI_OUT ya entrecomilladas, para
+# `eval`. Sin esto las skills hacían `eval` de «OUT=/Users/ana/El libro de Ana/…» y el shell
+# ejecutaba «libro» como una orden: el destino quedaba vacío y el capítulo acababa en el directorio
+# de trabajo (UAT, 2-oct-2026). Sin --sh la salida es la de siempre.
+if [ "${1:-}" = "--sh" ]; then
+  shift
+  bash "$0" "$@" | while IFS= read -r linea; do
+    printf 'HI_%s=%q\n' "${linea%%=*}" "${linea#*=}"
+  done
+  exit 0
+fi
 CARPETA="${1:-.}"
 CARPETA="${CARPETA/#\~/$HOME}"
 CAP="${2:-}"

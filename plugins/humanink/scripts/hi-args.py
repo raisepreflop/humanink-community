@@ -69,9 +69,13 @@ def _ruta_escrita(texto):
         palabras = resto.split(" ")
         hallada = None
         for n in range(len(palabras), 0, -1):
-            cand = " ".join(palabras[:n]).rstrip(" ,;:)")
-            if os.path.exists(os.path.expanduser(cand)):
-                hallada = cand
+            # Primero tal cual, con su paréntesis: «Mi novela (2)» es una carpeta, no «Mi novela» seguida
+            # de un paréntesis de cierre (UAT, 2-oct-2026: el registro se abría en otro libro).
+            for cand in (" ".join(palabras[:n]).rstrip(" ,;:"), " ".join(palabras[:n]).rstrip(" ,;:)")):
+                if os.path.exists(os.path.expanduser(cand)):
+                    hallada = cand
+                    break
+            if hallada:
                 break
         if not hallada:
             e = re.match(r'(.*?' + EXT + r')(?=[\s,;:)]|$)', resto, flags=re.I)

@@ -9,15 +9,26 @@
 set -u
 COLLAB="${1:-awos-unknown}"
 NAME="${2:-$COLLAB}"
-CARPETA="${3:-$(pwd)}"; CARPETA="${CARPETA/#\~/$HOME}"
+CARPETA="${3:-}"; CARPETA="${CARPETA/#\~/$HOME}"
 MODE="${4:---default}"
 TOK_IN="${5:-0}"
 TOK_OUT="${6:-0}"
 DOCS_UP="${7:-0}"
 
-PROJECT=$(basename "$CARPETA")
 PY=$(command -v python3 2>/dev/null || command -v python 2>/dev/null || echo python3)
 SELF_DIR="$(cd "$(dirname "$0")" && pwd)"
+# El bloque de cierre de varios colaboradores pasa «$CARPETA», que se definió en un bloque anterior:
+# cada bloque es un shell nuevo y llega vacía. Antes se tomaba el directorio de trabajo, así que la
+# invocación se apuntaba a otro «proyecto» y el registro de autoría del libro se quedaba con la sesión
+# abierta (UAT, 2-oct-2026). Se recupera de la orden con la que se llamó al colaborador.
+if [ -z "$CARPETA" ]; then
+  _ARGS="${ARGUMENTS:-$(cat /tmp/humanink/args 2>/dev/null)}"
+  FOLDER=""
+  eval "$(HI_SIN_AWAP=1 "$PY" "$SELF_DIR/hi-args.py" "$_ARGS" 2>/dev/null | grep '^FOLDER=')" 2>/dev/null || true
+  CARPETA="${FOLDER:-$(pwd)}"
+  [ -f "$CARPETA" ] && CARPETA="$(dirname "$CARPETA")"
+fi
+PROJECT=$(basename "$CARPETA")
 ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$SELF_DIR/.." && pwd)}"
 
 # docs produced since the logger was last touched (best-effort)

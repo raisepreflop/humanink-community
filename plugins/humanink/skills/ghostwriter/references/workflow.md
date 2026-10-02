@@ -41,13 +41,13 @@ for dir in investigacion research referencias docs; do
 done
 
 echo "=== EXISTING CHAPTERS (full text) ==="
-for f in $(bash "$ROOT/scripts/latest-chapters.sh" "$CARPETA"); do
+bash "$ROOT/scripts/latest-chapters.sh" "$CARPETA" | while IFS= read -r f; do
   echo "=== $(basename "$f") ==="
   python3 "$(p="${CLAUDE_PLUGIN_ROOT:-/-}/scripts/md2docx.py"; [ -f "$p" ] || p="$HOME/.humanink/scripts/md2docx.py"; echo "$p")" --read "$f" 2>/dev/null
 done
 
 echo "=== DESTINATION ==="
-eval "$(bash "$ROOT/scripts/next-output.sh" "$CARPETA" "$CAP" | sed 's/^/HI_/')"
+eval "$(bash "$ROOT/scripts/next-output.sh" --sh "$CARPETA" "$CAP")"
 OUT_DOCX="$HI_OUT"
 OUT_MD="${HI_OUT%.docx}.md"
 echo "Convention: $HI_MODE"

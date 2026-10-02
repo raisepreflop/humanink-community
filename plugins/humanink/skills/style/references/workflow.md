@@ -212,7 +212,7 @@ short/medium/long mix, adverbs and parentheticals per thousand):
 ```bash
 [ -z "${ARGUMENTS:-}" ] && ARGUMENTS="$(cat /tmp/humanink/args 2>/dev/null)"
 ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)}"; [ -d "$ROOT/scripts" ] || ROOT="$HOME/.humanink"
-for f in $(bash "$ROOT/scripts/latest-chapters.sh" "$CARPETA" | grep -vF '(no previous chapters)'); do
+bash "$ROOT/scripts/latest-chapters.sh" "$CARPETA" | grep -vF '(no previous chapters)' | while IFS= read -r f; do
   python3 "$ROOT/scripts/ai-parser/prose_stats.py" "$f"
 done
 ```
