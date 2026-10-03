@@ -1,10 +1,18 @@
-# HumanInk Community — versión 2.3.2-club
+# HumanInk Community — versión 2.3.3-club
 
 Esta es la edición **Community** de HumanInk para miembros de Escritores Aumentados.
 Aquí tienes, en claro, **qué incluye** y **qué no** — para que sepas exactamente qué has instalado.
 
-> **Versión:** `2.3.2-club` · la edición del Club tiene numeración propia desde la 2.2.0; el sufijo
+> **Versión:** `2.3.3-club` · la edición del Club tiene numeración propia desde la 2.2.0; el sufijo
 > `-club` la identifica. Se actualiza sola desde el catálogo (o pulsa Sincronizar).
+
+## Qué cambia en esta versión
+
+- El registro de autoría encuentra tus ficheros aunque el nombre lleve tilde o eñe tal como lo guardan Word y el Finder, o mayúsculas distintas de como lo escribes: lo que declares desde ahora ya no se pierde ni aparece después como «documento retirado».
+- Si con la 2.3.0, la 2.3.1 o la 2.3.2 declaraste algo cuyo nombre lleva tilde, eñe o mayúsculas distintas de como lo escribiste, mira el registro (--log): si sale «documento retirado» de un fichero que sigue en tu carpeta, esa declaración se perdió. Vuelve a declararlo igual que entonces; si era tu manuscrito previo, decláralo tuyo con --mine, salvo que un colaborador haya escrito ya en ese mismo fichero.
+- El certificado en PDF escribe bien esos nombres («Ángel», no «A?ngel»).
+- Una carpeta con comillas en el nombre («Mi novela — «Ángel»») se encuentra también si escribes la ruta entre comillas, incluidas las “tipográficas” que pone el Mac; y esas comillas valen también en el objetivo, la pregunta, el género y --base.
+- La revisión humana dice el porcentaje que es («0,2 %»), no «0 %», cuando has sustituido poco.
 
 ## Lo que incluye
 

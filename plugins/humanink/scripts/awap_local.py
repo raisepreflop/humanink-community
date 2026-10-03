@@ -2150,18 +2150,83 @@ def _ilegibles(carpeta):
     return out
 
 
+def _como_en_disco(raiz, rel):
+    """El mismo fichero, con el nombre tal como está ESCRITO en el disco.
+
+    El autor teclea «Guía de estilo.md» con la í en un carácter; Word y el Finder guardan la i y la
+    tilde por separado. A la vista es el mismo nombre; como cadena, no. En un Mac el fichero se abre
+    igual con las dos, así que la declaración se apuntaba con el nombre tecleado, el registro —que
+    recorre el disco— no encontraba ese nombre, lo daba por «retirado» y el documento volvía a contar
+    como del autor (UAT, 2-oct-2026: HAS 11,54 en vez de 1,28). En la máquina de Cowork, que distingue
+    las dos formas, ni siquiera lo encontraba. Lo mismo con las mayúsculas («ángel.md» por «Ángel.md»).
+    Tramo a tramo: el nombre exacto si está; si no, el único que es igual salvo la forma de las tildes;
+    si no, el único que es igual salvo eso y las mayúsculas. Si no hay uno solo, None."""
+    donde, hechos = raiz, []
+    nfc = lambda x: unicodedata.normalize("NFC", x)
+    rel = os.path.normpath(rel.replace("/", os.sep)) if rel not in ("", ".") else ""
+    if rel == os.pardir or rel.startswith(os.pardir + os.sep) or os.path.isabs(rel):
+        return None             # «Capítulos/../Guía.md» vale; lo que sale del libro, no
+    for tramo in [t for t in rel.replace(os.sep, "/").split("/") if t not in ("", ".")]:
+        try:
+            nombres = os.listdir(donde)
+        except OSError:
+            return None
+        if tramo in nombres:
+            real = tramo
+        else:
+            iguales = [n for n in nombres if nfc(n) == nfc(tramo)]
+            if len(iguales) != 1:
+                iguales = [n for n in nombres if nfc(n).casefold() == nfc(tramo).casefold()]
+            if len(iguales) != 1:
+                return None
+            real = iguales[0]
+        hechos.append(real)
+        donde = os.path.join(donde, real)
+    return "/".join(hechos)
+
+
+def _bajo(raiz, ruta):
+    """El tramo de `ruta` por debajo de la carpeta del libro («» si es la carpeta misma), o None si
+    está fuera. Subiendo de carpeta en carpeta y preguntando al disco si es LA MISMA: comparar las
+    cadenas decía «no está dentro de la carpeta del libro» cuando la carpeta llevaba una tilde escrita
+    de una forma en una ruta y de otra en la otra —la del proyecto, tecleada; la del fichero,
+    arrastrada del Finder— (equipo rojo, 3-oct-2026). Donde el disco no sabe contestar, se comparan
+    con las tildes escritas igual."""
+    nfc = lambda x: unicodedata.normalize("NFC", os.path.normpath(x))
+    r, cola = os.path.abspath(ruta), []
+    while True:
+        try:
+            misma = os.path.samefile(r, raiz)
+        except OSError:
+            misma = nfc(r) == nfc(os.path.abspath(raiz))
+        if misma:
+            return "/".join(reversed(cola))
+        padre = os.path.dirname(r)
+        if padre == r:
+            return None
+        cola.append(os.path.basename(r))
+        r = padre
+
+
+def _rel_en_disco(raiz, ruta):
+    """El nombre con el que el recorrido del disco ve ese fichero o carpeta del libro, o None."""
+    bajo = _bajo(raiz, ruta)
+    return None if bajo is None else _como_en_disco(raiz, bajo)
+
+
 def _rel(p, fichero):
     ruta = os.path.abspath(os.path.expanduser(fichero))
-    if not os.path.isfile(ruta):
-        cand = os.path.join(p.raiz, fichero)
-        if os.path.isfile(cand):
-            ruta = cand
-        else:
-            sys.exit(f"No encuentro «{fichero}».")
-    rel = os.path.relpath(ruta, p.raiz).replace(os.sep, "/")
-    if rel.startswith(".."):
-        sys.exit("Ese fichero no está dentro de la carpeta del libro.")
-    return ruta, rel
+    # Se busca por el nombre del disco ANTES de mirar si existe: donde el sistema distingue las dos
+    # formas de escribir una tilde, el nombre tecleado «no existe» aunque el fichero esté ahí.
+    cands = [_rel_en_disco(p.raiz, ruta)]
+    if not os.path.isabs(os.path.expanduser(fichero)):
+        cands.append(_como_en_disco(p.raiz, fichero))
+    rel = next((r for r in cands if r and os.path.isfile(os.path.join(p.raiz, *r.split("/")))), None)
+    if rel is None:
+        if os.path.isfile(ruta) and _bajo(p.raiz, ruta) is None:
+            sys.exit("Ese fichero no está dentro de la carpeta del libro.")
+        sys.exit(f"No encuentro «{fichero}».")
+    return os.path.join(p.raiz, *rel.split("/")), rel
 
 
 def _indice(p):
@@ -2348,6 +2413,13 @@ def cmd_base(a):
     donde = os.path.abspath(os.path.expanduser(a.fichero))
     if not os.path.exists(donde) and os.path.exists(os.path.join(p.raiz, a.fichero)):
         donde = os.path.join(p.raiz, a.fichero)
+    # La carpeta, con el nombre del disco (ver _como_en_disco): «Capítulos» tecleado no es la misma
+    # cadena que el «Capítulos» que guardó el Finder, y con el tecleado no casaba ningún capítulo.
+    for real in [_rel_en_disco(p.raiz, donde)] + \
+                ([_como_en_disco(p.raiz, a.fichero)] if not os.path.isabs(os.path.expanduser(a.fichero)) else []):
+        if real is not None and os.path.isdir(os.path.join(p.raiz, *real.split("/")) if real else p.raiz):
+            donde = os.path.join(p.raiz, *real.split("/")) if real else p.raiz
+            break
     if os.path.isdir(donde):
         return _base_carpeta(p, donde)
     if not a.fichero.lower().endswith(EXTENSIONES):
@@ -2390,10 +2462,12 @@ def cmd_base(a):
 
 def _base_carpeta(p, donde):
     """El manuscrito previo de quien escribe por capítulos: la carpeta entera."""
-    pre = os.path.relpath(donde, p.raiz).replace(os.sep, "/")
-    if pre.startswith(".."):
-        sys.exit("Esa carpeta no está dentro de la carpeta del libro.")
-    pre = "" if pre == "." else pre.rstrip("/") + "/"
+    pre = _rel_en_disco(p.raiz, donde)
+    if pre is None:
+        if _bajo(p.raiz, donde) is None:
+            sys.exit("Esa carpeta no está dentro de la carpeta del libro.")
+        pre = _bajo(p.raiz, donde)
+    pre = "" if pre in ("", ".") else pre.rstrip("/") + "/"
     dentro = sorted(r for r in ficheros(p.raiz) if r.startswith(pre))
     if not pre:
         # La carpeta del libro entera: solo lo que es manuscrito por su nombre. Lo demás (notas,
@@ -2793,8 +2867,11 @@ def gancho_despues(p, escrito=None, orden_id=None, nombrado=True, late=True):
               motivo="cambió mientras la IA ejecutaba una orden que no nombraba este libro")
     elif escrito:
         # No hubo «antes» (el gancho no llegó a correr): solo el fichero que ha escrito.
-        rel = os.path.relpath(os.path.abspath(escrito), p.raiz).replace(os.sep, "/")
-        if os.path.isfile(escrito) and not rel.startswith("..") and rel.lower().endswith(EXTENSIONES):
+        # Con el nombre DEL DISCO: la IA manda «Capítulo 1.md» con la tilde en un carácter y el disco lo
+        # tiene con la tilde aparte; `mirar(solo=…)` no casaba ninguno, no anotaba nada, y la siguiente
+        # mirada le daba lo escrito al autor, «medido» (equipo rojo, 3-oct-2026).
+        rel = _rel_en_disco(p.raiz, escrito)
+        if rel and os.path.isfile(os.path.join(p.raiz, *rel.split("/"))) and rel.lower().endswith(EXTENSIONES):
             mirar(p, "A", colab="(fuera de sesión)", solo=rel)
     else:
         # Una orden sin «antes»: solo lo recién guardado, para no llevarse trabajo del autor sin anotar.
@@ -2820,7 +2897,7 @@ def cmd_gancho(a):
                 try:
                     rel = None
                     if escrito and os.path.isfile(escrito):
-                        rel = os.path.relpath(os.path.abspath(escrito), raiz).replace(os.sep, "/")
+                        rel = _rel_en_disco(raiz, escrito)      # el nombre del disco, como arriba
                     with open(p.f_pendientes, "a", encoding="utf-8") as f:
                         f.write(json.dumps({"document": rel, "mtime": os.stat(escrito).st_mtime if rel else ahora()}) + "\n")
                 except Exception:
@@ -2846,7 +2923,13 @@ def _resumen(p):
     evs = p.eventos()
     docs = documentos(evs)
     vivos = cabezas(docs)
-    r = calcular_has(entradas(evs))
+    ents = entradas(evs)
+    r = calcular_has(ents)
+    # Las dos cifras de la revisión, para DECIR el porcentaje que es. Los puntos salen del ratio
+    # redondeado a dos decimales, igual que en el servidor; pero 23 palabras de 9.484 no son «el 0 %»
+    # (equipo rojo, 3-oct-2026: el arreglo de la 2.3.3 candidata pintaba el ratio YA redondeado).
+    e6 = next((e for e in ents if e.get("hierarchical_level") == 6), None)
+    revision = {"sustituidas": e6["tokens_revised_by_human"], "de": e6["tokens_generated"]} if e6 else None
     todas = [e for e in evs if e.get("event_type") == "collaborator_run"]
     # Un cierre repetido es el mismo trabajo: no cuenta dos veces («Escritor fantasma ×2» por uno).
     corridas = [e for e in todas if not e.get("unclosed") and not e.get("continues")]
@@ -2878,6 +2961,7 @@ def _resumen(p):
                           for e in evs if e.get("event_type") in ("declaration", "baseline_declared")
                           and not (e.get("description") or "").startswith("Parte del manuscrito preexistente")],
         "declarado_de_ia": sum(e.get("ai_words_written_off", 0) for e in evs),
+        "revision": revision,
         "inciertos": sorted(rel for rel, d in vivos.items() if d["atribucion"] == "incierto"),
         "motivos": {e["document"]: e.get("uncertain_reason") for e in evs
                     if e.get("attribution") == "incierto" and e.get("document")},
@@ -2930,7 +3014,9 @@ def _pinta_niveles(r):
             como = "sin documento" if b["level"] != 6 else (
                 "lo que había de la IA lo has declarado tuyo" if r.get("declarado_de_ia") else "la IA no ha escrito en el manuscrito")
         elif b["level"] == 6:
-            como = f"has sustituido el {round(b['average_revision_ratio'] * 100)} % de lo que metió la IA"
+            rv = r.get("revision")
+            cuanto = pct(rv["sustituidas"], rv["de"]) if rv else pct(b["average_revision_ratio"], 1)
+            como = f"has sustituido el {cuanto} de lo que metió la IA"
         elif b.get("partial_baseline"):
             como = f"por el manuscrito previo, al {round(b['average_revision_ratio'] * 100)} %: es poco para este libro"
         elif b.get("from_manuscript"):
@@ -3275,6 +3361,8 @@ class _PDF:
             return len(s) * 0.6 * tam
         total = 0
         for c in s:
+            if unicodedata.combining(c):       # una tilde suelta no ocupa: va sobre la letra anterior
+                continue
             base = unicodedata.normalize("NFKD", c)[0]
             total += _ANCHOS.get(ord(base), 556)
         return total * tam / 1000 * (1.06 if fuente == "F2" else 1)
@@ -3282,6 +3370,10 @@ class _PDF:
     @staticmethod
     def _esc(s):
         # Lo que no existe en la codificación del PDF (una «Ł») va con su letra base, no con «?».
+        # Las tildes, juntas con su letra: un nombre de fichero las trae por separado («A» + «´») y la
+        # tilde suelta no existe en la codificación del PDF: salía «A?ngel» (UAT, 2-oct-2026). Y una
+        # marca que aun así quede suelta se quita, no se cambia por una interrogación.
+        s = "".join(c for c in unicodedata.normalize("NFC", s) if not unicodedata.combining(c))
         s = "".join(c if c.encode("cp1252", "ignore") else
                     (unicodedata.normalize("NFKD", c).encode("cp1252", "ignore").decode("cp1252")
                      or {"Ł": "L", "ł": "l", "Đ": "D", "đ": "d"}.get(c, "?")) for c in s)
@@ -3434,7 +3526,9 @@ def cmd_certificado(a):
                 "Lo que había de la IA, el autor lo ha declarado suyo" if r.get("declarado_de_ia")
                 else "La IA no ha escrito en el manuscrito")
         elif b["level"] == 6:
-            como = f"El autor ha sustituido el {round(b['average_revision_ratio'] * 100)} % de lo que metió la IA"
+            rv = r.get("revision")
+            cuanto = pct(rv["sustituidas"], rv["de"]) if rv else pct(b["average_revision_ratio"], 1)
+            como = f"El autor ha sustituido el {cuanto} de lo que metió la IA"
         elif b.get("partial_baseline"):
             como = f"Por el manuscrito previo, al {round(b['average_revision_ratio'] * 100)} %"
         elif b.get("from_manuscript"):

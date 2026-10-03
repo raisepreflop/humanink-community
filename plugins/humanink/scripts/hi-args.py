@@ -63,9 +63,31 @@ def _ruta_escrita(texto):
     # ruta que va detrás de un flag («--style "/x/estilo.docx"») es el valor de ese flag, no el
     # proyecto (equipo rojo, 24-sep: el reader leía la guía de estilo como si fuera el manuscrito).
     cands = []
-    for q in re.finditer(r'(?:^|\s)["«]((?:~|/)[^"»\n]*)["»]', texto):
-        if not re.search(r'--[\w-]+\s*$', texto[:q.start(1) - 1]):
-            cands.append((q.start(1), q.group(1).strip()))
+    # Cada comilla se cierra con LA SUYA (2.3.3): «"/x/Mi novela — «Ángel» (año 2026)"» se cortaba en el
+    # » del nombre, y la skill contestaba que no veía la carpeta. Con comillas españolas, que no se
+    # distinguen de las del propio nombre, vale el cierre que deja una ruta que EXISTE (el más largo);
+    # si ninguna existe, el primero, como antes.
+    # Y las tipográficas “…” y ‘…’, que el Mac pone solo al escribir (UAT, 3-oct-2026).
+    for q in re.finditer(r"""(?:^|\s)(?:"((?:~|/)[^"\n]*)"|'((?:~|/)[^'\n]*)'|“((?:~|/)[^”\n]*)”|‘((?:~|/)[^’\n]*)’)""", texto):
+        g = next(i for i in range(1, 5) if q.group(i) is not None)
+        if not re.search(r'--[\w-]+\s*$', texto[:q.start(g) - 1]):
+            cands.append((q.start(g), q.group(g).strip()))
+    # El resto de la línea se mira SIN consumirlo (lookahead): si este « es el valor de una opción y se
+    # salta, la ruta del libro que viene detrás entre « » tiene que seguir a la vista (equipo rojo, 3-oct).
+    for q in re.finditer(r'(?:^|\s)«(?=((?:~|/)[^\n]*))', texto):
+        if re.search(r'--[\w-]+\s*$', texto[:q.start(1) - 1]):
+            continue
+        cierres = [m.start() for m in re.finditer(r'»(?=[\s,;:.)]|$)', q.group(1))] or \
+                  [m.start() for m in re.finditer('»', q.group(1))]
+        if not cierres:
+            continue
+        rutas = [q.group(1)[:c].strip() for c in cierres]
+        vivas = [r for r in rutas if os.path.exists(os.path.expanduser(r))]
+        # Sin el disco a la vista no se puede preguntar cuál existe: vale el primer cierre que deja
+        # emparejadas las comillas de DENTRO («…— «Ángel» (año 2026)» tiene una abierta y una cerrada).
+        parejas = [r for r in rutas if r.count("«") == r.count("»")]
+        cands.append((q.start(1), vivas[-1] if vivas else (parejas[0] if parejas else rutas[0])))
+        break
     for ini in re.finditer(r'(?:^|\s)((?:~/|/)\S)', texto):
         if re.search(r'--[\w-]+\s*$', texto[:ini.start(1)]):
             continue
@@ -96,31 +118,38 @@ folder = os.path.expanduser(folder)
 # Covers the quoted argument across collaborators: --goal/--section
 # (ghostwriter), --ask (coach), --genre/--amazon/--topic/--about (analyst).
 goal = ""
-g = re.search(r'--(?:goal|section|ask|amazon|topic|about|on)\s+"([^"]+)"', raw)
+# El valor entre comillas de una opción: rectas, “tipográficas” (las pone el Mac solo), ‘simples’ o
+# «españolas», que pueden llevar otras « » dentro (3-oct-2026: con “…” el objetivo se perdía).
+VALOR = r'(?:"([^"]+)"|“([^”]+)”|‘([^’]+)’|«((?:[^«»\n]|«[^«»\n]*»)+)»)'
+QUITAR_VALOR = r'(?:"[^"]*"|“[^”]*”|‘[^’]*’|«(?:[^«»\n]|«[^«»\n]*»)*»)'
+primero = lambda m: next((x for x in m.groups() if x), "") if m else ""
+
+g = re.search(r'--(?:goal|section|ask|amazon|topic|about|on)\s+' + VALOR, raw)
 if g:
-    goal = g.group(1)
+    goal = primero(g)
 
 # --- genre: su propia variable (27-sep). Hasta hoy iba a GOAL, y el coach o el fantasma lo tomaban por su
 # pregunta u objetivo; y sin comillas, o con «», se perdía. Con él se elige la lente de estructura.
-gm = re.search(r'--(?:genre|genero|género)\s+(?:"([^"]+)"|«([^»]+)»|(\S+))', raw, flags=re.I)
-genre = next(x for x in gm.groups() if x) if gm else ""
+gm = re.search(r'--(?:genre|genero|género)\s+(?:' + VALOR + r'|(\S+))', raw, flags=re.I)
+genre = primero(gm)
 
 # --- base: la versión anterior para /verificar --base (antes se perdía: FLAGS solo lleva nombres) --
-b = re.search(r'--base\s+(?:"([^"]+)"|«([^»]+)»|(\S+(?:\s\S+)*?' + EXT + r')|(\S+))', raw, flags=re.I)
-base = os.path.expanduser(next(x for x in b.groups() if x)) if b else ""
+b = re.search(r'--base\s+(?:' + VALOR + r'|(\S+(?:\s\S+)*?' + EXT + r')|(\S+))', raw, flags=re.I)
+base = os.path.expanduser(primero(b)) if b else ""
 
 # --- all flags (e.g. --rewrite --report) --------------------------------
 flags = " ".join(re.findall(r'--\w[\w-]*', raw))
 
 # --- chapter: leftover after stripping flags, paths and quoted spans ----
 chapter = raw
-chapter = re.sub(r'--(?:genre|genero|género)\s+(?:"[^"]*"|«[^»]*»|\S+)', " ", chapter, flags=re.I)  # el género, con su valor
-chapter = re.sub(r'--\w[\w-]*(\s+"[^"]*")?', " ", chapter)  # flags + their quoted value
+chapter = re.sub(r'--(?:genre|genero|género)\s+(?:' + QUITAR_VALOR + r'|\S+)', " ", chapter, flags=re.I)  # el género, con su valor
+chapter = re.sub(r'--\w[\w-]*(\s+' + QUITAR_VALOR + r')?', " ", chapter)  # flags + their quoted value
 if ruta:
     chapter = chapter.replace(ruta, " ")                        # la ruta, entera, con sus espacios
+    chapter = re.sub(r'(^|\s)["\'“‘«]\s*["\'”’»](?=\s|$)', " ", chapter)   # las comillas que la rodeaban
 chapter = re.sub(r'«[^»]*»', " ", chapter)                     # comillas españolas
 chapter = re.sub(r'(?:^|(?<=\s))~?/[^\s"]+', " ", chapter)      # rutas sueltas que queden (valores de flags)
-chapter = re.sub(r'"[^"]*"', " ", chapter)                  # any remaining quotes
+chapter = re.sub(r'"[^"]*"|“[^”]*”', " ", chapter)       # any remaining quotes
 chapter = re.sub(r'\s+', " ", chapter).strip()
 
 for k, v in (("MODE", mode), ("FOLDER", folder), ("CHAPTER", chapter),
